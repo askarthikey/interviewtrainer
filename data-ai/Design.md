@@ -52,6 +52,29 @@ Summary Table
 
 TODO(amulya-naalla): Fill this section based on your analysis.
 
+Description about datasets and their purpose:
+
+1.	Company Expectations dataset contains company-specific questions, skills required, number of interview rounds. This helps in targeted preparation.
+<img width="1151" height="312" alt="image" src="https://github.com/user-attachments/assets/97405136-0b5c-479f-a980-cbf9ed073d60" />
+
+2.	Feedback Dataset contains description about voice modulation, skills demonstrated and improvements. It also has scores for confidence, body language and overall rating. This gives the user an idea about overall performance in the mock interview.
+<img width="1354" height="305" alt="image" src="https://github.com/user-attachments/assets/5215d479-108c-4aea-b2a0-9b6adf90be31" />
+
+3.	Language Proficiency Dataset consists of performance score and grammatical errors if any. This helps in analysing in the overall communication of the user.
+<img width="1382" height="310" alt="image" src="https://github.com/user-attachments/assets/4f568447-c6bc-44e1-9415-501e693d405e" />
+
+4.	Mock Interview Interactions Dataset contains the questions, answers, confidence score and time taken to answer in the interview. This helps in providing suggestions to the user to improve their performance.
+<img width="1829" height="313" alt="image" src="https://github.com/user-attachments/assets/20e345ac-aaac-4582-bb32-c50ee5a1a63d" />
+
+5.	Question Bank Dataset has a variety of questions categorised on the basis of role, skill, domain, difficulty level and type (Technical, HR, behavioural). It ensures diverse interview practice.
+<img width="1419" height="311" alt="image" src="https://github.com/user-attachments/assets/0dfa46c6-1fd7-4db3-9c7b-1c7895f43cfb" />
+
+6.	Resume Dataset consists of information of the user like name, education, skills, work experience, projects, etc. It helps in generating role-specific interviews and resume improvement suggestions.
+<img width="1696" height="314" alt="image" src="https://github.com/user-attachments/assets/12ab0bee-dd03-451e-a6ac-ae8fca1ec174" />
+ 
+7.	Role Matching Compatibility Dataset links the job roles to the skills required and to what extent the resume matches to the specific role. It helps in recommending suitable roles and suggestions to modify the resume accordingly.
+<img width="955" height="309" alt="image" src="https://github.com/user-attachments/assets/32876300-b965-45cb-a6a5-98bc5dd998dc" />
+
 ## Generic chatbots
 
 TODO(Manikanta6205): Fill this section based on your analysis.
