@@ -7,6 +7,9 @@ TODO(): Fill this section based on your analysis.
 ## Wire frame (Desktop)
 
 TODO(zaids06, rajachanda): Fill this section based on your analysis.
+Desktop Wireframes are done..!
+[Desktop final (1).pdf](https://github.com/user-attachments/files/21748951/Desktop.final.1.pdf)
+
 
 ## Test plan (Desktop)
 
