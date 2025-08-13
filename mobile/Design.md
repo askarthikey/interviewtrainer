@@ -53,6 +53,32 @@ TODO(srividyagajavalley03, syam-praneeth)
 ## Device APIs
 
 TODO(anish66-dev, Ganesh-131)
+- **OpenAI / Google Gemini**  
+  - Question generation  
+  - Answer evaluation  
+- **Google Cloud**  
+  - Text-to-Speech (TTS)  
+  - Speech-to-Text (STT)  
+- **MongoDB**  
+  - Storage for application data  
+  - Score & analytics  
+  - Experience points tracking (with React frontend)  
+- **JWT**  
+  - Authentication  
+- **Supabase**  
+  - Video storage  
+- **Affinda API + MongoDB**  
+  - Resume reading & parsing  
+- **OpenAI / Google Gemini**  
+  - Job description reading & resume analysis  
+  - Skill suggestions  
+- **Azure API**  
+  - Face expression analysis  
+- **ReportLab**  
+  - PDF report generation
+- **SendGrid**  
+  - Email reminders
+
 
 ## Backend APIs required
 
