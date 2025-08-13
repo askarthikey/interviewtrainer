@@ -4,6 +4,50 @@
 
 TODO(srividyaguthi): Fill this section based on your analysis.
 
+Context: InterviewTrainer (AI-Powered Mock Interview Platform)
+
+Key Challenges and Solutions
+
+1. Lack of Labeled Data  
+   * Problem: AI needs labeled input-output pairs; manual annotation is costly.  
+   * Solution: Use semi-supervised learning and generate synthetic data from resumes.
+
+2. Diversity and Representativeness 
+   * Problem: Bias toward specific industries, roles, or demographics.  
+   * Solution: Source diverse data across roles, industries, experience levels, and geographies. Partner with colleges and career platforms.
+
+3. Data Privacy and Consent  
+   * Problem: Resumes and responses contain personal data, risking GDPR/CCPA violations.  
+   * Solution: Collect consent, anonymize data, and allow users to opt out.
+
+4. Audio/Video Data Processing  
+   * Problem: High storage and processing costs for large media files.  
+   * Solution: Use cloud transcription services, compress videos, and extract metadata.
+
+5. Scalability of Human Feedback  
+   * Problem: Hard to scale expert annotations for training AI.  
+   * Solution: Start with expert-curated datasets, use ranking instead of scoring, and incorporate user feedback loops.
+
+6. Cold Start Problem  
+   * Problem: Insufficient data in early stages leads to repetitive or unhelpful feedback.  
+   * Solution: Seed with curated/public datasets and expert-written answers. Use retrieval-based models initially.
+
+7. Platform Bias  
+   * Problem: Early user bias affects global relevance and fairness.  
+   * Solution: Ensure balanced datasets across demographics and implement fairness checks.
+
+Summary Table
+
+| Challenge                  | Mitigation Strategy                                     |
+| -------------------------- | ------------------------------------------------------- |
+| Sparse labeled data        | Semi-supervised learning, synthetic data               |
+| Lack of diversity          | Source varied domains/roles/levels                     |
+| Privacy risks              | Consent, anonymization, GDPR/CCPA compliance           |
+| Large media files          | Transcribe, compress, store metadata                   |
+| Human feedback bottlenecks | Expert seed data, user feedback loops                  |
+| Cold start problem         | Curated/public data, expert-written answers            |
+| Platform bias              | Balanced datasets, fairness metrics                   |
+
 ## Sample dataset
 
 TODO(amulya-naalla): Fill this section based on your analysis.
@@ -49,6 +93,98 @@ As per the requirement of the product we can then think of more API's we want to
 ## Vision Algorithms
 
 TODO(mythrimutyapu7): Fill this section based on your analysis.
+
+**Google Cloud Speech-to-Text**
+Use cases: Voice & real-time transcription
+Algo used: Chirp Transformer + optional CTC-LSTM/RNN fallback
+
+**Microsoft Azure Speech Service**
+Use cases: Transcription, TTS, language support
+Algo used: Conformer/Transformer + deep-time alignment layers
+
+**AssemblyAI**
+Use cases: Transcription, sentiment & topic analysis
+Algo used: Transformer-based ASR (Conformer/Transformer)
+
+**Deepgram**
+Use cases: Real-time speech recognition
+Algo used: Conformer/Transformer on large voice datasets
+
+**Google Cloud Text-to-Speech**
+Use cases: TTS, reading questions aloud
+Algo used: WaveNet & Parallel WaveNet vocoders
+
+**Amazon Polly**
+Use cases: TTS, natural voice simulation
+Algo used: LSTM/Transformer-based TTS + Deep Voice pipelines
+
+**Play.ht**
+Use cases: TTS, natural-sounding voices
+Algo used: Transformer-based TTS (proprietary)
+
+**OpenAI GPT-4 / GPT-3.5 API**
+Use cases: Q\&A, feedback, summarization, language understanding
+Algo used: Transformer LLM (decoder-only)
+
+**Cohere**
+Use cases: Search, classification, embeddings
+Algo used: Transformer LLMs (Command models)
+
+**Hugging Face Inference API**
+Use cases: NLP tasks (summarization, sentiment, NER)
+Algo used: Multiple Transformer models (BERT, T5, etc.)
+
+**Google Cloud Natural Language API**
+Use cases: Sentiment, text classification, entity recognition
+Algo used: BERT-based Transformer models
+
+**Microsoft Azure Face API**
+Use cases: Emotion recognition, identity verification
+Algo used: CNN-based face/emotion analysis
+
+**Affectiva**
+Use cases: Emotion analysis from facial video
+Algo used: CNN + feature-based emotion detection
+
+**Face++**
+Use cases: Face detection, landmarks, demographics
+Algo used: CNN + face embeddings (ArcFace)
+
+**Sightengine**
+Use cases: Facial expression & emotion detection, moderation
+Algo used: Hybrid CNN-based image/video API
+
+**Rchilli Resume Parser**
+Use cases: Resume parsing, profiling
+Algo used: Hybrid NLP (OCR + layout parsing + NER)
+
+**Affinda Resume Parser**
+Use cases: Resume parsing, skill extraction
+Algo used: Deep learning + NER + taxonomy classifiers
+
+**HireAbility Resume Parser**
+Use cases: Resume parsing, structured extraction
+Algo used: Hybrid NER + OCR pipeline
+
+**PromptLayer**
+Use cases: Prompt tracking/orchestration for LLMs
+Algo used: API logging/orchestration, no ML model
+
+**LangChain**
+Use cases: AI pipeline orchestration & multi-step reasoning
+Algo used: LLM + retrieval integration, not a model
+
+**Google Cloud Video Intelligence API**
+Use cases: Video analysis, label & face detection
+Algo used: CNN + Transformer video understanding
+
+**Twilio**
+Use cases: Voice/video integration for interviews
+Algo used: STT/TTS integration + orchestration logic
+
+**Agora**
+Use cases: Real-time audio/video interview infrastructure
+Algo used: Integrated STT/TTS, low-latency streaming
 
 ## Privacy
 
