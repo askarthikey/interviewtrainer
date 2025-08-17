@@ -1,8 +1,18 @@
 # Design - Mobile
 
 ## Tech stack & Dev setup
-
-TODO(mallikarjuna-sindiri)
+| *Layer*        | *Tech Stack*                                                              |
+|------------------|--------------------------------------------------------------------------------------|
+| *Frontend*      | React Native, React Navigation, NativeBase / React Native Paper                     |
+| *UI Components* | react-native-chart-kit, react-native-video, react-native-document-picker            |
+| *Speech*        | Google Cloud Speech-to-Text API                    |
+| *Recording*     | react-native-camera, react-native-audio-recorder-player                             |
+| *Backend*       | Node.js + Express.js                                                                |
+| *Resume Parsing*| Python script with PyPDF2/Spacy or APIs like Affinda, Rchilli                       |
+| *Authentication*| JWT (JSON Web Token)                                                                |
+| *Database*      | MongoDB (Cloud via MongoDB Atlas or local MongoDB)                                  |
+| *File Storage*  | AWS S3 or Cloudinary for storing resumes & videos                                   |
+| *Hosting*       | Render  / Vercel                                                                    |
 
 ## Data flow
 
