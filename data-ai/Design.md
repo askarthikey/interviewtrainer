@@ -124,7 +124,6 @@ TODO(mythrimutyapu7): Fill this section based on your analysis.
 3. **AssemblyAI** → Transcription + analysis (Transformer-based ASR)
 4. **Deepgram** → Real-time speech recognition (Conformer/Transformer)
 
----
 
 ###  Text-to-Speech (TTS)
 
@@ -132,7 +131,6 @@ TODO(mythrimutyapu7): Fill this section based on your analysis.
 6. **Amazon Polly** → Natural voice TTS (LSTM/Transformer + Deep Voice)
 7. **Play.ht** → Natural-sounding voices (Transformer-based TTS, proprietary)
 
----
 
 ###  Large Language Models (LLMs) & NLP APIs
 
@@ -141,7 +139,6 @@ TODO(mythrimutyapu7): Fill this section based on your analysis.
 10. **Hugging Face Inference API** → NLP tasks (summarization, NER, sentiment) using BERT/T5/etc.
 11. **Google Cloud Natural Language API** → Sentiment, classification, entities (BERT-based Transformers)
 
----
 
 ###  Face / Emotion Recognition APIs
 
@@ -150,7 +147,6 @@ TODO(mythrimutyapu7): Fill this section based on your analysis.
 14. **Face++** → Face detection, landmarks, demographics (CNN + ArcFace embeddings)
 15. **Sightengine** → Expression detection + content moderation (Hybrid CNN-based)
 
----
 
 ###  Resume Parsing / HR Tech
 
@@ -158,14 +154,12 @@ TODO(mythrimutyapu7): Fill this section based on your analysis.
 17. **Affinda Resume Parser** → Parsing + skill extraction (DL + NER + classifiers)
 18. **HireAbility Resume Parser** → Structured resume extraction (Hybrid NER + OCR pipeline)
 
----
 
 ### ⚙ Orchestration / AI Pipelines
 
 19. **PromptLayer** → Prompt tracking/orchestration (no ML model)
 20. **LangChain** → AI workflow orchestration (retrieval + LLM chaining)
 
----
 
 ###  Video / Communication APIs
 
