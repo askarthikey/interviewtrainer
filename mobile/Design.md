@@ -102,7 +102,57 @@ TODO(anish66-dev, Ganesh-131)
 
 ## Backend APIs required
 
-TODO(kmahesh18)
+# Backend API Endpoints
+
+## Authentication
+- **POST /api/auth/register** → User registration
+- **POST /api/auth/login** → User authentication
+- **POST /api/auth/refresh-token** → Refresh JWT token
+- **POST /api/auth/logout** → User logout
+- **GET /api/auth/verify-email/:token** → Email verification
+
+## User Profile
+- **GET /api/users/me** → Get current user profile
+- **PUT /api/users/me** → Update user profile
+- **GET /api/users/:userId/stats** → Get user statistics
+- **GET /api/users/:userId/interviews** → Get user interview history
+
+## Resume Management
+- **POST /api/resumes/upload** → Upload resume file
+- **GET /api/resumes/:resumeId** → Get parsed resume data
+- **PUT /api/resumes/:resumeId** → Update resume information
+- **DELETE /api/resumes/:resumeId** → Delete resume
+
+## Interview Sessions
+- **POST /api/interviews/create** → Create new interview session
+- **GET /api/interviews/:interviewId** → Get interview details
+- **PUT /api/interviews/:interviewId/complete** → Mark interview as completed
+- **GET /api/interviews/:interviewId/questions** → Get interview questions
+- **POST /api/interviews/:interviewId/answers** → Submit answer for review
+- **GET /api/interviews/:interviewId/feedback** → Get interview feedback
+
+## Job Descriptions
+- **POST /api/jobs/analyze** → Analyze job description
+- **GET /api/jobs/recommendations/:resumeId** → Get skill recommendations based on resume and job
+
+## Video Management
+- **POST /api/videos/upload** → Upload interview recording
+- **GET /api/videos/:videoId** → Get video recording
+- **DELETE /api/videos/:videoId** → Delete video recording
+
+## Analytics
+- **GET /api/analytics/performance** → Get performance metrics
+- **GET /api/analytics/skill-gaps** → Get skill gap analysis
+- **GET /api/analytics/progress** → Get progress over time
+
+## Reports
+- **GET /api/reports/generate/:interviewId** → Generate interview report
+- **GET /api/reports/download/:reportId** → Download PDF report
+
+## Notifications
+- **GET /api/notifications** → Get user notifications
+- **PUT /api/notifications/:notificationId/read** → Mark notification as read
+- **POST /api/notifications/settings** → Update notification preferences
 
 ## Play Store Setup
 
