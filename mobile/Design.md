@@ -53,31 +53,51 @@ TODO(srividyagajavalley03, syam-praneeth)
 ## Device APIs
 
 TODO(anish66-dev, Ganesh-131)
-- **OpenAI / Google Gemini**  
-  - Question generation  
-  - Answer evaluation  
-- **Google Cloud**  
-  - Text-to-Speech (TTS)  
-  - Speech-to-Text (STT)  
-- **MongoDB**  
-  - Storage for application data  
-  - Score & analytics  
-  - Experience points tracking (with React frontend)  
-- **JWT**  
-  - Authentication  
-- **Supabase**  
-  - Video storage  
-- **Affinda API + MongoDB**  
-  - Resume reading & parsing  
-- **OpenAI / Google Gemini**  
-  - Job description reading & resume analysis  
-  - Skill suggestions  
-- **Azure API**  
-  - Face expression analysis  
-- **ReportLab**  
-  - PDF report generation
-- **SendGrid**  
-  - Email reminders
+# APIs
+- **OpenAI / Gemini** → Question generation, answer evaluation, job description & resume analysis, code analysis, skill suggestions  
+- **Google Cloud** → Text-to-Speech (TTS), Speech-to-Text (STT)  
+- **MongoDB** → Storage, score/analytics, experience points  
+- **JWT** → Authentication  
+- **Supabase** → Video storage  
+- **Affinda API** → Resume reading  
+- **Azure API** → Face expression analysis  
+- **ReportLab** → PDF report generation  
+- **SendGrid** → Email reminders  
+
+---
+
+# Features & API Usage
+
+- **Resume Reader** → MongoDB + Affinda API  
+- **Job Description & Resume Analysis** → OpenAI/Gemini + Mobile UI  
+- **Code Analysis** → MongoDB + OpenAI/Gemini  
+- **Face Expression Analysis** → Azure API  
+- **Score/Analytics** → MongoDB  
+- **PDF Report** → ReportLab  
+- **Skill Suggestions** → OpenAI/Gemini  
+- **Experience Points** → MongoDB with React frontend  
+- **Email Reminders** → SendGrid  
+
+---
+
+# Device APIs
+
+## Voice & Speech
+- **Voice Input** → `AudioRecord` (Android) / `AVAudioRecorder` (iOS)  
+- **Speech-to-Text** → `SpeechRecognizer` (Android) / `SFSpeechRecognizer` (iOS)  
+- **Text-to-Speech** → `TextToSpeech` (Android) / `AVSpeechSynthesizer` (iOS)  
+
+## File Handling
+- **Resume Upload** → `Intent.ACTION_GET_CONTENT` (Android) / `UIDocumentPickerViewController` (iOS)  
+- **File Upload** → `HttpURLConnection` (Android) / `URLSession` (iOS)  
+- **PDF Report Generation** → `PdfDocument` (Android) / `UIGraphicsPDFRenderer` (iOS)  
+- **File Save & Share** → `MediaStore` (Android) / `UIActivityViewController` (iOS)  
+
+## Authentication
+- **Auth** → `Auth0 SDK` (Android & iOS)  
+
+## Camera/Document Scan (Optional)
+- **Camera Access** → `CameraX API` (Android) / `UIImagePickerController` (iOS)  
 
 
 ## Backend APIs required
