@@ -52,6 +52,29 @@ Summary Table
 
 TODO(amulya-naalla): Fill this section based on your analysis.
 
+Description about datasets and their purpose:
+
+1.	Company Expectations dataset contains company-specific questions, skills required, number of interview rounds. This helps in targeted preparation.
+<img width="1151" height="312" alt="image" src="https://github.com/user-attachments/assets/97405136-0b5c-479f-a980-cbf9ed073d60" />
+
+2.	Feedback Dataset contains description about voice modulation, skills demonstrated and improvements. It also has scores for confidence, body language and overall rating. This gives the user an idea about overall performance in the mock interview.
+<img width="1354" height="305" alt="image" src="https://github.com/user-attachments/assets/5215d479-108c-4aea-b2a0-9b6adf90be31" />
+
+3.	Language Proficiency Dataset consists of performance score and grammatical errors if any. This helps in analysing in the overall communication of the user.
+<img width="1382" height="310" alt="image" src="https://github.com/user-attachments/assets/4f568447-c6bc-44e1-9415-501e693d405e" />
+
+4.	Mock Interview Interactions Dataset contains the questions, answers, confidence score and time taken to answer in the interview. This helps in providing suggestions to the user to improve their performance.
+<img width="1829" height="313" alt="image" src="https://github.com/user-attachments/assets/20e345ac-aaac-4582-bb32-c50ee5a1a63d" />
+
+5.	Question Bank Dataset has a variety of questions categorised on the basis of role, skill, domain, difficulty level and type (Technical, HR, behavioural). It ensures diverse interview practice.
+<img width="1419" height="311" alt="image" src="https://github.com/user-attachments/assets/0dfa46c6-1fd7-4db3-9c7b-1c7895f43cfb" />
+
+6.	Resume Dataset consists of information of the user like name, education, skills, work experience, projects, etc. It helps in generating role-specific interviews and resume improvement suggestions.
+<img width="1696" height="314" alt="image" src="https://github.com/user-attachments/assets/12ab0bee-dd03-451e-a6ac-ae8fca1ec174" />
+ 
+7.	Role Matching Compatibility Dataset links the job roles to the skills required and to what extent the resume matches to the specific role. It helps in recommending suitable roles and suggestions to modify the resume accordingly.
+<img width="955" height="309" alt="image" src="https://github.com/user-attachments/assets/32876300-b965-45cb-a6a5-98bc5dd998dc" />
+
 ## Generic chatbots
 
 TODO(Manikanta6205): Fill this section based on your analysis.
@@ -94,99 +117,56 @@ As per the requirement of the product we can then think of more API's we want to
 
 TODO(mythrimutyapu7): Fill this section based on your analysis.
 
-**Google Cloud Speech-to-Text**
-Use cases: Voice & real-time transcription
-Algo used: Chirp Transformer + optional CTC-LSTM/RNN fallback
+###  Speech-to-Text (STT) / Automatic Speech Recognition (ASR)
 
-**Microsoft Azure Speech Service**
-Use cases: Transcription, TTS, language support
-Algo used: Conformer/Transformer + deep-time alignment layers
+1. **Google Cloud Speech-to-Text** → Voice & real-time transcription (Chirp Transformer + CTC-LSTM/RNN)
+2. **Microsoft Azure Speech Service** → Transcription, TTS, multilingual support (Conformer/Transformer)
+3. **AssemblyAI** → Transcription + analysis (Transformer-based ASR)
+4. **Deepgram** → Real-time speech recognition (Conformer/Transformer)
 
-**AssemblyAI**
-Use cases: Transcription, sentiment & topic analysis
-Algo used: Transformer-based ASR (Conformer/Transformer)
 
-**Deepgram**
-Use cases: Real-time speech recognition
-Algo used: Conformer/Transformer on large voice datasets
+###  Text-to-Speech (TTS)
 
-**Google Cloud Text-to-Speech**
-Use cases: TTS, reading questions aloud
-Algo used: WaveNet & Parallel WaveNet vocoders
+5. **Google Cloud Text-to-Speech** → TTS (WaveNet & Parallel WaveNet vocoders)
+6. **Amazon Polly** → Natural voice TTS (LSTM/Transformer + Deep Voice)
+7. **Play.ht** → Natural-sounding voices (Transformer-based TTS, proprietary)
 
-**Amazon Polly**
-Use cases: TTS, natural voice simulation
-Algo used: LSTM/Transformer-based TTS + Deep Voice pipelines
 
-**Play.ht**
-Use cases: TTS, natural-sounding voices
-Algo used: Transformer-based TTS (proprietary)
+###  Large Language Models (LLMs) & NLP APIs
 
-**OpenAI GPT-4 / GPT-3.5 API**
-Use cases: Q\&A, feedback, summarization, language understanding
-Algo used: Transformer LLM (decoder-only)
+8. **OpenAI GPT-4 / GPT-3.5 API** → Q\&A, summarization, reasoning (Decoder-only Transformer LLM)
+9. **Cohere** → Search, classification, embeddings (Transformer LLMs)
+10. **Hugging Face Inference API** → NLP tasks (summarization, NER, sentiment) using BERT/T5/etc.
+11. **Google Cloud Natural Language API** → Sentiment, classification, entities (BERT-based Transformers)
 
-**Cohere**
-Use cases: Search, classification, embeddings
-Algo used: Transformer LLMs (Command models)
 
-**Hugging Face Inference API**
-Use cases: NLP tasks (summarization, sentiment, NER)
-Algo used: Multiple Transformer models (BERT, T5, etc.)
+###  Face / Emotion Recognition APIs
 
-**Google Cloud Natural Language API**
-Use cases: Sentiment, text classification, entity recognition
-Algo used: BERT-based Transformer models
+12. **Microsoft Azure Face API** → Identity, emotion recognition (CNN-based)
+13. **Affectiva** → Emotion analysis from facial video (CNN + features)
+14. **Face++** → Face detection, landmarks, demographics (CNN + ArcFace embeddings)
+15. **Sightengine** → Expression detection + content moderation (Hybrid CNN-based)
 
-**Microsoft Azure Face API**
-Use cases: Emotion recognition, identity verification
-Algo used: CNN-based face/emotion analysis
 
-**Affectiva**
-Use cases: Emotion analysis from facial video
-Algo used: CNN + feature-based emotion detection
+###  Resume Parsing / HR Tech
 
-**Face++**
-Use cases: Face detection, landmarks, demographics
-Algo used: CNN + face embeddings (ArcFace)
+16. **Rchilli Resume Parser** → Resume parsing, profiling (OCR + NER hybrid)
+17. **Affinda Resume Parser** → Parsing + skill extraction (DL + NER + classifiers)
+18. **HireAbility Resume Parser** → Structured resume extraction (Hybrid NER + OCR pipeline)
 
-**Sightengine**
-Use cases: Facial expression & emotion detection, moderation
-Algo used: Hybrid CNN-based image/video API
 
-**Rchilli Resume Parser**
-Use cases: Resume parsing, profiling
-Algo used: Hybrid NLP (OCR + layout parsing + NER)
+### ⚙ Orchestration / AI Pipelines
 
-**Affinda Resume Parser**
-Use cases: Resume parsing, skill extraction
-Algo used: Deep learning + NER + taxonomy classifiers
+19. **PromptLayer** → Prompt tracking/orchestration (no ML model)
+20. **LangChain** → AI workflow orchestration (retrieval + LLM chaining)
 
-**HireAbility Resume Parser**
-Use cases: Resume parsing, structured extraction
-Algo used: Hybrid NER + OCR pipeline
 
-**PromptLayer**
-Use cases: Prompt tracking/orchestration for LLMs
-Algo used: API logging/orchestration, no ML model
+###  Video / Communication APIs
 
-**LangChain**
-Use cases: AI pipeline orchestration & multi-step reasoning
-Algo used: LLM + retrieval integration, not a model
+21. **Google Cloud Video Intelligence API** → Video analysis, labels, face detection (CNN + Transformer)
+22. **Twilio** → Voice/video infra (STT/TTS integrations + orchestration)
+23. **Agora** → Real-time audio/video infra (low-latency STT/TTS)
 
-**Google Cloud Video Intelligence API**
-Use cases: Video analysis, label & face detection
-Algo used: CNN + Transformer video understanding
-
-**Twilio**
-Use cases: Voice/video integration for interviews
-Algo used: STT/TTS integration + orchestration logic
-
-**Agora**
-Use cases: Real-time audio/video interview infrastructure
-Algo used: Integrated STT/TTS, low-latency streaming
-
-## Privacy
 
 TODO(Aishwarya0322) : Fill this section based on your analysis.
 

@@ -1,8 +1,18 @@
 # Design - Mobile
 
 ## Tech stack & Dev setup
-
-TODO(mallikarjuna-sindiri)
+| *Layer*        | *Tech Stack*                                                              |
+|------------------|--------------------------------------------------------------------------------------|
+| *Frontend*      | React Native, React Navigation, NativeBase / React Native Paper                     |
+| *UI Components* | react-native-chart-kit, react-native-video, react-native-document-picker            |
+| *Speech*        | Google Cloud Speech-to-Text API                    |
+| *Recording*     | react-native-camera, react-native-audio-recorder-player                             |
+| *Backend*       | Node.js + Express.js                                                                |
+| *Resume Parsing*| Python script with PyPDF2/Spacy or APIs like Affinda, Rchilli                       |
+| *Authentication*| JWT (JSON Web Token)                                                                |
+| *Database*      | MongoDB (Cloud via MongoDB Atlas or local MongoDB)                                  |
+| *File Storage*  | AWS S3 or Cloudinary for storing resumes & videos                                   |
+| *Hosting*       | Render  / Vercel                                                                    |
 
 ## Data flow
 
@@ -53,10 +63,106 @@ TODO(srividyagajavalley03, syam-praneeth)
 ## Device APIs
 
 TODO(anish66-dev, Ganesh-131)
+# APIs
+- **OpenAI / Gemini** → Question generation, answer evaluation, job description & resume analysis, code analysis, skill suggestions  
+- **Google Cloud** → Text-to-Speech (TTS), Speech-to-Text (STT)  
+- **MongoDB** → Storage, score/analytics, experience points  
+- **JWT** → Authentication  
+- **Supabase** → Video storage  
+- **Affinda API** → Resume reading  
+- **Azure API** → Face expression analysis  
+- **ReportLab** → PDF report generation  
+- **SendGrid** → Email reminders  
+
+---
+
+# Features & API Usage
+
+- **Resume Reader** → MongoDB + Affinda API  
+- **Job Description & Resume Analysis** → OpenAI/Gemini + Mobile UI  
+- **Code Analysis** → MongoDB + OpenAI/Gemini  
+- **Face Expression Analysis** → Azure API  
+- **Score/Analytics** → MongoDB  
+- **PDF Report** → ReportLab  
+- **Skill Suggestions** → OpenAI/Gemini  
+- **Experience Points** → MongoDB with React frontend  
+- **Email Reminders** → SendGrid  
+
+---
+
+# Device APIs
+
+## Voice & Speech
+- **Voice Input** → `AudioRecord` (Android) / `AVAudioRecorder` (iOS)  
+- **Speech-to-Text** → `SpeechRecognizer` (Android) / `SFSpeechRecognizer` (iOS)  
+- **Text-to-Speech** → `TextToSpeech` (Android) / `AVSpeechSynthesizer` (iOS)  
+
+## File Handling
+- **Resume Upload** → `Intent.ACTION_GET_CONTENT` (Android) / `UIDocumentPickerViewController` (iOS)  
+- **File Upload** → `HttpURLConnection` (Android) / `URLSession` (iOS)  
+- **PDF Report Generation** → `PdfDocument` (Android) / `UIGraphicsPDFRenderer` (iOS)  
+- **File Save & Share** → `MediaStore` (Android) / `UIActivityViewController` (iOS)  
+
+## Authentication
+- **Auth** → `Auth0 SDK` (Android & iOS)  
+
+## Camera/Document Scan (Optional)
+- **Camera Access** → `CameraX API` (Android) / `UIImagePickerController` (iOS)  
+
 
 ## Backend APIs required
 
-TODO(kmahesh18)
+# Backend API Endpoints
+
+## Authentication
+- **POST /api/auth/register** → User registration
+- **POST /api/auth/login** → User authentication
+- **POST /api/auth/refresh-token** → Refresh JWT token
+- **POST /api/auth/logout** → User logout
+- **GET /api/auth/verify-email/:token** → Email verification
+
+## User Profile
+- **GET /api/users/me** → Get current user profile
+- **PUT /api/users/me** → Update user profile
+- **GET /api/users/:userId/stats** → Get user statistics
+- **GET /api/users/:userId/interviews** → Get user interview history
+
+## Resume Management
+- **POST /api/resumes/upload** → Upload resume file
+- **GET /api/resumes/:resumeId** → Get parsed resume data
+- **PUT /api/resumes/:resumeId** → Update resume information
+- **DELETE /api/resumes/:resumeId** → Delete resume
+
+## Interview Sessions
+- **POST /api/interviews/create** → Create new interview session
+- **GET /api/interviews/:interviewId** → Get interview details
+- **PUT /api/interviews/:interviewId/complete** → Mark interview as completed
+- **GET /api/interviews/:interviewId/questions** → Get interview questions
+- **POST /api/interviews/:interviewId/answers** → Submit answer for review
+- **GET /api/interviews/:interviewId/feedback** → Get interview feedback
+
+## Job Descriptions
+- **POST /api/jobs/analyze** → Analyze job description
+- **GET /api/jobs/recommendations/:resumeId** → Get skill recommendations based on resume and job
+
+## Video Management
+- **POST /api/videos/upload** → Upload interview recording
+- **GET /api/videos/:videoId** → Get video recording
+- **DELETE /api/videos/:videoId** → Delete video recording
+
+## Analytics
+- **GET /api/analytics/performance** → Get performance metrics
+- **GET /api/analytics/skill-gaps** → Get skill gap analysis
+- **GET /api/analytics/progress** → Get progress over time
+
+## Reports
+- **GET /api/reports/generate/:interviewId** → Generate interview report
+- **GET /api/reports/download/:reportId** → Download PDF report
+
+## Notifications
+- **GET /api/notifications** → Get user notifications
+- **PUT /api/notifications/:notificationId/read** → Mark notification as read
+- **POST /api/notifications/settings** → Update notification preferences
 
 ## Play Store Setup
 
