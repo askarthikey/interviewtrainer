@@ -43,6 +43,8 @@
 - TL score : 100
 
 ### mahesh 
-- Next-task:Take the Wire frame from the Product team and create place holder pages as per the Wire frame.
+-I've updated design.md backend apis list .
+- Done wireframe 8-10 pages and pushed..check readme to start app ...also added ss to assets
+- Do pull and push your changes if any
 - Assigned Issues: [#51](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/51)
 - TL score : 100
