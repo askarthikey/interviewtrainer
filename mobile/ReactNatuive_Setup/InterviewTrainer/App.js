@@ -5,7 +5,10 @@ import ResumeAnalyzer from './src/components/ResumeAnalyzer';
 import UseCases from './src/components/UseCases';
 import InterviewAnalyzer from './src/components/InterviewAnalyzer';
 import Header from './src/components/Header';
-
+import Home from './src/components/Home';
+import SignUp from './src/components/SignUp';
+import SignIn from './src/components/SignIn';
+import GoogleLogin from './src/components/GoogleLogin'; 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
 
@@ -17,6 +20,12 @@ export default function App() {
         return <UseCases />;
       case 'interview':
         return <InterviewAnalyzer />;
+      case 'Home':
+        return <Home />;
+      case 'SignUp':
+        return <SignUp navigation={{ navigate: setCurrentScreen }} />;
+      case 'SignIn':
+        return <SignIn navigation={{ navigate: setCurrentScreen }} />;
       default:
         return (
           <View style={styles.homeContainer}>
@@ -38,6 +47,30 @@ export default function App() {
               onPress={() => setCurrentScreen('interview')}
             >
               <Text style={styles.buttonText}>Interview Analyzer</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.navButton} 
+              onPress={() => setCurrentScreen('Home')}
+            >
+              <Text style={styles.buttonText}>Home Page</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.navButton} 
+              onPress={() => setCurrentScreen('SignUp')}
+            >
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.navButton}
+              onPress={() => setCurrentScreen('SignIn')}
+            >
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.navButton}
+              onPress={() => setCurrentScreen('SignIn')}
+            >
+              <Text style={styles.buttonText}>Google Login</Text>
             </TouchableOpacity>
           </View>
         );
@@ -101,6 +134,3 @@ const styles = StyleSheet.create({
     color: '#4a90e2',
   },
 });
-
-
-
