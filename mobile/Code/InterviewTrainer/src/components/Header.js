@@ -61,43 +61,25 @@ const Header = ({ onNavigate }) => {
               style={styles.menuItem} 
               onPress={() => navigateTo('Home')}
             >
-              <Text style={styles.menuText}>Home Page</Text>
+              <Text style={styles.menuText}>Home_Page</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.menuItem} 
               onPress={() => navigateTo('SignUp')}
             >
-              <Text style={styles.menuText}>SignUp</Text>
+              <Text style={styles.menuText}>Sign Up</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.menuItem} 
               onPress={() => navigateTo('SignIn')}
             >
-              <Text style={styles.menuText}>SignIn</Text>
+              <Text style={styles.menuText}>Sign In</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.menuItem} 
-              onPress={() => navigateTo('GoogleLogin')}
+              onPress={() => navigateTo('SignIn')}
             >
               <Text style={styles.menuText}>Google Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={() => navigateTo('Profile')}
-            >
-              <Text style={styles.menuText}>Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={() => navigateTo('OtpCheck')}
-            >
-              <Text style={styles.menuText}>OTP Check</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={() => navigateTo('AfterInterview')}
-            >
-              <Text style={styles.menuText}>After Interview</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

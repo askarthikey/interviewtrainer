@@ -43,8 +43,43 @@
   Store sensitive credentials and connection strings in `.env` and never commit them to version control.
 
 ## Data flow diagram
+### Interview Trainer – Component List
+### 1. User-Facing Components (Frontend)
+- Landing Page
+- Login / Signup Page
+- Dashboard for Progress Tracking
+- Resume Upload Page
+- Resume Parser Evaluation Interface
+- Virtual Interview Interface
+- Q&A Interface with Timer and Recorder
+- Post-Interview Feedback View
 
-TODO(Rishi2795, srivatsav7054, K-Jashwanth): Fill this section based on your analysis.
+### 2. Backend Services
+- API Server (Express.js)
+- Authentication Service (JWT)
+- Resume Parser Endpoint
+- Question Generator Service
+- Answer Evaluation Engine
+- Feedback Generator
+- User Profile & Interview Session Manager
+
+### 3. AI & NLP Modules
+- Resume Parser
+- Question Generator (LLM-powered)
+- Answer Evaluator (LLM or ML model)
+- Feedback Generator (based on evaluation)
+
+### 4. Data Layer
+- Database: MongoDB 
+  - Users
+  - Interview Logs
+  - Feedback & Scores
+  - Resume Data
+- File Storage: Supabase
+  - Resumes
+  - Recordings
+  - Transcripts
+
 
 ## Database schema
 
