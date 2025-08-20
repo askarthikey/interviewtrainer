@@ -57,6 +57,48 @@ const Header = ({ onNavigate }) => {
             >
               <Text style={styles.menuText}>Interview Analyzer</Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigateTo('Home')}
+            >
+              <Text style={styles.menuText}>Home Page</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigateTo('SignUp')}
+            >
+              <Text style={styles.menuText}>SignUp</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigateTo('SignIn')}
+            >
+              <Text style={styles.menuText}>SignIn</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigateTo('GoogleLogin')}
+            >
+              <Text style={styles.menuText}>Google Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigateTo('Profile')}
+            >
+              <Text style={styles.menuText}>Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigateTo('OtpCheck')}
+            >
+              <Text style={styles.menuText}>OTP Check</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => navigateTo('AfterInterview')}
+            >
+              <Text style={styles.menuText}>After Interview</Text>
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
