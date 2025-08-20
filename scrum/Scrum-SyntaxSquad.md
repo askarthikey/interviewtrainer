@@ -24,7 +24,7 @@
 * Branch: apoorva1
 * TL score (0-100) : 100
 
-### Harshita
+### Harshitha
 * Created Resume Analyser page and Dashboard
 * Pushed the code into apoorva1 branch
 * Issue #40 will be closed after final review
