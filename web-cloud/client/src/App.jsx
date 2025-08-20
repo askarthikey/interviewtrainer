@@ -7,7 +7,12 @@ import Dashboard from './components/Dashboard';
 import CodeEditor from './components/CodeEditor';
 import SpeechToTextDis from './components/SpeechToTextDis';
 import PricingPage from './components/PricingPage';
+import Landing from './components/Landing';
 import ProfilePage from './components/ProfilePage';
+import PracticeSection from './components/PracticeSection';
+import Session from './components/Session';
+import ProfileRedirect from './components/ProfileRedirect';
+import ResumeAnalyzer from './components/ResumeAnalyzer';
 
 // Component to handle conditional redirect based on auth state
 const HomeRedirect = () => {
@@ -34,6 +39,10 @@ function App() {
               <Route path="signup" element={<Signup />} />
               <Route path="pricing" element={<PricingPage />} />
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="practice" element={<PracticeSection />} />
+              <Route path="session" element={<Session />} />
+              <Route path="profile-redirect" element={<ProfileRedirect />} />
+              <Route path="resume-analyzer" element={<ResumeAnalyzer />} />
             </Route>
           </Routes>
         </div>
