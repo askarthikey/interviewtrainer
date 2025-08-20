@@ -29,7 +29,18 @@
 
 ## DB Dev setup
 
-TODO(Sairoop-15): Fill this section based on your analysis.
+- **Local MongoDB Installation:**  
+  Install MongoDB Community Edition locally from [mongodb.com](https://www.mongodb.com/try/download/community) or use [MongoDB Atlas](https://www.mongodb.com/atlas/database) for cloud-hosted development.
+- **Connection:**  
+  The backend connects to MongoDB using the native MongoDB Node.js driver (`mongodb` npm package).  
+  Configure the connection string in the `.env` file (e.g., `MONGODB_URI=mongodb://localhost:27017/interviewtrainer`).
+- **Database Initialization:**  
+  No ORM/ODM is used; collections are created automatically when data is inserted.  
+  Use direct queries for CRUD operations.
+- **Testing:**  
+  For local development, run MongoDB as a service (`mongod`) and verify connectivity using `mongo` shell or GUI tools like [MongoDB Compass](https://www.mongodb.com/products/compass).
+- **Environment Variables:**  
+  Store sensitive credentials and connection strings in `.env` and never commit them to version control.
 
 ## Data flow diagram
 
