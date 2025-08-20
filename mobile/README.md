@@ -22,7 +22,7 @@ The app implements simple state-based navigation between screens. A more robust 
 
 1. Navigate to the project directory:
 ```
-cd /home/mahi/Documents/interviewtrainer/mobile/ReactNatuive_Setup/InterviewTrainer
+cd interviewtrainer/mobile/
 ```
 
 2. Install dependencies:
@@ -30,12 +30,7 @@ cd /home/mahi/Documents/interviewtrainer/mobile/ReactNatuive_Setup/InterviewTrai
 npm install
 ```
 
-3. Install required packages:
-```
-npm install @expo/vector-icons
-```
-
-4. Run the app:
+3. Run the app:
 ```
 npm start
 ```
