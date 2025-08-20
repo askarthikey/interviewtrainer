@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { LayoutDashboard, User, BarChart, LineChart, PieChart, FileText } from 'lucide-react';
 
 // Main App component that renders the entire application
-export default function App() {
+export default function InterviewReport() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -129,3 +129,4 @@ export default function App() {
     </div>
   );
 }
+
