@@ -50,18 +50,6 @@ function Header() {
                 >
                   Code
                 </Link>
-                <Link 
-                  to="/pricing" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
-                  Pricing
-                </Link>
-                <Link 
-                  to="/profile" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
-                  Profile
-                </Link>
                 <div className="w-8 h-8">
                   <UserButton 
                     appearance={{

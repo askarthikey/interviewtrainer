@@ -6,15 +6,8 @@ import Signin from './components/Signin';
 import Dashboard from './components/Dashboard';
 import CodeEditor from './components/CodeEditor';
 import SpeechToTextDis from './components/SpeechToTextDis';
-import PricingPage from './components/PricingPage';
-import Landing from './components/Landing';
-import ProfilePage from './components/ProfilePage';
-import PracticeSection from './components/PracticeSection';
-import Session from './components/Session';
-import ProfileRedirect from './components/ProfileRedirect';
-import ResumeAnalyzer from './components/ResumeAnalyzer';
-import Page7 from './pages/Page7.jsx';
-import Page9 from './pages/Page9.jsx';
+import AboutUs from './components/AboutUs';
+import ContatctUs from './components/ContactUs';
 
 // Component to handle conditional redirect based on auth state
 const HomeRedirect = () => {
@@ -36,17 +29,11 @@ function App() {
               <Route index element={<HomeRedirect />} />
               <Route path="signin" element={<Signin />} />
               <Route path="speech" element={<SpeechToTextDis />} />
-              <Route path="/page7" element={<Page7 />} />
-              <Route path="/page9" element={<Page9 />} />
               <Route path="dashboard" element={<Dashboard/>} />
               <Route path="code" element={<CodeEditor/>} />
               <Route path="signup" element={<Signup />} />
-              <Route path="pricing" element={<PricingPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="practice" element={<PracticeSection />} />
-              <Route path="session" element={<Session />} />
-              <Route path="profile-redirect" element={<ProfileRedirect />} />
-              <Route path="resume-analyzer" element={<ResumeAnalyzer />} />
+              <Route path="aboutus" element={<AboutUs />} />
+              <Route path="contactus" element={<ContatctUs />} />
             </Route>
           </Routes>
         </div>
