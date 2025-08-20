@@ -13,8 +13,10 @@ import PracticeSection from './components/PracticeSection';
 import Session from './components/Session';
 import ProfileRedirect from './components/ProfileRedirect';
 import ResumeAnalyzer from './components/ResumeAnalyzer';
-import Page7 from './pages/Page7.jsx';
-import Page9 from './pages/Page9.jsx';
+import Page7 from './components/Page7.jsx';
+import Page9 from './components/Page9.jsx';
+import InterviewReport from './components/InterviewReport.jsx';
+import RecordingsDashboard from './components/RecordingsDashboard.jsx';
 
 // Component to handle conditional redirect based on auth state
 const HomeRedirect = () => {
@@ -45,6 +47,8 @@ function App() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="practice" element={<PracticeSection />} />
               <Route path="session" element={<Session />} />
+              <Route path="interview-report" element={<InterviewReport />} />
+              <Route path="recordings" element={<RecordingsDashboard />} />
               <Route path="profile-redirect" element={<ProfileRedirect />} />
               <Route path="resume-analyzer" element={<ResumeAnalyzer />} />
             </Route>

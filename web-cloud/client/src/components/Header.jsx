@@ -51,6 +51,24 @@ function Header() {
                   Code
                 </Link>
                 <Link 
+                  to="/page9" 
+                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
+                >
+                  Page9
+                </Link>
+                <Link 
+                  to="/interview-report" 
+                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
+                >
+                  InterviewReport
+                </Link>
+                <Link 
+                  to="/recordings" 
+                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
+                >
+                  Recordings
+                </Link>
+                <Link 
                   to="/pricing" 
                   className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
                 >
