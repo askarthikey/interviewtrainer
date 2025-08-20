@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, SafeAreaView, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, SafeAreaView, Text, ScrollView } from 'react-native';
+
 import { StatusBar } from 'expo-status-bar';
 import ResumeAnalyzer from './src/components/ResumeAnalyzer';
 import UseCases from './src/components/UseCases';
@@ -9,6 +10,10 @@ import Home from './src/components/Home';
 import SignUp from './src/components/SignUp';
 import SignIn from './src/components/SignIn';
 import GoogleLogin from './src/components/GoogleLogin'; 
+import Profile from './src/components/Profile';
+import OtpCheck from './src/components/OtpCheck';
+import AfterInterview from './src/components/AfterInterview';
+
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
 
@@ -26,8 +31,17 @@ export default function App() {
         return <SignUp navigation={{ navigate: setCurrentScreen }} />;
       case 'SignIn':
         return <SignIn navigation={{ navigate: setCurrentScreen }} />;
+      case 'GoogleLogin':
+        return <GoogleLogin navigation={{ navigate: setCurrentScreen }} />;
+      case 'Profile':
+        return <Profile />;
+      case 'OtpCheck':
+        return <OtpCheck onLogin={() => setCurrentScreen('AfterInterview')} />;
+      case 'AfterInterview':
+        return <AfterInterview />;
       default:
         return (
+          <ScrollView contentContainerStyle={styles.homeContainer}>
           <View style={styles.homeContainer}>
             <Text style={styles.homeTitle}>Welcome to InterviewTrainer</Text>
             <TouchableOpacity 
@@ -68,11 +82,31 @@ export default function App() {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.navButton}
-              onPress={() => setCurrentScreen('SignIn')}
+              onPress={() => setCurrentScreen('GoogleLogin')}
             >
               <Text style={styles.buttonText}>Google Login</Text>
             </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.navButton}
+              onPress={() => setCurrentScreen('Profile')}
+            >
+              <Text style={styles.buttonText}>Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.navButton}
+              onPress={() => setCurrentScreen('OtpCheck')}
+            >
+              <Text style={styles.buttonText}>OTP Check</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.navButton}
+              onPress={() => setCurrentScreen('AfterInterview')}
+            >
+              <Text style={styles.buttonText}>After Interview</Text>
+            </TouchableOpacity>   
+          
           </View>
+          </ScrollView>
         );
     }
   };
@@ -100,7 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   homeContainer: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -115,7 +149,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#4a90e2',
     padding: 16,
     borderRadius: 8,
-    width: '80%',
+    width: 250,
+    height: 60,
     alignItems: 'center',
     marginBottom: 20,
   },
