@@ -6,6 +6,8 @@ import Signin from './components/Signin';
 import Dashboard from './components/Dashboard';
 import CodeEditor from './components/CodeEditor';
 import SpeechToTextDis from './components/SpeechToTextDis';
+import Page7 from './pages/Page7.jsx';
+import Page9 from './pages/Page9.jsx';
 
 // Component to handle conditional redirect based on auth state
 const HomeRedirect = () => {
@@ -27,6 +29,8 @@ function App() {
               <Route index element={<HomeRedirect />} />
               <Route path="signin" element={<Signin />} />
               <Route path="speech" element={<SpeechToTextDis />} />
+              <Route path="/page7" element={<Page7 />} />
+              <Route path="/page9" element={<Page9 />} />
               <Route path="dashboard" element={<Dashboard/>} />
               <Route path="code" element={<CodeEditor/>} />
               <Route path="signup" element={<Signup />} />
