@@ -52,6 +52,4 @@
 
 * Newly assigned task: Conduct survey for atleast 20 students
 * Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/70](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/70)
-* Newly assigned task: Py code to call the prebuilt/pretrained AI API (working with Sri Vidya & Swayam)
-* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/58](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/58)
 * TL score (0-100) : 100
