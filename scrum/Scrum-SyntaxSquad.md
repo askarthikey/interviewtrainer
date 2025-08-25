@@ -67,20 +67,53 @@
 ## 20 Aug 2025  
 
 ### Karthik - [Karthik-Kondaveeti](https://github.com/Karthik-Kondaveeti)  
+* Created [wireframe_9](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/44)
 * Explored Vercel and deployed frontend 
-* Newly assigned issue: [#103](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/103)
+* Newly assigned Issued: [#103](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/103)
 * Deployed url of frontend: [Link](https://interviewtrainer-one.vercel.app/ )
 * TL score (0-100) :
 
 ### Apoorva Sai Karthikey - [askarthikey](https://github.com/askarthikey)  
+* Closed issue [#34](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/34)
 * Made a repository for deployment - [repo](https://github.com/askarthikey/interviewtrainer)
-* checked deployment status, made sure live website is funtional
-* Newly Issued assigned: [#94](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/94)
+* Newly assigned Issued: [#94](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/94)
 * Made a deployment guide for manual deployment process, refer  [#94](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/94)
+* checked deployment status, made sure live website is funtional
 * TL score (0-100) :
 
 ### Srivatsav - [srivatsav7054](https://github.com/srivatsav7054)  
-* Explored Vercel and deployed frontend 
-* Newly Issued assigned: [#104](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/104)
+* Created [wireframe_6](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/41)
+* Newly assigned Issued: [#104](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/104)
 * Deployed url of frontend: [Link](https://interviewtrainer-one.vercel.app/ )
-* TL score (0-100) : 
+* TL score (0-100) :
+
+### Rishidhar - [Rishidhar-22](https://github.com/Rishidhar-22)  
+* created [wireframe_8](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/43)
+* Newly assigned Issued: [#105](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/105)   
+* TL score (0-100) : 
+
+### Vamshi - [LV2402](https://github.com/LV2402)  
+* created [wireframe_4](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/39)
+* Newly assigned Issued: [#109](http://github.com/vnr-ibt-july-2025/interviewtrainer/issues/109)
+* TL score (0-100) :
+
+### Harshitha - [Harshitha178](https://github.com/Harshitha178)  
+* created [wireframe_5](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/40)
+* Newly assigned Issued: [#107](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/107)
+* TL score (0-100) : 
+
+### Sairoop - [Sairoop-15](https://github.com/Sairoop-15)  
+* created [wireframe_2](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/37)
+* Newly assigned Issued: [#106](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/106)
+* TL score (0-100) :   
+
+
+### Rishi - [rishi2795](https://github.com/rishi2795)  
+* Created [wireframe_7](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/42)
+* Newly assigned Issued: [#108](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/108)
+* TL score (0-100) :
+
+### Jaswanth - [K-Jashwanth](https://github.com/K-Jashwanth)  
+* Created [wireframe_3](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/38)
+* Newly assigned Issued: [#110](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/110)
+* TL score (0-100) :  
