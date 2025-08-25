@@ -63,3 +63,65 @@
 * Newly assigned task: Py code to call the prebuilt/pretrained AI API (working with Sri Vidya & Swayam)
 * Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/58
 * TL score (0-100) : 0
+
+## 20 August, 2025
+
+### Sri Vidya - srividyaguthi
+
+* Implemented Py code to call Affinda & OpenAI APIs to parse data from resume and analyze the details to estimate relevance to the job role given by the user
+* Led task distribution among the team mates
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/59
+* Newly assigned task: To compute accuracy from Generic chatbot evaluation using manually labeled data set (working with Amulya)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/97
+* TL score (0-100) : 
+
+### Amulya - amulya-naalla
+
+* Prepared 5 datasets each having interview questions and answers on different domains, listed response time, confidence score and evaluated the answers on a scale of 10 manually
+* Listed the score given by ChatGPT
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/36
+* Newly assigned task: To compute accuracy from Generic chatbot evaluation using manually labeled data set (working with Sri Vidya)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/96
+* TL score (0-100) : 90
+
+### Manikanta - Manikanta6205
+
+* Prepared 5 datasets each having interview questions and answers on different domains, listed response time, confidence score and evaluated the answers on a scale of 10 manually
+* Listed the score given by Google Gemini
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/35
+* Newly assigned task: Document API request/response the Data & AI team for integration by Web & Cloud team (working with Mythri)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/101
+* TL score (0-100) : 80
+
+### Mythri - mythrimutyapu7
+
+* Configuration of different pre-built APIs that would can be used in the application for different use cases have been documented
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/55
+* Newly assigned task: Document API request/response the Data & AI team for integration by Web & Cloud team (working with Manikanta)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/102
+* TL score (0-100) : 100
+
+### Swayam - swayamj2495
+
+* Implemented Py code to call Google Gemini API for text-to-speech conversion and evaluate interviewee's responses
+* Py code to call the prebuilt/pretrained AI API (working with Sri Vidya & Sri Raksha)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/57
+* Newly assigned task: Compute accuracy from using pre-trained APIs evaluation using manually labeled data set (working with Aishwarya)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/98
+* TL score (0-100) : 100
+
+### Aishwarya - Aishwarya0322
+
+* Configuration of different pre-built APIs that would can be used in the application for different use cases have been documented
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/56
+* Newly assigned task: Compute accuracy from using pre-trained APIs evaluation using manually labeled data set (working with Swayam)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/99
+* TL score (0-100) : 100
+
+### Sri Raksha - SriRaksha30
+
+* Implemented Py code to call Google Gemini API for text-to-speech conversion and evaluate interviewee's responses
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/58
+* Newly assigned task: Document the prompts used for Generic chatbot evaluation
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/100
+* TL score (0-100) : 100
