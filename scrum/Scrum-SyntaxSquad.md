@@ -63,3 +63,24 @@
 ### Srivatsav - [srivatsav7054](https://github.com/srivatsav7054)
 * Designed the dataflow outline
 * TL score (0-100) : 100
+
+## 20 Aug 2025  
+
+### Karthik - [Karthik-Kondaveeti](https://github.com/Karthik-Kondaveeti)  
+* Explored Vercel and deployed frontend 
+* Newly assigned issue: [#103](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/103)
+* Deployed url of frontend: [Link](https://interviewtrainer-one.vercel.app/ )
+* TL score (0-100) :
+
+### Apoorva Sai Karthikey - [askarthikey](https://github.com/askarthikey)  
+* Made a repository for deployment - [repo](https://github.com/askarthikey/interviewtrainer)
+* checked deployment status, made sure live website is funtional
+* Newly Issued assigned: [#94](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/94)
+* Made a deployment guide for manual deployment process, refer  [#94](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/94)
+* TL score (0-100) :
+
+### Srivatsav - [srivatsav7054](https://github.com/srivatsav7054)  
+* Explored Vercel and deployed frontend 
+* Newly Issued assigned: [#104](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/104)
+* Deployed url of frontend: [Link](https://interviewtrainer-one.vercel.app/ )
+* TL score (0-100) : 
