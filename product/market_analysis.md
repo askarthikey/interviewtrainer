@@ -15,7 +15,7 @@
 | InterviewBuddy       | Live expert-led interviews + AI one‑way prep                     | Free AI / ₹1,499+ for experts          |
 | Career.io            | All-in-one job search, resume & interview tool                   | ~$25/month                             |
 | Canyon Pro           | Lifetime AI resume, tracker, mock interview suite                | ~$70‑90 one-time                       |
-| **InterviewTrainer** | Full-stack: resume, role, IDE, live + AI feedback & tracking     | (Your own pricing)                     |
+| **InterviewTrainer** | Full-stack: resume, role, IDE, live + AI feedback & tracking     | (our own pricing)                     |
 
 ## Key Differentiators for InterviewTrainer
 - **True one-stop platform** combining resume analyzer, role/JD-based interviews, built-in IDE, interview recordings, analytics, and topic tracking.
