@@ -53,3 +53,57 @@
 * Newly assigned task: Conduct survey for atleast 20 students
 * Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/70](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/70)
 * TL score (0-100) : 100
+
+## 27 August, 2025  
+
+### Nirup - NirupRedd  
+
+
+* Created prototype (low-fidelity) for desktop version  
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/81](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/81)
+* Newly assigned task : Run and test local setup for desktop -2
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/91](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/91)  
+* TL score (0-100) : 100  
+
+### B Pranav Reddy - pranavbusireddy  
+
+* Analyzed survey results and created summary report   
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/82](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/82)  * Newly assigned task: 
+* Newly assigned task :Analyze survey results 
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/86](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/86)  
+* TL score (0-100) : 100  
+
+### Raja - rajachanda  
+
+* Created high-fidelity wireframes for mobile
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/83](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/83)  
+* Newly assigned task: Run and test local setup for desktop -2 
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/88](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/88)  
+* TL score (0-100) : 100  
+
+### Koushik Teja - KoushikTeja12  
+
+* Assisted Raja in building high-fidelity mobile wireframes
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/84](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/84)  
+* Newly assigned task:  Run and test local setup for desktop -1 #87
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/87](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/87)  
+
+* TL score (0-100) : 100  
+
+### Bharath - Cleancode16  
+
+* Create report summarizing feedback on desktop design  
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/85](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/85)  
+* Newly assigned task: Run and test local setup for mobile-1 #90
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/90](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/90) 
+
+* TL score (0-100) : 100  
+
+### Vaishnavi - nvaishnavisriyaa  
+
+* Assisted Pranav in analyzing survey results and preparing report
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/86](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/86) 
+* Newly assigned task: Analyze survey results -2
+* Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/92](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/92)  
+ 
+* TL score (0-100) : 100  
