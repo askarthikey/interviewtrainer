@@ -167,3 +167,35 @@ TODO(anish66-dev, Ganesh-131)
 ## Play Store Setup
 
 TODO(Vinaykumarp2005)
+
+## focus on prototyping to uncover unknowns/learn specific tech(Ganesh-131)
+# Identified Unknowns and Risks for Prototyping
+
+## Job Description and Resume Parsing
+- Uploading of different types of files (PDF/Word/Images)  
+- Handling image files (scanned documents/JPG)
+
+## Question Generation
+- Some generated questions may not be related to the job description/resume  
+- Time gap between question generation and asking the question (from the app side)  
+- In TTS, the bot’s voice may have a different accent, making it difficult for users to understand  
+- Live generation of subtitles
+
+## Answering the Questions
+- Internet speed directly affects the quality of input voice  
+- Live generation of subtitles
+
+## Interview Recording
+- Video file size may be large and take a long time to upload to the server  
+- Video quality depends on environment and lighting  
+- Large file size requires more internet bandwidth (mobile users relying on data may face high consumption)  
+- Files accumulate in the database, leading to increased storage costs — how can we optimize this?
+
+## Face Expression Analysis
+- Quality of video depends on internet speed and lighting  
+- Poor conditions may lead to incorrect analysis
+
+## Feedback and Rating
+- Combining all aspects (tone of voice, facial expression, confidence, etc.) into a single score is difficult  
+- Deciding the scoring base/ranking criteria is unclear  
+- Users may disagree with the given score (e.g., if they feel they performed well but got a low rating) — how do we handle this?
