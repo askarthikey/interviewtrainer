@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, jsonify
 import google.generativeai as genai
 from gtts import gTTS
 
-# -------------------------
+
 # Setup
 # -------------------------
 load_dotenv()
