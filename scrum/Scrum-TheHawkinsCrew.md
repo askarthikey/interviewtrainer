@@ -125,3 +125,71 @@
 * Newly assigned task: Document the prompts used for Generic chatbot evaluation
 * Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/100
 * TL score (0-100) : 100
+
+## 30 August, 2025
+
+### Sri Vidya - srividyaguthi
+
+* Conducted a comparative evaluation of ChatGPT vs Gemini across accuracy, reasoning, and contextual relevance
+* Structured the test set, anonymized responses, coordinated evaluator scoring, and validated results manually
+* Documented Gemini’s stronger overall performance
+* Led task distribution among the team mates
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/97
+* Newly assigned task: Define base-line and goal (working with Amulya)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/126
+* TL score (0-100) : 
+
+### Amulya - amulya-naalla
+
+* Evaluated Gemini’s results against manual labels by calculating Accuracy, MAE, and RMSE
+* Conducted a domain-wise comparison to identify alignment patterns and manually cross-checked a sample for correctness
+* Prepared a very detailed document
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/96
+* Newly assigned task: Define base-line and goal (working with Sri Vidya)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/125
+* TL score (0-100) : 100
+
+### Manikanta - Manikanta6205
+
+* A brief doucmentation of APIs provided
+* Delay in working on the issue
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/101
+* Newly assigned task: DProvie AI APIs for the Web & Cloud Team
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/127
+* TL score (0-100) : 50
+
+### Mythri - mythrimutyapu7
+
+* Prepared API documentation for the Resume & Interview AI Platform, including endpoints for Resume Parsing, Interview Chatbot, Question Generator, TTS, and Answer Analysis
+* Added JSON request/response samples, authentication details, environment variables, and error codes for Web & Cloud integration
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/102
+* Newly assigned task: Explore fine tuning of the foundation models (working with Sri Raksha)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/128
+* TL score (0-100) : 90
+
+### Swayam - swayamj2495
+
+* Rectified errors in the code that calls the Gemini API and evaluates responses from the dataset
+* Verified documentation of results and checked accuracy against manual labels
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/98
+* Newly assigned task: Collect more data and clean the data, setup process (working with Aishwarya)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/130
+* TL score (0-100) : 100
+
+### Aishwarya - Aishwarya0322
+
+* Developed code to call the Gemini API and evaluate candidate responses from the dataset
+* Saved results in a new Excel file and documented exact matches and accuracy against manual labels
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/99
+* Newly assigned task: Collect more data and clean the data, setup process (working with Swayam)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/131
+* TL score (0-100) : 100
+
+### Sri Raksha - SriRaksha30
+
+* Documented prompts used for generic chatbot evaluation
+* Organized prompts from app.py for the Resume Analyzer and Interview Questions Generator, categorizing them for prototype functionality
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/100
+* Newly assigned task: Explore fine tuning of the foundation models (working with Mythri)
+* Issue id: https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/129
+* TL score (0-100) : 100
