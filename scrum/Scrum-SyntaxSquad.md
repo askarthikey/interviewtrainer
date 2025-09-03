@@ -107,7 +107,6 @@
 * Newly assigned Issued: [#106](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/106)
 * TL score (0-100) : 100
 
-
 ### Rishi - [rishi2795](https://github.com/rishi2795)  
 * Created [wireframe_7](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/42)
 * Newly assigned Issued: [#108](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/108)
@@ -116,4 +115,44 @@
 ### Jaswanth - [K-Jashwanth](https://github.com/K-Jashwanth)  
 * Created [wireframe_3](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/38)
 * Newly assigned Issued: [#110](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/110)
+* TL score (0-100) :  100
+
+
+## 30 Aug 2025  
+
+### Karthik - [Karthik-Kondaveeti](https://github.com/Karthik-Kondaveeti)  
+* Assigned Issues to team members
+* Created [Deploy the code to the cloud 1](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/103)
+* TL score (0-100) : 
+
+### Apoorva Sai Karthikey - [askarthikey](https://github.com/askarthikey)  
+* Closed issue [Setup manual process to deploy on weekly basis](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/94)
+* TL score (0-100) : 100
+
+### Srivatsav - [srivatsav7054](https://github.com/srivatsav7054)  
+* Created [Deploy the code to the cloud 2]: [#104](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/104)
+* TL score (0-100) : 100
+
+### Rishidhar - [Rishidhar-22](https://github.com/Rishidhar-22)  
+* Created [Setup manual process to deploy on weekly basis 2](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/105)
+* TL score (0-100) : 100
+
+### Vamshi - [LV2402](https://github.com/LV2402)  
+* Created [Focus on prototyping to uncover unknowns / learn specific tech 2](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/109)
+* TL score (0-100) : 100
+
+### Harshitha - [Harshitha178](https://github.com/Harshitha178)  
+* Created [Create code mocks for any downstream dependencies 2](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/107)
+* TL score (0-100) : 100
+
+### Sairoop - [Sairoop-15](https://github.com/Sairoop-15)  
+* Created [Create code mocks for any downstream dependencies 1](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/106)
+* TL score (0-100) : 100
+
+### Rishi - [rishi2795](https://github.com/rishi2795)  
+* Created [Focus on prototyping to uncover unknowns / learn specific tech 1](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/108)
+* TL score (0-100) : 100
+
+### Jaswanth - [K-Jashwanth](https://github.com/K-Jashwanth)  
+* Created [Focus on prototyping to uncover unknowns / learn specific tech 3](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/110)
 * TL score (0-100) :  100
