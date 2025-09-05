@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth, UserButton } from '@clerk/clerk-react';
+import { useAuth } from '../hooks/useAuth.jsx';
+import UserButton from './UserButton';
 import { Link } from 'react-router-dom';
 
 function Header() {
