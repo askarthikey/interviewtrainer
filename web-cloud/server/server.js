@@ -57,56 +57,54 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
+
 MongoClient.connect(process.env.DB_URL)
   .then(client => {
     db = client.db("interviewtrainer");
     authFunctions = createAuthFunctions(db);
     initPassport(db);
     console.log("DB connection successful!!");
+
+    const paymentRoutes = require('./Models/Payments');
+    app.use(paymentRoutes);
+
+    // Auth routes
+    app.post('/api/auth/signup', (req, res) => authFunctions.signUp(req, res));
+    app.post('/api/auth/signin', (req, res) => authFunctions.signIn(req, res));
+    app.get('/api/auth/validate', (req, res) => authFunctions.validateToken(req, res));
+
+    // OAuth routes
+    app.get('/api/auth/google',
+      passport.authenticate('google', { scope: ['profile', 'email'] })
+    );
+
+    app.get('/api/auth/callback/google',
+      passport.authenticate('google', { failureRedirect: '/signin' }),
+      (req, res) => {
+        // Generate JWT token for the authenticated user
+        const token = generateToken(req.user._id);
+        // Redirect to frontend with token
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+      }
+    );
+
+    app.get('/api/auth/github',
+      passport.authenticate('github', { scope: ['user:email'] })
+    );
+
+    app.get('/api/auth/callback/github',
+      passport.authenticate('github', { failureRedirect: '/signin' }),
+      (req, res) => {
+        // Generate JWT token for the authenticated user
+        const token = generateToken(req.user._id);
+        // Redirect to frontend with token
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+      }
+    );
   })
   .catch(err => console.log("Error in connection of database", err.message));
-
-const paymentRoutes = require('./Models/Payments');
-
-app.use(paymentRoutes);
-
-// Auth routes
-app.post('/api/auth/signup', (req, res) => authFunctions.signUp(req, res));
-app.post('/api/auth/signin', (req, res) => authFunctions.signIn(req, res));
-app.get('/api/auth/validate', (req, res) => authFunctions.validateToken(req, res));
-
-// OAuth routes
-app.get('/api/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-app.get('/api/auth/callback/google',
-  passport.authenticate('google', { failureRedirect: '/signin' }),
-  (req, res) => {
-    // Generate JWT token for the authenticated user
-    const token = generateToken(req.user._id);
-    
-    // Redirect to frontend with token
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-    res.redirect(`${clientUrl}/auth/callback?token=${token}`);
-  }
-);
-
-app.get('/api/auth/github',
-  passport.authenticate('github', { scope: ['user:email'] })
-);
-
-app.get('/api/auth/callback/github',
-  passport.authenticate('github', { failureRedirect: '/signin' }),
-  (req, res) => {
-    // Generate JWT token for the authenticated user
-    const token = generateToken(req.user._id);
-    
-    // Redirect to frontend with token
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-    res.redirect(`${clientUrl}/auth/callback?token=${token}`);
-  }
-);
 
 // Interview Response Storage Endpoint
 app.post('/api/interview/response', authenticateToken, async (req, res) => {
