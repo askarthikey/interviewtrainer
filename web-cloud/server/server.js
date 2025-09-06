@@ -1,20 +1,19 @@
-const express = require("express");
-const { MongoClient, MongoError } = require("mongodb");
-const dotenv = require("dotenv").config();
+const express = require('express');
+const { MongoClient, MongoError } = require('mongodb');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 const { createAuthFunctions, generateToken } = require('./auth');
 const { initPassport } = require('./oauth');
 
+require('dotenv').config();
+
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors({}));
 app.use(express.json());
+app.use(express.static('public'));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-session-secret-change-this',
   resave: false,
@@ -27,7 +26,7 @@ app.use(passport.session());
 let db;
 let authFunctions;
 
-MongoClient.connect(process.env.DB_URL || 'mongodb://localhost:27017/interviewtrainer')
+MongoClient.connect(process.env.DB_URL)
   .then(client => {
     db = client.db("interviewtrainer");
     authFunctions = createAuthFunctions(db);
@@ -35,6 +34,10 @@ MongoClient.connect(process.env.DB_URL || 'mongodb://localhost:27017/interviewtr
     console.log("DB connection successful!!");
   })
   .catch(err => console.log("Error in connection of database", err.message));
+
+const paymentRoutes = require('./Models/Payments');
+
+app.use(paymentRoutes);
 
 // Auth routes
 app.post('/api/auth/signup', (req, res) => authFunctions.signUp(req, res));
@@ -75,8 +78,10 @@ app.get('/api/auth/callback/github',
 );
 
 app.use((err, req, res, next) => {
-  res.send({ message: "Error", payload: err.message });
+  res.status(500).send({ message: "Server Error", payload: err.message });
 });
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
