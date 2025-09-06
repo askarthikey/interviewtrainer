@@ -12,14 +12,85 @@ const CodeEditor = () => {
   const [timeSpent, setTimeSpent] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [difficulty, setDifficulty] = useState('Medium');
-  const [leftPanelWidth, setLeftPanelWidth] = useState(50); // Percentage
+  const [leftPanelWidth, setLeftPanelWidth] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
-  const [outputHeight, setOutputHeight] = useState(40); // Percentage of right panel
+  const [outputHeight, setOutputHeight] = useState(40);
   const [isDraggingOutput, setIsDraggingOutput] = useState(false);
+  const [pyodideReady, setPyodideReady] = useState(true); // Always ready since we use server-side execution
+  const [isInstalling, setIsInstalling] = useState(false);
   
   const editorRef = useRef(null);
   const timerRef = useRef(null);
   const containerRef = useRef(null);
+
+  // Real code execution using backend API
+  const executeCode = async (code, language) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, language }),
+      });
+      
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        output: `Network error: ${error.message}. Make sure the execution server is running.`
+      };
+    }
+  };
+
+  // Safe JavaScript execution using Web Worker (fallback for client-side)
+  const executeJavaScriptClient = (code) => {
+    return new Promise((resolve) => {
+      const workerCode = `
+        let output = '';
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = (...args) => {
+          output += args.join(' ') + '\\n';
+          originalLog(...args);
+        };
+        
+        console.error = (...args) => {
+          output += 'Error: ' + args.join(' ') + '\\n';
+          originalError(...args);
+        };
+        
+        try {
+          ${code}
+          self.postMessage({ success: true, output: output || 'Code executed successfully (no output)' });
+        } catch (error) {
+          self.postMessage({ success: false, output: 'Error: ' + error.message });
+        }
+      `;
+      
+      const blob = new Blob([workerCode], { type: 'application/javascript' });
+      const worker = new Worker(URL.createObjectURL(blob));
+      
+      const timeout = setTimeout(() => {
+        worker.terminate();
+        resolve({ success: false, output: 'Error: Execution timeout (5 seconds)' });
+      }, 5000);
+      
+      worker.onmessage = (e) => {
+        clearTimeout(timeout);
+        worker.terminate();
+        resolve(e.data);
+      };
+      
+      worker.onerror = (error) => {
+        clearTimeout(timeout);
+        worker.terminate();
+        resolve({ success: false, output: 'Error: ' + error.message });
+      };
+    });
+  };
 
   // Timer functionality
   useEffect(() => {
@@ -182,26 +253,110 @@ You can return the answer in any order.`,
  * @param {number} target
  * @return {number[]}
  */
-var twoSum = function(nums, target) {
-    
-};`,
-      python: `class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        `,
-      java: `class Solution {
+function twoSum(nums, target) {
+    // Your solution here
+    // Example approach: brute force O(n²)
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+            if (nums[i] + nums[j] === target) {
+                return [i, j];
+            }
+        }
+    }
+    return [];
+}
+
+// Test your function
+console.log("Testing twoSum([2,7,11,15], 9):");
+console.log(twoSum([2,7,11,15], 9)); // Expected: [0,1]`,
+
+      python: `def twoSum(nums, target):
+    """
+    :type nums: List[int]
+    :type target: int
+    :rtype: List[int]
+    """
+    # Your solution here
+    # Example approach: brute force O(n²)
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            if nums[i] + nums[j] == target:
+                return [i, j]
+    return []
+
+# Test your function
+print("Testing twoSum([2,7,11,15], 9):")
+print(twoSum([2,7,11,15], 9))  # Expected: [0,1]
+print("Testing twoSum([3,2,4], 6):")
+print(twoSum([3,2,4], 6))      # Expected: [1,2]`,
+
+      java: `import java.util.*;
+
+public class Solution {
     public int[] twoSum(int[] nums, int target) {
-        
+        // Your solution here
+        // Example approach: brute force O(n²)
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return new int[]{};
+    }
+    
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] result = solution.twoSum(new int[]{2,7,11,15}, 9);
+        System.out.println("Result: [" + result[0] + "," + result[1] + "]");
     }
 }`,
-      cpp: `class Solution {
+
+      cpp: `#include <vector>
+#include <iostream>
+using namespace std;
+
+class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-        
+        // Your solution here
+        // Example approach: brute force O(n²)
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = i + 1; j < nums.size(); j++) {
+                if (nums[i] + nums[j] == target) {
+                    return {i, j};
+                }
+            }
+        }
+        return {};
     }
-};`,
+};
+
+int main() {
+    Solution solution;
+    vector<int> nums = {2, 7, 11, 15};
+    vector<int> result = solution.twoSum(nums, 9);
+    cout << "Result: [" << result[0] << "," << result[1] << "]" << endl;
+    return 0;
+}`,
+
       typescript: `function twoSum(nums: number[], target: number): number[] {
-    
-};`
+    // Your solution here
+    // Example approach: brute force O(n²)
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+            if (nums[i] + nums[j] === target) {
+                return [i, j];
+            }
+        }
+    }
+    return [];
+}
+
+// Test your function
+console.log("Testing twoSum([2,7,11,15], 9):");
+console.log(twoSum([2,7,11,15], 9)); // Expected: [0,1]`
     };
     return templates[language] || templates.javascript;
   };
@@ -239,41 +394,94 @@ public:
   };
 
   const runCode = async () => {
+    if (!code.trim()) {
+      setExecutionOutput('❌ Error: No code to execute');
+      setShowOutput(true);
+      return;
+    }
+
     setIsExecuting(true);
     setShowOutput(true);
-    setExecutionOutput('');
-    
-    // Simulate code execution with better output formatting
-    setTimeout(() => {
-      try {
-        if (selectedLanguage === 'javascript') {
-          let output = '';
-          const originalLog = console.log;
-          console.log = (...args) => {
-            output += '> ' + args.join(' ') + '\n';
-          };
-          
-          try {
-            // Basic execution simulation
-            eval(code + '\n\nconsole.log("Testing twoSum([2,7,11,15], 9):");\nconsole.log(twoSum([2,7,11,15], 9));');
-            setExecutionOutput(output || '✓ Code executed successfully\n> No console output');
-          } catch (error) {
-            setExecutionOutput(`❌ Runtime Error:\n> ${error.message}\n\n💡 Check your function syntax and variable names.`);
-          } finally {
-            console.log = originalLog;
-          }
-        } else {
-          setExecutionOutput(`✓ Code compiled successfully\n> Runtime: 0ms\n> Memory: 41.2 MB\n\nTesting twoSum([2,7,11,15], 9):\n> [0, 1]`);
-        }
-      } catch (error) {
-        setExecutionOutput(`❌ Compilation Error:\n> ${error.message}`);
+    setExecutionOutput('🔄 Executing code...\n');
+
+    try {
+      let result;
+      
+      // Use backend API for all languages for real execution
+      result = await executeCode(code, selectedLanguage);
+      
+      const timestamp = new Date().toLocaleTimeString();
+      const status = result.success ? '✅' : '❌';
+      const header = `${status} Execution ${result.success ? 'completed' : 'failed'} at ${timestamp}\n`;
+      const languageInfo = `Language: ${selectedLanguage.toUpperCase()}\n`;
+      const separator = '─'.repeat(50) + '\n';
+      
+      setExecutionOutput(header + languageInfo + separator + result.output);
+      
+      // Auto-run test cases for coding problems if execution was successful
+      if (result.success && selectedLanguage === 'javascript' && code.includes('twoSum')) {
+        setTimeout(() => {
+          runTestCases();
+        }, 500);
       }
+      
+    } catch (error) {
+      setExecutionOutput(`❌ Execution Error:\n${error.message}`);
+    } finally {
       setIsExecuting(false);
-    }, 1500);
+    }
+  };
+
+  const runTestCases = async () => {
+    const testCases = [
+      { input: '[2,7,11,15], 9', expected: '[0,1]', desc: 'Basic case' },
+      { input: '[3,2,4], 6', expected: '[1,2]', desc: 'Different order' },
+      { input: '[3,3], 6', expected: '[0,1]', desc: 'Same numbers' }
+    ];
+
+    let testOutput = '\n🧪 Running test cases...\n' + '═'.repeat(50) + '\n';
+    
+    for (let i = 0; i < testCases.length; i++) {
+      const testCase = testCases[i];
+      try {
+        const testCode = `
+          ${code}
+          
+          const result = twoSum(${testCase.input});
+          console.log(JSON.stringify(result));
+        `;
+        
+        const result = await executeCode(testCode, 'javascript');
+        const output = result.output.trim();
+        const passed = output.includes(testCase.expected);
+        
+        testOutput += `Test ${i + 1} (${testCase.desc}): ${passed ? '✅ PASS' : '❌ FAIL'}\n`;
+        testOutput += `  Input: twoSum(${testCase.input})\n`;
+        testOutput += `  Expected: ${testCase.expected}\n`;
+        testOutput += `  Got: ${output}\n\n`;
+        
+      } catch (error) {
+        testOutput += `Test ${i + 1}: ❌ ERROR\n`;
+        testOutput += `  ${error.message}\n\n`;
+      }
+    }
+    
+    setExecutionOutput(prev => prev + testOutput);
   };
 
   const submitCode = () => {
-    alert(`Solution submitted!\nLanguage: ${selectedLanguage}\nTime: ${formatTime(timeSpent)}`);
+    // Stop the timer when submitting
+    setIsTimerActive(false);
+    clearInterval(timerRef.current);
+    
+    const metrics = {
+      language: selectedLanguage,
+      time: formatTime(timeSpent),
+      linesOfCode: code.split('\n').length,
+      characters: code.length,
+    };
+    
+    alert(`🎉 Solution submitted successfully!\n\nMetrics:\n• Language: ${metrics.language}\n• Time: ${metrics.time}\n• Lines of Code: ${metrics.linesOfCode}\n• Characters: ${metrics.characters}\n\n⏱️ Timer has been stopped.`);
   };
 
   const getDifficultyColor = (diff) => {
@@ -439,7 +647,7 @@ public:
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {languages.map((lang) => (
                   <option key={lang.value} value={lang.value}>
@@ -448,8 +656,21 @@ public:
                 ))}
               </select>
               
-              <div className="text-sm text-gray-600">
-                Time: {formatTime(timeSpent)}
+              {/* Runtime Status */}
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-xs text-green-600">
+                    {selectedLanguage.toUpperCase()} runtime ready
+                  </span>
+                </div>
+              </div>
+              
+              <div className={`text-sm flex items-center space-x-1 ${isTimerActive ? 'text-gray-600' : 'text-red-600'}`}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Time: {formatTime(timeSpent)}</span>
               </div>
             </div>
 
@@ -535,23 +756,33 @@ public:
                   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>Console</span>
+                  <span>Output Terminal</span>
                 </h3>
                 {isExecuting && (
                   <div className="flex items-center space-x-2 text-blue-600">
                     <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                    <span className="text-xs font-medium">Executing...</span>
+                    <span className="text-xs font-medium">Running {selectedLanguage}...</span>
                   </div>
                 )}
-                <div className="text-xs text-gray-500">
-                  Runtime: {isExecuting ? '...' : '~1.2s'} | Memory: 41.2 MB
+                <div className="text-xs text-gray-500 flex items-center space-x-3">
+                  <span>Language: {selectedLanguage.toUpperCase()}</span>
+                  <span>•</span>
+                  <span>Status: {isExecuting ? 'Running' : 'Ready'}</span>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
                 <button
+                  onClick={runCode}
+                  disabled={isExecuting}
+                  className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 transition-colors"
+                  title="Run code again"
+                >
+                  {isExecuting ? 'Running...' : 'Re-run'}
+                </button>
+                <button
                   onClick={() => setExecutionOutput('')}
                   className="p-1.5 hover:bg-gray-200 rounded-md transition-colors"
-                  title="Clear console"
+                  title="Clear output"
                 >
                   <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16" />
@@ -560,7 +791,7 @@ public:
                 <button
                   onClick={() => setShowOutput(false)}
                   className="p-1.5 hover:bg-gray-200 rounded-md transition-colors"
-                  title="Close console"
+                  title="Close terminal"
                 >
                   <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -569,17 +800,22 @@ public:
               </div>
             </div>
             <div className="flex-1 overflow-hidden">
-              <div className="h-full bg-gray-900 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              <div className="h-full bg-gray-900 p-4 overflow-y-auto">
                 <div className="space-y-1">
+                  <div className="text-gray-400 text-xs mb-2 font-mono">
+                    $ Replit Code Executor - {selectedLanguage} environment
+                  </div>
                   {executionOutput ? (
-                    <pre className="text-green-400 text-sm font-mono whitespace-pre-wrap leading-relaxed">
+                    <pre className="text-gray-100 text-sm font-mono whitespace-pre-wrap leading-relaxed">
                       {executionOutput}
                     </pre>
                   ) : (
-                    <div className="text-gray-500 text-sm font-mono italic">
-                      Console output will appear here...
-                      <br />
-                      <span className="text-gray-600">💡 Click "Run" to execute your code</span>
+                    <div className="text-gray-500 text-sm font-mono">
+                      <div className="text-gray-400">Waiting for code execution...</div>
+                      <div className="text-gray-600 mt-2">💡 Tips:</div>
+                      <div className="text-gray-600">• Click "Run" to execute your {selectedLanguage} code</div>
+                      <div className="text-gray-600">• Use console.log() in JavaScript or print() in Python for output</div>
+                      <div className="text-gray-600">• Test cases will run automatically for coding problems</div>
                     </div>
                   )}
                 </div>
