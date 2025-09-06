@@ -27,7 +27,7 @@ function Pricing() {
   // This effect runs when the payment modal is shown
   useEffect(() => {
     if (showPaymentModal) {
-      fetch('http://localhost:4000/client_token')
+      fetch('http://localhost:5000/client_token')
         .then(res => res.json())
         .then(data => {
           if (data.clientToken) {
