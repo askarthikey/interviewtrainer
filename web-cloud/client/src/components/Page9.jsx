@@ -1,23 +1,73 @@
-import { useState } from "react";
-import { Camera, Mic } from "lucide-react";
+import { useState, useRef } from "react";
 
 export default function Page9() {
   const [role, setRole] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [allowAccess, setAllowAccess] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [recorder, setRecorder] = useState(null);
+  const [stream, setStream] = useState(null);
 
+  const videoRef = useRef(null);
   const isReady = role && difficulty && allowAccess && agreeTerms;
 
+  const startRecording = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      setStream(mediaStream);
+      if (videoRef.current) videoRef.current.srcObject = mediaStream;
+
+      const mediaRecorder = new MediaRecorder(mediaStream);
+      let chunks = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(chunks, { type: "video/webm" });
+        const formData = new FormData();
+        formData.append("file", blob, "interview.webm");
+        formData.append("role", role);           // add role
+        formData.append("difficulty", difficulty); // add difficulty
+
+        await fetch("http://localhost:5000/api/recordings", {
+          method: "POST",
+          body: formData,
+        });
+
+        chunks = [];
+        mediaStream.getTracks().forEach((track) => track.stop());
+        setStream(null);
+        alert("Recording uploaded successfully!");
+      };
+
+      mediaRecorder.start();
+      setRecorder(mediaRecorder);
+    } catch (err) {
+      console.error("Error starting recording:", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (recorder) {
+      recorder.stop();
+      setRecorder(null);
+    }
+  };
+
   return (
-    <main className="max-w-3xl mx-auto p-6 space-y-6">
+    <main className="max-w-3xl mx-auto p-6 space-y-6 font-sans">
       <h1 className="text-3xl font-bold text-center">Take The Interview</h1>
 
-      {/* Select Role */}
-      <div className="bg-white/10 border border-gray-600 rounded-lg p-4">
+      {/* Role */}
+      <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
         <label className="block font-semibold mb-2">Select Role</label>
         <select
-          className="w-full p-2 rounded border border-gray-500 bg-gray-900 text-white"
+          className="w-full p-2 rounded border border-gray-400"
           value={role}
           onChange={(e) => setRole(e.target.value)}
         >
@@ -29,11 +79,11 @@ export default function Page9() {
         </select>
       </div>
 
-      {/* Select Difficulty */}
-      <div className="bg-white/10 border border-gray-600 rounded-lg p-4">
+      {/* Difficulty */}
+      <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
         <label className="block font-semibold mb-2">Select Difficulty</label>
         <select
-          className="w-full p-2 rounded border border-gray-500 bg-gray-900 text-white"
+          className="w-full p-2 rounded border border-gray-400"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value)}
         >
@@ -45,14 +95,14 @@ export default function Page9() {
       </div>
 
       {/* Checkboxes */}
-      <div className="bg-white/10 border border-gray-600 rounded-lg p-4 space-y-2">
+      <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 space-y-2">
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={allowAccess}
             onChange={(e) => setAllowAccess(e.target.checked)}
           />
-          Allowing the application to control Camera and Microphone
+          Allow Camera & Microphone
         </label>
 
         <label className="flex items-center gap-2">
@@ -65,37 +115,41 @@ export default function Page9() {
         </label>
       </div>
 
-      {/* Compatibility Check */}
-      <div className="bg-white/10 border border-gray-600 rounded-lg p-4 text-center">
-        <h3 className="text-lg font-semibold mb-3">Compatibility Check</h3>
-        <div className="border-2 border-dashed border-gray-500 rounded-lg h-40 flex flex-col items-center justify-center text-gray-400 mb-4 gap-2">
-          <div className="flex items-center gap-2">
-            <Camera className="w-6 h-6" /> Camera Preview
-          </div>
-          <div className="flex items-center gap-2">
-            <Mic className="w-6 h-6" /> Microphone Preview
-          </div>
+      {/* Video Preview */}
+      {stream && (
+        <div className="border-2 border-dashed border-gray-400 rounded-lg h-60 flex items-center justify-center">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="w-full h-full object-cover rounded"
+          />
         </div>
-        <p className="bg-green-100 text-green-700 border border-green-400 rounded p-2 mb-2">
-          ✅ Camera is working fine
-        </p>
-        <p className="bg-red-100 text-red-700 border border-red-400 rounded p-2">
-          ❌ Microphone isn’t working properly
-        </p>
-      </div>
+      )}
 
       {/* Buttons */}
       <div className="flex justify-center gap-4">
-        <button
-          disabled={!isReady}
-          className={`px-4 py-2 font-semibold rounded text-white ${
-            !isReady
-              ? "bg-gray-500 cursor-not-allowed"
-              : "bg-indigo-600 hover:bg-indigo-700"
-          }`}
-        >
-          Start Interview
-        </button>
+        {!recorder ? (
+          <button
+            disabled={!isReady}
+            onClick={startRecording}
+            className={`px-4 py-2 font-semibold rounded text-white ${
+              !isReady
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
+          >
+            Start Interview
+          </button>
+        ) : (
+          <button
+            onClick={stopRecording}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded"
+          >
+            End Interview
+          </button>
+        )}
         <button className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded">
           Cancel
         </button>
