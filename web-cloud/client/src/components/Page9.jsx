@@ -91,6 +91,7 @@ export default function Page9() {
         }
       } catch (err) {
         // ignore fullscreen errors
+        console.warn("Fullscreen request failed:", err);
       }
 
       const mediaRecorder = new MediaRecorder(mediaStream, { mimeType: "video/webm" });
