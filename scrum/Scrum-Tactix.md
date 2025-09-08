@@ -109,7 +109,6 @@
 * TL score (0-100) : 100
 
 
-* # Scrum Notes  
 **30 August, 2025**
 
 ### Nirup - NirupRedd  
