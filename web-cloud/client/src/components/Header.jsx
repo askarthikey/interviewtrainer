@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, user } = useAuth();
+
+  const avatarUrl = user?.imageUrl || '/default-avatar.png'; // fallback for email/password users
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/60">
@@ -30,95 +32,70 @@ function Header() {
           </div>
           
           {/* Auth Buttons / User Menu */}
-          <div className="flex items-center space-x-2">{/* No margin or max-width constraints */}
+          <div className="flex items-center space-x-2">
             {isSignedIn ? (
               <div className="flex items-center space-x-3">
-                <Link 
-                  to="/dashboard" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/dashboard" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Dashboard
                 </Link>
-                <Link 
-                  to="/speech" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/speech" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Speech
                 </Link>
-                <Link 
-                  to="/code" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/code" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Code
                 </Link>
-                <Link 
-                  to="/page9" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/page9" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Page9
                 </Link>
-                <Link 
-                  to="/interview-report" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/interview-report" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   InterviewReport
                 </Link>
-                <Link 
-                  to="/recordings" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/recordings" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Recordings
                 </Link>
-                <Link 
-                  to="/pricing" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/pricing" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Pricing
                 </Link>
-                <Link 
-                  to="/profile" 
-                  className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block"
-                >
+                <Link to="/profile" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Profile
                 </Link>
                 <div className="w-8 h-8">
-                  <UserButton 
-                    appearance={{
-                      elements: {
-                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-gray-300 transition-all",
-                        userButtonPopoverCard: "shadow-2xl border border-gray-200 rounded-xl backdrop-blur-sm",
-                        userButtonPopoverActionButton: "hover:bg-gray-50 transition-colors"
-                      }
-                    }}
-                  />
+                  <UserButton
+                        appearance={{
+                          elements: {
+                            avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-gray-300 transition-all",
+                            userButtonPopoverCard: "shadow-2xl border border-gray-200 rounded-xl backdrop-blur-sm",
+                            userButtonPopoverActionButton: "hover:bg-gray-50 transition-colors"
+                          }
+                        }}
+                        userProfile={{
+                          imageUrl: avatarUrl,
+                          firstName: user?.firstName || 'User',
+                          lastName: user?.lastName || ''
+                        }}
+                      />
                 </div>
               </div>
             ) : (
               <>
-                <Link 
-                  to="/signin" 
-                  className="text-gray-600 hover:text-black transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-50"
-                >
+                <Link to="/signin" className="text-gray-600 hover:text-black transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-50">
                   Sign in
                 </Link>
-                <Link 
-                  to="/signup" 
-                  className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                >
+                <Link to="/signup" className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                   Get Started
                 </Link>
               </>
             )}
             
             {/* Mobile Menu Button */}
-            <button 
+            <button
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <svg 
-                className={`w-6 h-6 transition-transform duration-300 ${isMenuOpen ? 'rotate-90' : ''}`} 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className={`w-6 h-6 transition-transform duration-300 ${isMenuOpen ? 'rotate-90' : ''}`}
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 {isMenuOpen ? (
@@ -132,29 +109,18 @@ function Header() {
         </div>
         
         {/* Mobile Navigation Menu */}
-        <div className={`md:hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        } overflow-hidden`}>
-          <div className="py-4 space-y-4 border-t border-gray-200/60 bg-white/90 backdrop-blur-sm rounded-b-xl">        
+        <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+          <div className="py-4 space-y-4 border-t border-gray-200/60 bg-white/90 backdrop-blur-sm rounded-b-xl">
             {isSignedIn ? (
-              <Link 
-                to="/dashboard" 
-                className="block px-4 py-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
-              >
+              <Link to="/dashboard" className="block px-4 py-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium">
                 Dashboard
               </Link>
             ) : (
               <div className="px-4 pt-4 space-y-3 border-t border-gray-200">
-                <Link 
-                  to="/signin" 
-                  className="block w-full text-center py-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
-                >
+                <Link to="/signin" className="block w-full text-center py-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium">
                   Sign in
                 </Link>
-                <Link 
-                  to="/signup" 
-                  className="block w-full text-center py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all font-semibold"
-                >
+                <Link to="/signup" className="block w-full text-center py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all font-semibold">
                   Get Started
                 </Link>
               </div>
