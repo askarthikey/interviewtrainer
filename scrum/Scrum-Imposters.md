@@ -95,3 +95,50 @@
 - Assigned Issues: [#82](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/82)
                    [#84](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/84)
 - TL score : 100
+
+
+# Scrum Notes  
+## 30 Aug 2025 
+
+### Praneeth  
+- Done: Server set up, updated the profile form, and added more fields for user profile updates. Created MongoDB and connected to MongoDB.  
+- created cloud DB for easy storage and centralized access.
+- Next Task: need to check the Data base writing for any errors.
+- Assigned Issues: [#114](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/114)  
+- TL score : 
+
+### Vinay  
+- Done: Configured the project with EAS Build for deployment. Generated the signed Android build and successfully deployed it to the Google Play Console (Internal Testing Track). Obtained and shared the tester link for team testing.  
+- Next Task: Monitor tester feedback and check for any required fixes or improvements. If code changes are made, rebuild and redeploy the updated version to the Play Store.  
+- Assigned Issues: [#119](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/119)  
+- TL score : 100  
+
+### Mahesh  
+- Done: Server setup, user model, and user updation to DB. Pushed to GitHub.  
+- Next Task: Check any fixes or errors in the server. If code changes are made, pull and push updates to GitHub.  
+- Assigned Issues: [#115](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/115)  
+- TL score : 100  
+
+### Anish  
+- Done: Created the Android build and deployed it into Google Play Console. Shared tester links with the team for testing.  
+- Next Task: Monitor tester feedback and update the app when changes are required.  
+- Assigned Issues: [#120](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/120)  
+- TL score : 100  
+
+### Sri Vidya  
+- Done: Configured the project with EAS Build for deployment. Generated the signed Android build and successfully deployed it to the Google Play Console (Internal Testing Track). Obtained and shared the tester link for team testing.  
+- Next Task: If any code changes are made, rebuild and redeploy the updated version to the Play Store.  
+- Assigned Issues: [#117](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/117)  
+- TL score : 100  
+
+### Ganesh  
+- Done: Reviewed the current “View Results” page, redesigned and integrated it with dynamic content from the API.  
+- Next Task: Improve the design with charts/graphs for better visualization and test the dynamic data.  
+- Assigned Issues: [#118](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/118)  
+- TL score : 100    
+
+### Mallikarjuna  
+- Done: Server setup, User model, and user updation to DB. Pushed to GitHub. Styling completed for a few pages.
+- Next Task: Update the About Us page and create a Contact Us page. Store the message in the DB and send it to the mail.
+- Assigned Issues: [#116](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/116)  
+- TL score : 100  
