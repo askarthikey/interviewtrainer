@@ -109,7 +109,7 @@
 * TL score (0-100) : 100
 
 
-**30 August, 2025**
+## 30 August, 2025 
 
 ### Nirup - NirupRedd  
 * **Completed task:** Run and test local setup for desktop -2  
