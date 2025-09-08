@@ -106,4 +106,58 @@
 * Newly assigned task: Analyze survey results -2
 * Issue id: [https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/92](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/92)  
  
-* TL score (0-100) : 100  
+* TL score (0-100) : 100
+
+
+* # Scrum Notes  
+**30 August, 2025**
+
+### Nirup - NirupRedd  
+* **Completed task:** Run and test local setup for desktop -2  
+  * Issue id: #91  
+* **Newly assigned task:** Create product level status report  
+  * Issue id: #135  
+* **TL score (0-100):** 100  
+
+### B Pranav Reddy - pranavbusireddy  
+* **Completed task:** Analyze survey results  
+  * Issue id: #86  
+* **Newly assigned task:** Make a project cost plan  
+  * Issue id: #137  
+* **TL score (0-100):** 100  
+
+### Raja - rajachanda  
+* **Completed task:** Run and test local setup for desktop -2  
+  * Issue id: #88  
+* **Newly assigned task:** Create burn down chart 2  
+  * Issue id: #134  
+* **TL score (0-100):** 100  
+
+### Koushik Teja - KoushikTeja12  
+* **Completed task:** Run and test local setup for desktop -1  
+  * Issue id: #87  
+* **Newly assigned task:** Make a project cost plan-2  
+  * Issue id: #138  
+* **TL score (0-100):** 100  
+
+### Bharath - Cleancode16  
+* **Completed task:** Run and test local setup for mobile-1  
+  * Issue id: #90  
+* **Newly assigned task:** Identify and surface up risks in delivery-2  
+  * Issue id: #136  
+* **TL score (0-100):** 100  
+
+### Vaishnavi - nvaishnavisriyaa  
+* **Completed task:** Analyze survey results -2  
+  * Issue id: #92  
+* **Newly assigned task:** Create product level status report  
+  * Issue id: #139  
+* **TL score (0-100):** 100  
+
+### Zaid Shah - zaids06  
+* **Completed task:** Cross Team Meeting   
+  * Issue id: #85
+* **Newly assigned task:** Create burn down chart  
+  * Issue id: #133  
+
+
