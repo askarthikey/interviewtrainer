@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 
+// Get API URL from environment or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function Page9() {
   const [role, setRole] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -110,7 +113,7 @@ export default function Page9() {
           formData.append("difficulty", difficulty);
 
           // upload
-          await fetch("http://localhost:5000/api/recordings", {
+          await fetch(`${API_BASE_URL}/api/recordings`, {
             method: "POST",
             body: formData,
           });

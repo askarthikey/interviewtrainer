@@ -3,6 +3,9 @@ const router = express.Router();
 const braintree = require('braintree');
 require('dotenv').config();
 
+// Get client URL from environment or fallback to localhost
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+
 const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
@@ -69,8 +72,8 @@ router.post('/hosted_checkout', (req, res) => {
       options: {
         submitForSettlement: true,
         paypal: {
-          successUrl: 'http://localhost:4000/success',
-          cancelUrl: 'http://localhost:4000/cancel',
+          successUrl: `${CLIENT_URL}/success`,
+          cancelUrl: `${CLIENT_URL}/cancel`,
         }
       }
     }, (err, result) => {

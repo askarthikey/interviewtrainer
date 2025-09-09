@@ -11,6 +11,7 @@ const multer = require("multer");
 const { createAuthFunctions, generateToken, verifyToken } = require("./auth");
 const { initPassport } = require("./oauth");
 const { upload, transcribeAudio, transcribeStream } = require("./whisper");
+const codeExecutorRoutes = require("./routes/codeExecutor");
 
 require("dotenv").config();
 
@@ -73,6 +74,9 @@ const authenticateToken = async (req, res, next) => {
 // Payments
 const paymentRoutes = require("./Models/Payments");
 app.use(paymentRoutes);
+
+// Code Executor
+app.use("/api", codeExecutorRoutes);
 
 // Auth
 app.post("/api/auth/signup", (req, res) => authFunctions.signUp(req, res));
