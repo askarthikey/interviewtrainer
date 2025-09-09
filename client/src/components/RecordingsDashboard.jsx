@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 
+// Get API URL from environment or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function RecordingsDashboard() {
   const [recordings, setRecordings] = useState([]);
   const [filter, setFilter] = useState("all");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/recordings")
+    fetch(`${API_BASE_URL}/api/recordings`)
       .then((res) => res.json())
       .then((data) => {
         // Keep only recordings with a valid path
@@ -90,7 +93,7 @@ export default function RecordingsDashboard() {
               >
                 <PlayCircle className="absolute w-16 h-16 text-white opacity-80 group-hover:opacity-100 transition duration-300 cursor-pointer" />
                 <video
-                  src={`http://localhost:5000${rec.path}`}
+                  src={`${API_BASE_URL}${rec.path}`}
                   controls
                   className="w-full h-full object-cover"
                   onError={(e) => {

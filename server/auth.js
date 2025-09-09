@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'askarthikey';
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -135,20 +135,33 @@ const createAuthFunctions = (db) => {
     try {
       const token = req.headers.authorization?.replace('Bearer ', '');
       
+      console.log('Token validation attempt:', {
+        hasToken: !!token,
+        tokenStart: token ? token.substring(0, 10) + '...' : 'none',
+        headers: req.headers.authorization ? 'present' : 'missing'
+      });
+      
       if (!token) {
+        console.log('Validation failed: No token provided');
         return res.status(401).json({ message: 'No token provided' });
       }
 
       const decoded = verifyToken(token);
       if (!decoded) {
+        console.log('Validation failed: Invalid token');
         return res.status(401).json({ message: 'Invalid token' });
       }
+
+      console.log('Token decoded successfully for user:', decoded.userId);
 
       // Find user
       const user = await db.collection('users').findOne({ _id: new ObjectId(decoded.userId) });
       if (!user) {
+        console.log('Validation failed: User not found for ID:', decoded.userId);
         return res.status(401).json({ message: 'User not found' });
       }
+
+      console.log('User found and validated:', user.email);
 
       // Return user data (without password)
       const { password: _, ...userWithoutPassword } = user;
@@ -156,7 +169,7 @@ const createAuthFunctions = (db) => {
       res.json(userWithoutPassword);
     } catch (error) {
       console.error('Token validation error:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      res.status(500).json({ message: 'Internal server error', error: error.message });
     }
   };
 
