@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth } from './hooks/useAuth.jsx';
 import RootLayout from './components/RootLayout';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
@@ -19,6 +19,8 @@ import InterviewReport from './components/InterviewReport.jsx';
 import RecordingsDashboard from './components/RecordingsDashboard.jsx';
 import ContactUs from './components/ContactUs.jsx';
 import AboutUs from './components/AboutUs.jsx';
+import OAuthCallback from './components/OAuthCallback.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 // Component to handle conditional redirect based on auth state
 const HomeRedirect = () => {
@@ -39,22 +41,25 @@ function App() {
             <Route path="/" element={<RootLayout />}>
               <Route index element={<HomeRedirect />} />
               <Route path="signin" element={<Signin />} />
-              <Route path="speech" element={<SpeechToTextDis />} />
-              <Route path="/page7" element={<Page7 />} />
-              <Route path="/page9" element={<Page9 />} />
-              <Route path="dashboard" element={<Dashboard/>} />
-              <Route path="code" element={<CodeEditor/>} />
               <Route path="signup" element={<Signup />} />
               <Route path="pricing" element={<PricingPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="practice" element={<PracticeSection />} />
-              <Route path="session" element={<Session />} />
-              <Route path="interview-report" element={<InterviewReport />} />
-              <Route path="recordings" element={<RecordingsDashboard />} />
-              <Route path="profile-redirect" element={<ProfileRedirect />} />
-              <Route path="resume-analyzer" element={<ResumeAnalyzer />} />
               <Route path="contactus" element={<ContactUs />} />
               <Route path="aboutus" element={<AboutUs />} />
+              <Route path="auth/callback" element={<OAuthCallback />} />
+              
+              {/* Protected Routes */}
+              <Route path="dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+              <Route path="speech" element={<ProtectedRoute><SpeechToTextDis /></ProtectedRoute>} />
+              <Route path="code" element={<ProtectedRoute><CodeEditor/></ProtectedRoute>} />
+              <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="practice" element={<ProtectedRoute><PracticeSection /></ProtectedRoute>} />
+              <Route path="session" element={<ProtectedRoute><Session /></ProtectedRoute>} />
+              <Route path="interview-report" element={<ProtectedRoute><InterviewReport /></ProtectedRoute>} />
+              <Route path="recordings" element={<ProtectedRoute><RecordingsDashboard /></ProtectedRoute>} />
+              <Route path="profile-redirect" element={<ProtectedRoute><ProfileRedirect /></ProtectedRoute>} />
+              <Route path="resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
+              <Route path="/page7" element={<ProtectedRoute><Page7 /></ProtectedRoute>} />
+              <Route path="/page9" element={<ProtectedRoute><Page9 /></ProtectedRoute>} />
             </Route>
           </Routes>
         </div>

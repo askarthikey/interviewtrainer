@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Design - Web & Cloud
 
 ## Tech stack Dev setup
@@ -240,3 +241,6 @@ TODO(Karthik-Kondaveeti): Fill this section based on your analysis.
 🎯 *Design:*
 - Store encrypted videos (e.g., *AES256* in S3 bucket)
 - Control access via signed URLs with expiry
+=======
+<img width="1747" height="791" alt="image" src="https://github.com/user-attachments/assets/c58bcfcc-a044-4dc5-ab93-7efc992598c1" />
+>>>>>>> 0c67d1a9d41d0400914115a4a15203b73249663f
