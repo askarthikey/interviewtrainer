@@ -166,7 +166,7 @@ Update your frontend environment variable to point to your new Render URL:
 
 **In `/client/.env`:**
 ```env
-VITE_API_URL=https://your-service-name.onrender.com
+VITE_API_URL=https://interviewtrainerv2.onrender.com
 ```
 
 ## Troubleshooting
