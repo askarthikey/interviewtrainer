@@ -41,6 +41,15 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem("user_data", JSON.stringify(userData));
           setIsSignedIn(true);
         } else {
+          // Log the error for debugging
+          const errorText = await response.text();
+          console.error("Auth validation failed:", {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorText,
+            apiUrl: `${API_BASE_URL}/api/auth/validate`
+          });
+          
           localStorage.removeItem("auth_token");
           localStorage.removeItem("user_data");
           setUser(null);
