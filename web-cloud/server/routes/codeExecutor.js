@@ -3,13 +3,10 @@ const { spawn } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
-const cors = require('cors');
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+const router = express.Router();
 
-const TEMP_DIR = path.join(__dirname, 'temp');
+const TEMP_DIR = path.join(__dirname, '../temp');
 
 // Ensure temp directory exists
 async function ensureTempDir() {
@@ -235,16 +232,16 @@ async function executeCpp(code) {
   }
 }
 
-// Execute Node.js (JavaScript/TypeScript)
+// Execute Node.js code (JavaScript/TypeScript)
 async function executeNode(code, language) {
   const tempId = crypto.randomBytes(16).toString('hex');
-  const extension = language === 'typescript' ? 'ts' : 'js';
+  const extension = language.toLowerCase() === 'typescript' ? 'ts' : 'js';
   const filePath = path.join(TEMP_DIR, `${tempId}.${extension}`);
   
   try {
     await fs.writeFile(filePath, code);
     
-    const command = language === 'typescript' ? 'ts-node' : 'node';
+    const command = language.toLowerCase() === 'typescript' ? 'ts-node' : 'node';
     
     return new Promise((resolve) => {
       const process = spawn(command, [filePath], { timeout: 10000 });
@@ -309,7 +306,7 @@ async function cleanup(files) {
 }
 
 // API endpoint
-app.post('/api/execute', async (req, res) => {
+router.post('/execute', async (req, res) => {
   const { code, language } = req.body;
   
   if (!code || !language) {
@@ -326,16 +323,35 @@ app.post('/api/execute', async (req, res) => {
       case 'python':
         result = await executePython(code);
         break;
+      case 'javascript':
+        result = await executeNode(code, language);
+        break;
       case 'java':
-        result = await executeJava(code);
+        try {
+          result = await executeJava(code);
+        } catch (error) {
+          result = {
+            success: false,
+            output: 'Java compiler not available on this server. Try JavaScript or Python instead.'
+          };
+        }
         break;
       case 'cpp':
       case 'c++':
-        result = await executeCpp(code);
+        try {
+          result = await executeCpp(code);
+        } catch (error) {
+          result = {
+            success: false,
+            output: 'C++ compiler not available on this server. Try JavaScript or Python instead.'
+          };
+        }
         break;
-      case 'javascript':
       case 'typescript':
-        result = await executeNode(code, language);
+        result = {
+          success: false,
+          output: 'TypeScript not available. Try JavaScript instead.'
+        };
         break;
       default:
         result = {
@@ -353,9 +369,4 @@ app.post('/api/execute', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Code execution server running on port ${PORT}`);
-});
-
-module.exports = app;
+module.exports = router;

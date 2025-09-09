@@ -11,10 +11,16 @@ const multer = require("multer");
 const { createAuthFunctions, generateToken, verifyToken } = require("./auth");
 const { initPassport } = require("./oauth");
 const { upload, transcribeAudio, transcribeStream } = require("./whisper");
+const codeExecutorRoutes = require("./routes/codeExecutor");
 
 require("dotenv").config();
 
 const app = express();
+
+// Trust proxy for HTTPS detection in production
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 // ===== Middleware =====
 app.use(cors({}));
@@ -25,7 +31,11 @@ app.use(
     secret: process.env.SESSION_SECRET || "your-session-secret-change-this",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // set true in production
+    cookie: { 
+      secure: process.env.NODE_ENV === 'production', // use secure cookies in production
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    },
   })
 );
 app.use(passport.initialize());
@@ -70,9 +80,21 @@ const authenticateToken = async (req, res, next) => {
 
 // ====== Routes ======
 
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Payments
 const paymentRoutes = require("./Models/Payments");
 app.use(paymentRoutes);
+
+// Code Executor
+app.use("/api", codeExecutorRoutes);
 
 // Auth
 app.post("/api/auth/signup", (req, res) => authFunctions.signUp(req, res));
@@ -82,20 +104,47 @@ app.get("/api/auth/validate", (req, res) => authFunctions.validateToken(req, res
 // OAuth (Google / GitHub)
 app.get("/api/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 app.get("/api/auth/callback/google",
-  passport.authenticate("google", { failureRedirect: "/signin" }),
+  passport.authenticate("google", { 
+    failureRedirect: `${process.env.CLIENT_URL || "http://localhost:5173"}/auth/callback?error=google_auth_failed`
+  }),
   (req, res) => {
-    const token = generateToken(req.user._id);
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-    res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+    try {
+      if (!req.user) {
+        const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+        return res.redirect(`${clientUrl}/auth/callback?error=no_user_data`);
+      }
+      
+      const token = generateToken(req.user._id);
+      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+    } catch (error) {
+      console.error('Google OAuth callback error:', error);
+      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      res.redirect(`${clientUrl}/auth/callback?error=server_error`);
+    }
   }
 );
+
 app.get("/api/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
 app.get("/api/auth/callback/github",
-  passport.authenticate("github", { failureRedirect: "/signin" }),
+  passport.authenticate("github", { 
+    failureRedirect: `${process.env.CLIENT_URL || "http://localhost:5173"}/auth/callback?error=github_auth_failed`
+  }),
   (req, res) => {
-    const token = generateToken(req.user._id);
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-    res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+    try {
+      if (!req.user) {
+        const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+        return res.redirect(`${clientUrl}/auth/callback?error=no_user_data`);
+      }
+      
+      const token = generateToken(req.user._id);
+      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+    } catch (error) {
+      console.error('GitHub OAuth callback error:', error);
+      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      res.redirect(`${clientUrl}/auth/callback?error=server_error`);
+    }
   }
 );
 

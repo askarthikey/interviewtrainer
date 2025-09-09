@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import dropin from 'braintree-web-drop-in';
 
+// Get API URL from environment or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function Pricing() {
   const [expandedFaq, setExpandedFaq] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -43,7 +46,7 @@ function Pricing() {
 
   useEffect(() => {
     if (showPaymentModal) {
-      fetch('http://localhost:5000/client_token')
+      fetch(`${API_BASE_URL}/client_token`)
         .then(res => res.json())
         .then(data => {
           if (data.clientToken) {
@@ -91,7 +94,7 @@ function Pricing() {
         return;
       }
 
-      fetch('http://localhost:5000/subscribe', {
+      fetch(`${API_BASE_URL}/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
