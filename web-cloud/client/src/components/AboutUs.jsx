@@ -1,67 +1,124 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const AboutUs = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollContainerRef = useRef(null);
+  
+  // State for API data
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [companyData, setCompanyData] = useState(null);
+  const [visionMissionData, setVisionMissionData] = useState(null);
+  const [contactData, setContactData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const teamMembers = [
-    {
-      name: "Alex Chen",
-      role: "Co-Founder & CEO",
-      image: "AC",
-      description: "Former Google engineer with 8+ years in AI/ML. Led teams at top tech companies.",
-      linkedin: "#",
-      twitter: "#"
-    },
-    {
-      name: "Sarah Johnson",
-      role: "Co-Founder & CTO", 
-      image: "SJ",
-      description: "AI researcher and Stanford PhD. Expert in natural language processing.",
-      linkedin: "#",
-      twitter: "#"
-    },
-    {
-      name: "Michael Park",
-      role: "Head of Product",
-      image: "MP", 
-      description: "Product leader from Meta with deep experience in user-centric design.",
-      linkedin: "#",
-      twitter: "#"
-    },
-    {
-      name: "Emily Davis",
-      role: "Lead Engineer",
-      image: "ED",
-      description: "Full-stack engineer passionate about creating seamless user experiences.",
-      linkedin: "#",
-      twitter: "#"
-    },
-    {
-      name: "David Wilson",
-      role: "Data Scientist",
-      image: "DW",
-      description: "ML engineer specializing in speech recognition and behavioral analysis.",
-      linkedin: "#",
-      twitter: "#"
-    },
-    {
-      name: "Jessica Lee",
-      role: "UX Designer",
-      image: "JL",
-      description: "Creative designer focused on crafting intuitive and engaging user interfaces.",
-      linkedin: "#",
-      twitter: "#"
-    },
-    {
-      name: "Robert Kim",
-      role: "Backend Engineer",
-      image: "RK",
-      description: "Systems architect with expertise in scalable infrastructure and APIs.",
-      linkedin: "#",
-      twitter: "#"
-    }
-  ];
+  // API base URL - Force to use port 3001 where our server is running
+  const API_BASE_URL = 'http://localhost:3001';
+
+  // Fetch data from backend
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Fetch all data in parallel
+        const [teamResponse, companyResponse, visionMissionResponse, contactResponse] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/about/team`),
+          fetch(`${API_BASE_URL}/api/about/company`),
+          fetch(`${API_BASE_URL}/api/about/vision-mission`),
+          fetch(`${API_BASE_URL}/api/about/contact`)
+        ]);
+
+        // Check if all requests were successful
+        if (!teamResponse.ok || !companyResponse.ok || !visionMissionResponse.ok || !contactResponse.ok) {
+          throw new Error('Failed to fetch data from server');
+        }
+
+        // Parse responses
+        const [teamData, companyDataResult, visionMissionDataResult, contactDataResult] = await Promise.all([
+          teamResponse.json(),
+          companyResponse.json(),
+          visionMissionResponse.json(),
+          contactResponse.json()
+        ]);
+
+        // Set state with fetched data
+        setTeamMembers(teamData.data || []);
+        setCompanyData(companyDataResult.data || null);
+        setVisionMissionData(visionMissionDataResult.data || null);
+        setContactData(contactDataResult.data || null);
+
+      } catch (err) {
+        console.error('Error fetching about data:', err);
+        setError(err.message);
+        
+        // Fallback to hardcoded data if API fails
+        setTeamMembers([
+          {
+            name: "Alex Chen",
+            role: "Co-Founder & CEO",
+            image: "AC",
+            description: "Former Google engineer with 8+ years in AI/ML. Led teams at top tech companies.",
+            linkedin: "#",
+            twitter: "#"
+          },
+          {
+            name: "Sarah Johnson",
+            role: "Co-Founder & CTO", 
+            image: "SJ",
+            description: "AI researcher and Stanford PhD. Expert in natural language processing.",
+            linkedin: "#",
+            twitter: "#"
+          },
+          {
+            name: "Michael Park",
+            role: "Head of Product",
+            image: "MP", 
+            description: "Product leader from Meta with deep experience in user-centric design.",
+            linkedin: "#",
+            twitter: "#"
+          },
+          {
+            name: "Emily Davis",
+            role: "Lead Engineer",
+            image: "ED",
+            description: "Full-stack engineer passionate about creating seamless user experiences.",
+            linkedin: "#",
+            twitter: "#"
+          },
+          {
+            name: "David Wilson",
+            role: "Data Scientist",
+            image: "DW",
+            description: "ML engineer specializing in speech recognition and behavioral analysis.",
+            linkedin: "#",
+            twitter: "#"
+          },
+          {
+            name: "Jessica Lee",
+            role: "UX Designer",
+            image: "JL",
+            description: "Creative designer focused on crafting intuitive and engaging user interfaces.",
+            linkedin: "#",
+            twitter: "#"
+          },
+          {
+            name: "Robert Kim",
+            role: "Backend Engineer",
+            image: "RK",
+            description: "Systems architect with expertise in scalable infrastructure and APIs.",
+            linkedin: "#",
+            twitter: "#"
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAboutData();
+  }, [API_BASE_URL]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -91,37 +148,71 @@ const AboutUs = () => {
           {/* Company Description */}
           <div className="bg-white rounded-2xl border border-gray-200 p-8 md:p-12 shadow-sm">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-black mb-6">Our Story</h2>
+              <h2 className="text-3xl font-bold text-black mb-6">
+                {companyData?.story?.title || "Our Story"}
+              </h2>
               <div className="space-y-4 text-gray-700 leading-relaxed">
-                <p>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem 
-                  Ipsum has been the industry's standard dummy text ever since the 1500s, My five 
-                  centuries but also the leap into electronic typesetting.
-                </p>
-                <p>
-                  It has survived not only five centuries but also the leap into electronic typesetting, 
-                  remaining essentially unchanged. It was popularised in the 1960s with the release of 
-                  Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
-                  publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                </p>
-                <p>
-                  Our platform combines advanced AI with proven interview techniques to provide 
-                  personalized feedback and practice opportunities that actually work.
-                </p>
+                {loading ? (
+                  <div className="space-y-4">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                  </div>
+                ) : (
+                  companyData?.story?.paragraphs?.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  )) || (
+                    <>
+                      <p>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem 
+                        Ipsum has been the industry's standard dummy text ever since the 1500s, My five 
+                        centuries but also the leap into electronic typesetting.
+                      </p>
+                      <p>
+                        It has survived not only five centuries but also the leap into electronic typesetting, 
+                        remaining essentially unchanged. It was popularised in the 1960s with the release of 
+                        Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
+                        publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                      </p>
+                      <p>
+                        Our platform combines advanced AI with proven interview techniques to provide 
+                        personalized feedback and practice opportunities that actually work.
+                      </p>
+                    </>
+                  )
+                )}
               </div>
               
               {/* Stats */}
               <div className="grid grid-cols-3 gap-6 mt-8 pt-8 border-t border-gray-200">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-black mb-1">15K+</div>
+                  <div className="text-3xl font-bold text-black mb-1">
+                    {loading ? (
+                      <div className="h-8 bg-gray-200 rounded animate-pulse mx-auto w-16"></div>
+                    ) : (
+                      companyData?.stats?.successStories || "15K+"
+                    )}
+                  </div>
                   <div className="text-sm text-gray-600 font-medium">Success Stories</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-black mb-1">98%</div>
+                  <div className="text-3xl font-bold text-black mb-1">
+                    {loading ? (
+                      <div className="h-8 bg-gray-200 rounded animate-pulse mx-auto w-12"></div>
+                    ) : (
+                      companyData?.stats?.successRate || "98%"
+                    )}
+                  </div>
                   <div className="text-sm text-gray-600 font-medium">Success Rate</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-black mb-1">4.9★</div>
+                  <div className="text-3xl font-bold text-black mb-1">
+                    {loading ? (
+                      <div className="h-8 bg-gray-200 rounded animate-pulse mx-auto w-16"></div>
+                    ) : (
+                      companyData?.stats?.userRating || "4.9★"
+                    )}
+                  </div>
                   <div className="text-sm text-gray-600 font-medium">User Rating</div>
                 </div>
               </div>
@@ -138,6 +229,13 @@ const AboutUs = () => {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Meet the passionate experts behind InterviewTrainer who are dedicated to your success.
             </p>
+            {error && (
+              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-yellow-800 text-sm">
+                  Unable to load team data from server. Showing cached data.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Horizontal Scrolling Team Cards */}
@@ -177,7 +275,30 @@ const AboutUs = () => {
               className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {teamMembers.map((member, index) => (
+              {loading ? (
+                // Loading skeleton for team cards
+                Array.from({ length: 7 }).map((_, index) => (
+                  <div key={index} className="flex-none w-80">
+                    <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center h-full">
+                      <div className="relative mx-auto mb-4 w-24 h-24">
+                        <div className="w-full h-full bg-gray-200 rounded-2xl animate-pulse"></div>
+                      </div>
+                      <div className="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse mb-3 w-3/4 mx-auto"></div>
+                      <div className="space-y-2 mb-4">
+                        <div className="h-3 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-3 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3 mx-auto"></div>
+                      </div>
+                      <div className="flex justify-center space-x-3">
+                        <div className="w-8 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
+                        <div className="w-8 h-8 bg-gray-200 rounded-lg animate-pulse"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                teamMembers.map((member, index) => (
                 <div key={index} className="flex-none w-80 group">
                   <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center hover:shadow-lg hover:border-gray-300 transition-all duration-300 hover:-translate-y-1 h-full">
                     {/* Profile Image Placeholder */}
@@ -220,7 +341,8 @@ const AboutUs = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* Dots Indicator */}
@@ -264,13 +386,20 @@ const AboutUs = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
                     </div>
-                    Our Vision
+                    {visionMissionData?.vision?.title || "Our Vision"}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem 
-                    Ipsum has been the industry's standard dummy text ever since the 1500s. My five 
-                    centuries but also the leap into electronic typesetting, remaining essentially unchanged.
-                  </p>
+                  {loading ? (
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-700 leading-relaxed">
+                      {visionMissionData?.vision?.description || 
+                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s. My five centuries but also the leap into electronic typesetting, remaining essentially unchanged."}
+                    </p>
+                  )}
                 </div>
                 
                 <div className="bg-white rounded-xl p-6 border border-gray-200">
@@ -280,14 +409,20 @@ const AboutUs = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    Our Mission
+                    {visionMissionData?.mission?.title || "Our Mission"}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    It has survived not only five centuries but also the leap into electronic typesetting, 
-                    remaining essentially unchanged. It was popularised in the 1960s with the release of 
-                    Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
-                    publishing software.
-                  </p>
+                  {loading ? (
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-700 leading-relaxed">
+                      {visionMissionData?.mission?.description || 
+                      "It has survived not only five centuries but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software."}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -332,21 +467,42 @@ const AboutUs = () => {
             </div>
             
             <div className="relative z-10">
-              <h2 className="text-4xl font-bold mb-4">Work with us</h2>
-              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem 
-                Ipsum has been the industry's standard dummy text ever since the 1500s. My five 
-                centuries but also the leap into electronic typesetting.
-              </p>
+              <h2 className="text-4xl font-bold mb-4">
+                {contactData?.title || "Work with us"}
+              </h2>
+              {loading ? (
+                <div className="space-y-2 mb-8 max-w-2xl mx-auto">
+                  <div className="h-6 bg-gray-600 rounded animate-pulse"></div>
+                  <div className="h-6 bg-gray-600 rounded animate-pulse"></div>
+                  <div className="h-6 bg-gray-600 rounded animate-pulse w-3/4 mx-auto"></div>
+                </div>
+              ) : (
+                <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                  {contactData?.description || 
+                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s. My five centuries but also the leap into electronic typesetting."}
+                </p>
+              )}
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                   <p className="text-sm text-gray-300 mb-2">Send your message to our team:</p>
-                  <div className="text-white font-medium">contact@interviewtrainer.ai</div>
+                  <div className="text-white font-medium">
+                    {loading ? (
+                      <div className="h-5 bg-gray-600 rounded animate-pulse w-48"></div>
+                    ) : (
+                      contactData?.email || "contact@interviewtrainer.ai"
+                    )}
+                  </div>
                 </div>
                 
-                <button className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
-                  Email to Us
+                <button 
+                  className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
+                  onClick={() => {
+                    const email = contactData?.email || "contact@interviewtrainer.ai";
+                    window.location.href = `mailto:${email}`;
+                  }}
+                >
+                  {contactData?.ctaText || "Email to Us"}
                 </button>
               </div>
             </div>
@@ -355,7 +511,7 @@ const AboutUs = () => {
       </section>
 
       {/* CSS for hiding scrollbar */}
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;

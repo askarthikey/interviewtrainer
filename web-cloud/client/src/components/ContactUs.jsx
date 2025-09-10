@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ContactUs = () => {
   const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
@@ -9,29 +9,65 @@ const ContactUs = () => {
     phoneNumber: '',
     message: ''
   });
+  const [useCases, setUseCases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [error, setError] = useState(null);
 
-  const useCases = [
-    {
-      title: "Interview Preparation",
-      description: "Practice with AI-powered mock interviews tailored to your industry and role.",
-      icon: "💼"
-    },
-    {
-      title: "Technical Skills Assessment",
-      description: "Evaluate and improve your technical knowledge with interactive coding challenges.",
-      icon: "⚡"
-    },
-    {
-      title: "Behavioral Question Training",
-      description: "Master the art of storytelling with STAR method coaching and feedback.",
-      icon: "🎯"
-    },
-    {
-      title: "Resume Optimization",
-      description: "Get AI-powered suggestions to make your resume stand out to recruiters.",
-      icon: "📄"
-    }
-  ];
+  // API base URL
+  const API_BASE_URL = 'http://localhost:3001';
+
+  // Fetch use cases from backend
+  useEffect(() => {
+    const fetchUseCases = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`${API_BASE_URL}/api/contact/use-cases`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch use cases');
+        }
+
+        const result = await response.json();
+        setUseCases(result.data || []);
+
+      } catch (err) {
+        console.error('Error fetching use cases:', err);
+        setError(err.message);
+        
+        // Fallback to hardcoded data if API fails
+        setUseCases([
+          {
+            title: "Interview Preparation",
+            description: "Practice with AI-powered mock interviews tailored to your industry and role.",
+            icon: "💼"
+          },
+          {
+            title: "Technical Skills Assessment",
+            description: "Evaluate and improve your technical knowledge with interactive coding challenges.",
+            icon: "⚡"
+          },
+          {
+            title: "Behavioral Question Training",
+            description: "Master the art of storytelling with STAR method coaching and feedback.",
+            icon: "🎯"
+          },
+          {
+            title: "Resume Optimization",
+            description: "Get AI-powered suggestions to make your resume stand out to recruiters.",
+            icon: "📄"
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUseCases();
+  }, [API_BASE_URL]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,11 +77,44 @@ const ContactUs = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission here
-    alert('Thank you for your message! We\'ll get back to you soon.');
+    
+    try {
+      setSubmitting(true);
+      setSubmitMessage('');
+      setError(null);
+
+      const response = await fetch(`${API_BASE_URL}/api/contact/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitMessage('Thank you for your message! We\'ll get back to you soon.');
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phoneNumber: '',
+          message: ''
+        });
+      } else {
+        throw new Error(result.message || 'Failed to submit form');
+      }
+
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError(err.message || 'Failed to submit form. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const scrollCasesLeft = () => {
@@ -63,6 +132,19 @@ const ContactUs = () => {
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
             <h1 className="text-3xl font-bold text-black text-center mb-8">Contact Us</h1>
+            
+            {/* Success/Error Messages */}
+            {submitMessage && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-800 text-center">{submitMessage}</p>
+              </div>
+            )}
+            
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-800 text-center">{error}</p>
+              </div>
+            )}
             
             <div className="space-y-6">
               {/* Name Fields */}
@@ -148,9 +230,17 @@ const ContactUs = () => {
               {/* Submit Button */}
               <button
                 onClick={handleSubmit}
-                className="w-full bg-black text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-300 transform hover:scale-[1.02]"
+                disabled={submitting}
+                className="w-full bg-black text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-300 transform hover:scale-[1.02] disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none"
               >
-                Submit
+                {submitting ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Submitting...
+                  </div>
+                ) : (
+                  'Submit'
+                )}
               </button>
             </div>
           </div>
@@ -161,6 +251,14 @@ const ContactUs = () => {
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-black text-center mb-12">Use cases</h2>
+          
+          {error && (
+            <div className="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-yellow-800 text-center text-sm">
+                Unable to load use cases from server. Showing cached data.
+              </p>
+            </div>
+          )}
           
           {/* Use Cases Carousel */}
           <div className="relative">
@@ -195,7 +293,21 @@ const ContactUs = () => {
 
             {/* Use Cases Container */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {useCases.map((useCase, index) => (
+              {loading ? (
+                // Loading skeleton for use cases
+                Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index} className="bg-white border-2 border-gray-300 rounded-xl p-6 h-64 flex flex-col items-center justify-center text-center">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse mb-3"></div>
+                    <div className="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-3 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3 mx-auto"></div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                useCases.map((useCase, index) => (
                 <div
                   key={index}
                   className={`transition-all duration-500 ${
@@ -213,7 +325,8 @@ const ContactUs = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* Dots Indicator */}
