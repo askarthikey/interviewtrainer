@@ -45,7 +45,7 @@ function Header() {
                   Code
                 </Link>
                 <Link to="/page9" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Page9
+                  Start Interview
                 </Link>
                 <Link to="/interview-report" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   InterviewReport
