@@ -13,7 +13,7 @@ const AboutUs = () => {
   const [error, setError] = useState(null);
 
   // API base URL - Force to use port 3001 where our server is running
-  const API_BASE_URL = 'http://localhost:3001';
+  const API_BASE_URL = 'http://localhost:5000';
 
   // Fetch data from backend
   useEffect(() => {
