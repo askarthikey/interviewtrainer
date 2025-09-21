@@ -220,7 +220,6 @@
 * Added realistic Q&A entries with candidate responses, response times, and evaluation scores.  
 * Cleaned and structured the dataset for consistent analysis and multiple interview simulations.  
 * Issue id: [#130](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/130)  
-* Dataset: [Google Sheet](https://docs.google.com/spreadsheets/d/1JW63qubbyg2e9KJl6Mpus5Ro_pzSuKVgm7v_fFGVNZM/edit?usp=sharing)
 * TL score (0-100): 100
 
 ### Aishwarya | Aishwarya0322
@@ -228,7 +227,6 @@
 * Contributed additional Q&A entries across multiple domains with structured responses and evaluation scores.  
 * Ensured the dataset is suitable for domain-specific analysis and multiple interview simulations.  
 * Issue id: [#131](https://github.com/vnr-ibt-july-2025/interviewtrainer/issues/131)  
-* Dataset: [Google Sheet](https://docs.google.com/spreadsheets/d/1JW63qubbyg2e9KJl6Mpus5Ro_pzSuKVgm7v_fFGVNZM/edit?usp=sharing)
 * TL score (0-100): 100
 
 ### Sri Raksha | SriRaksha30
