@@ -1,4 +1,4 @@
-# 🧩 Complete UI/UX and Functional Test Case Document
+# ✅ Complete UI/UX and Functional Test Case Document
 
 ## 1. General UI/UX Test Cases
 
@@ -30,16 +30,18 @@
 | 8 | Filter by date shows only recordings from selected date | Correct filtered list shown. |
 | 9 | Download recording | Audio file downloads successfully. |
 | 10 | Handle speech recognition failure | Fallback to manual input enabled. |
+| 11 | AI-generated feedback after recording (clarity, tone, fluency) | Feedback section updates accurately after each answer. |
+| 12 | Audio waveform visualization during recording | Real-time waveform reacts to user speech input. |
 
 ### UI/UX
 
 | # | Test Case | Expected Result |
 |---|------------|-----------------|
-| 11 | Card/list layout for recordings visible | Date, time, and duration shown clearly. |
-| 12 | Hover/focus effects on Play/Delete buttons | Visual feedback visible. |
-| 13 | Icons and labels clear (Start, Stop, Reset) | Buttons visually distinct. |
-| 14 | Loading spinner when processing | Spinner visible during save/download. |
-| 15 | Responsive layout for mobile view | Cards stack vertically and text wraps properly. |
+| 13 | Card/list layout for recordings visible | Date, time, and duration shown clearly. |
+| 14 | Hover/focus effects on Play/Delete buttons | Visual feedback visible. |
+| 15 | Icons and labels clear (Start, Stop, Reset) | Buttons visually distinct. |
+| 16 | Loading spinner when processing | Spinner visible during save/download. |
+| 17 | Responsive layout for mobile view | Cards stack vertically and text wraps properly. |
 
 
 ---
@@ -83,6 +85,8 @@
 | 6 | Color coding consistent across charts | Each metric distinct. |
 | 7 | Loading skeleton visible before data loads | Smooth transition from loading to chart. |
 | 8 | Responsive layout for all chart sections | Adjusts on mobile/tablet. |
+| 9 | Sentiment analysis score visible for each answer | Displays correct sentiment label (Positive/Neutral/Negative). |
+| 10 | Download insights report as PDF or CSV | Exports complete data file with charts and metrics intact. |
 
 
 ---
@@ -119,11 +123,11 @@
 | Page | Functional Tests | UI/UX Tests | Total |
 |-------|------------------|--------------|--------|
 | General | 6 | 0 | 6 |
-| Speech/Recording | 10 | 5 | 15 |
+| Speech/Recording | 12 | 5 | 17 |
 | Interview | 7 | 5 | 12 |
-| Insights | 8 | 0 | 8 |
+| Insights | 10 | 0 | 10 |
 | Profile | 9 | 3 | 12 |
-| **Total** | **40** | **13** | **53 ✅** |
+| **Total** | **44** | **13** | **57 ✅** |
 
 
 ---
@@ -137,6 +141,7 @@
 | 3 | Loading skeletons appear before data loads | Smooth visual transition. |
 | 4 | Responsive modals scale on small screens | Fit mobile view neatly. |
 
+
 ---
 
-✅ **Total Test Cases Covered: 53 + 4 Optional Enhancements**
+✅ **Final Total Test Cases Covered: 57 + 4 Optional Enhancements**
