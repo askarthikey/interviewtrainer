@@ -48,7 +48,7 @@ def generate_questions():
     model = genai.GenerativeModel("gemini-2.5-flash")
     resp = model.generate_content(prompt)
     raw = resp.text or ""
-
+## Try to load the JSON data directly from the variable 'raw'
     try:
         data = json.loads(raw)
     except Exception:
