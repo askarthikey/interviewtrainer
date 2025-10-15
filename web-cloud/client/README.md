@@ -1,12 +1,60 @@
-# React + Vite
+<!-- done by mahesh -->
+# InterviewTrainer Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The client-side application for InterviewTrainer - an AI-powered virtual mock interview platform built with React and Vite.
 
-Currently, two official plugins are available:
+## What It Does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+InterviewTrainer provides a comprehensive interview preparation experience:
 
-## Expanding the ESLint configuration
+- **AI Mock Interviews**: Practice with a virtual interviewer that adapts to your resume
+- **Resume Analysis**: Upload and analyze your resume to generate personalized interview questions
+- **Code Practice**: Built-in code editor with multi-language support (Python, JavaScript, Java, C++)
+- **Speech-to-Text**: Real-time voice recognition for conducting verbal interviews
+- **Session Recording**: Record and replay your interview sessions
+- **Performance Reports**: Get detailed feedback with strengths, areas to improve, and scores
+- **Progress Tracking**: Monitor your practice streak and improvement over time
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## How It Works
+
+1. **Sign Up/Sign In**: Create an account or log in using OAuth
+2. **Upload Resume**: The system analyzes your resume to understand your background
+3. **Start Interview**: Begin a mock interview session with AI-generated questions
+4. **Practice & Record**: Answer questions verbally or in code while the session is recorded
+5. **Review & Improve**: Access detailed reports, recordings, and performance insights
+6. **Track Progress**: View your dashboard to see improvement trends and practice history
+
+## Tech Stack
+
+- **React 19** - UI framework
+- **Vite** - Build tool with HMR
+- **React Router** - Navigation
+- **TailwindCSS** - Styling
+- **CodeMirror** - Code editor
+- **Axios** - API communication
+- **Framer Motion** - Animations
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Key Features
+
+- Protected routes with authentication
+- Responsive design for all devices
+- Real-time code execution
+- Voice-to-text interview capabilities
+- Payment integration for premium features
+- Session management and recordings dashboard
