@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import dropin from 'braintree-web-drop-in';
 // import braintree from 'braintree-web-drop-in';
+//this is the pricing page
 
 function Pricing() {
   const [expandedFaq, setExpandedFaq] = useState(null);
