@@ -220,3 +220,5 @@ Mitigation: Provide clear privacy policy and visible data settings.
 4. The upcoming development phase aims to achieve over 90% accuracy, richer, multi-dimensional feedback, and latency below 2 seconds for improved real-time interaction.
 
 5. With these advancements, InterviewTrainer is expected to evolve into a robust, scalable, and intelligent interview training platform, offering accurate evaluation and deeply personalized feedback.
+
+6. Performance scalability will also be improved to support enterprise-level usage, allowing 100+ concurrent users with minimal lag or errors.
