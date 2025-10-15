@@ -21,6 +21,7 @@ export default function HomePage() {
           <Text style={styles.welcomeText}>Ready to Ace Your Next Interview?</Text>
           <Text style={styles.subtitle}>
             Practice with AI mock interviews, get personalized feedback, and improve your performance.
+            Track your progress.
           </Text>
         </View>
 
