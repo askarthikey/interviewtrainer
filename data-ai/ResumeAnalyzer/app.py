@@ -8,7 +8,7 @@ import google.generativeai as genai
 # Load environment variables
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
+#to check gemini api key is set or not
 if not GEMINI_API_KEY:
     print("Warning: GEMINI_API_KEY is not set. /analyze will not work without it.")
 
