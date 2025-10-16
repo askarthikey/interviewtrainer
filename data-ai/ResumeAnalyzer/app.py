@@ -36,6 +36,7 @@ def extract_text_from_pdf(pdf_file):
 def health():
     return {"status": "ok", "gemini_configured": bool(GEMINI_API_KEY)}
 
+#updated the strengths, weaknesses, suggestions to be accurate using the suitable api models. 
 # Analyze resume
 @app.route("/analyze", methods=["POST"])
 def analyze_resume():
