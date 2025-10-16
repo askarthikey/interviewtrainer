@@ -18,6 +18,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Utility: extract text from PDF
+# # Try to load the JSON data directly from the variable 'raw'
 def extract_text_from_pdf(pdf_file):
     text = ""
     try:
