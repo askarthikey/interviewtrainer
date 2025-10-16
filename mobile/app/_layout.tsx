@@ -1,3 +1,5 @@
+// added comment by vinay kumar
+
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 import Constants from 'expo-constants'
