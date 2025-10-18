@@ -106,7 +106,7 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+  backgroundColor: '#ffffff'
   },
   scrollContainer: {
     flex: 1,

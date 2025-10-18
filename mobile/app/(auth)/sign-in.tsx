@@ -4,6 +4,7 @@ import { Link, useRouter } from 'expo-router';
 import React from 'react';
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -13,6 +14,7 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import userApiService from '../../server/services/userApi';
 import GoogleAuth from '../components/GoogleAuth';
 
 export default function SignInScreen() {
@@ -47,6 +49,47 @@ export default function SignInScreen() {
       // and redirect the user
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId });
+        
+        // After successful Clerk authentication, check if user exists in database
+        try {
+          console.log('✅ Sign-in successful, checking database...');
+          
+          // We'll use email to check since we don't have direct access to user ID here
+          // The user ID will be available from useUser hook after setActive
+          const dbResult = await userApiService.checkUserExists({
+            clerkId: signInAttempt.createdSessionId!, // Temporary identifier
+            email: emailAddress,
+          });
+          
+          if (dbResult.success) {
+            console.log('✅ User found in database:', dbResult.user);
+            Alert.alert('Welcome back!', 'Successfully signed in and synced with database.');
+          } else if (dbResult.shouldRedirectToSignup) {
+            console.log('⚠️ User not found in database, creating entry...');
+            // Create user entry for existing Clerk users who aren't in DB yet
+            const createResult = await userApiService.createUser({
+              clerkId: signInAttempt.createdSessionId!, // Temporary identifier
+              email: emailAddress,
+              firstName: '',
+              lastName: '',
+            });
+            
+            if (createResult.success) {
+              console.log('✅ User created in database during signin:', createResult.user);
+              Alert.alert('Account Synced', 'Your account has been synced with our database.');
+            } else {
+              console.warn('⚠️ Failed to create user in database:', createResult.message);
+              Alert.alert('Warning', 'Sign-in successful but database sync failed. You can continue using the app.');
+            }
+          } else {
+            console.warn('⚠️ Database check failed:', dbResult.message);
+            Alert.alert('Warning', 'Sign-in successful but database check failed. You can continue using the app.');
+          }
+        } catch (dbError: any) {
+          console.error('❌ Database error during signin:', dbError);
+          Alert.alert('Warning', 'Sign-in successful but database sync failed. You can continue using the app.');
+        }
+        
         router.replace('/(home)');
       } else {
         // If the status isn't complete, check why. User might need to
@@ -69,13 +112,6 @@ export default function SignInScreen() {
         style={styles.keyboardAvoidingView}
       >
         <View style={styles.formContainer}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color="#333" />
-          </TouchableOpacity>
-          
           <View style={styles.headerContainer}>
             <Text style={styles.header}>Welcome Back</Text>
             <Text style={styles.subHeader}>Sign in to continue</Text>
@@ -151,7 +187,8 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+  // For gradients, use a gradient component in the parent view. Fallback color:
+  backgroundColor: '#1e3c72',
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -161,19 +198,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 40,
     justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
   },
   headerContainer: {
     marginBottom: 32,
+    alignItems: 'center',
   },
   header: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 8,
+    letterSpacing: 1,
+    textShadowColor: '#2a5298',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   subHeader: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 18,
+    color: '#cfd9df',
+    fontWeight: '500',
+    marginBottom: 8,
   },
   inputContainer: {
     marginBottom: 24,
@@ -181,79 +232,100 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 12,
     marginBottom: 16,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#2a5298',
+    shadowColor: '#2a5298',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   inputIcon: {
-    marginRight: 8,
+    marginRight: 10,
+    color: '#2a5298',
   },
   input: {
     flex: 1,
     paddingVertical: 14,
-    fontSize: 16,
-    color: '#333',
+    fontSize: 17,
+    color: '#1e3c72',
+    fontWeight: '500',
   },
   loginButton: {
-    backgroundColor: '#4285F4',
-    borderRadius: 8,
-    paddingVertical: 14,
+  // For gradients, use a gradient component in the parent view. Fallback color:
+  backgroundColor: '#ff512f',
+    borderRadius: 12,
+    paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowColor: '#dd2476',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 4,
+    marginTop: 8,
   },
   loginButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 1,
+    textShadowColor: '#dd2476',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 24,
   },
   divider: {
     flex: 1,
-    height: 1,
-    backgroundColor: '#ddd',
+    height: 2,
+    backgroundColor: '#cfd9df',
+    borderRadius: 2,
   },
   dividerText: {
-    marginHorizontal: 10,
-    color: '#666',
-    fontSize: 14,
+    marginHorizontal: 12,
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    textShadowColor: '#2a5298',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   signupContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 20,
     gap: 4,
   },
   signupText: {
-    color: '#666',
-    fontSize: 14,
+    color: '#cfd9df',
+    fontSize: 15,
+    fontWeight: '500',
   },
   signupLink: {
-    color: '#4285F4',
-    fontSize: 14,
-    fontWeight: '600',
+    color: '#ff512f',
+    fontSize: 15,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
   errorContainer: {
-    backgroundColor: '#ffebee',
+    backgroundColor: 'rgba(255, 82, 47, 0.15)',
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 10,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#ffcdd2',
+    borderColor: '#ff512f',
   },
   errorText: {
-    color: '#c62828',
-    fontSize: 14,
+    color: '#ff512f',
+    fontSize: 15,
+    fontWeight: '600',
   },
   backButton: {
     position: 'absolute',

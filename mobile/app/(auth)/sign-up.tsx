@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import userApiService from '../../server/services/userApi';
 import GoogleAuth from '../components/GoogleAuth';
 
 export default function SignUpScreen() {
@@ -78,6 +79,37 @@ export default function SignUpScreen() {
       // and redirect the user
       if (signUpAttempt.status === 'complete') {
         await setActive({ session: signUpAttempt.createdSessionId });
+        
+        // After successful verification, save user to database
+        try {
+          console.log('✅ Sign-up verified, saving user to database...');
+          
+          // Get user info from the completed sign-up
+          const userId = signUpAttempt.createdUserId || signUpAttempt.createdSessionId;
+          
+          const userData = {
+            clerkId: userId!,
+            email: emailAddress,
+            firstName: '', // Can be extended with form fields later
+            lastName: '',
+          };
+
+          const dbResult = await userApiService.createUser(userData);
+          
+          if (dbResult.success) {
+            console.log('✅ User successfully saved to database:', dbResult.user);
+            Alert.alert('Success', 'Account created and synced with database!');
+          } else {
+            console.warn('⚠️ Failed to save user to database:', dbResult.message);
+            // Still allow user to proceed, database sync can happen later
+            Alert.alert('Warning', 'Account created but database sync failed. You can continue using the app.');
+          }
+        } catch (dbError: any) {
+          console.error('❌ Database error during signup:', dbError);
+          // Still allow user to proceed
+          Alert.alert('Warning', 'Account created but database sync failed. You can continue using the app.');
+        }
+        
         router.replace('/(home)');
       } else {
         setError('Verification incomplete. Please try again.');
@@ -229,7 +261,8 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    // For gradients, use a gradient component in the parent view. Fallback color:
+    backgroundColor: '#1e3c72',
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -239,19 +272,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 40,
     justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
   },
   headerContainer: {
     marginBottom: 32,
+    alignItems: 'center',
   },
   header: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 8,
+    letterSpacing: 1,
+    textShadowColor: '#2a5298',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   subHeader: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 18,
+    color: '#cfd9df',
+    fontWeight: '500',
+    marginBottom: 8,
   },
   inputContainer: {
     marginBottom: 24,
@@ -266,86 +313,109 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 12,
     marginBottom: 16,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#2a5298',
+    shadowColor: '#2a5298',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   inputIcon: {
-    marginRight: 8,
+    marginRight: 10,
+    color: '#2a5298',
   },
   input: {
     flex: 1,
     paddingVertical: 14,
-    fontSize: 16,
-    color: '#333',
+    fontSize: 17,
+    color: '#1e3c72',
+    fontWeight: '500',
   },
   button: {
-    backgroundColor: '#4285F4',
-    borderRadius: 8,
-    paddingVertical: 14,
+    // For gradients, use a gradient component in the parent view. Fallback color:
+    backgroundColor: '#ff512f',
+    borderRadius: 12,
+    paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowColor: '#dd2476',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 4,
+    marginTop: 8,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 1,
+    textShadowColor: '#dd2476',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   resendButton: {
     marginTop: 16,
     alignItems: 'center',
   },
   resendButtonText: {
-    color: '#4285F4',
+    color: '#ff512f',
     fontSize: 16,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 24,
   },
   divider: {
     flex: 1,
-    height: 1,
-    backgroundColor: '#ddd',
+    height: 2,
+    backgroundColor: '#cfd9df',
+    borderRadius: 2,
   },
   dividerText: {
-    marginHorizontal: 10,
-    color: '#666',
-    fontSize: 14,
+    marginHorizontal: 12,
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    textShadowColor: '#2a5298',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   signInContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 20,
     gap: 4,
   },
   signInText: {
-    color: '#666',
-    fontSize: 14,
+    color: '#cfd9df',
+    fontSize: 15,
+    fontWeight: '500',
   },
   signInLink: {
-    color: '#4285F4',
-    fontSize: 14,
-    fontWeight: '600',
+    color: '#ff512f',
+    fontSize: 15,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
   errorContainer: {
-    backgroundColor: '#ffebee',
+    backgroundColor: 'rgba(255, 82, 47, 0.15)',
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 10,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#ffcdd2',
+    borderColor: '#ff512f',
   },
   errorText: {
-    color: '#c62828',
-    fontSize: 14,
+    color: '#ff512f',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
