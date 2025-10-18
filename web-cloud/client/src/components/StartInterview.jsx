@@ -112,11 +112,24 @@ export default function StartInterview() {
           formData.append("role", role);
           formData.append("difficulty", difficulty);
 
+          // Get auth token
+          const token = localStorage.getItem('auth_token'); // Fixed: was 'token', now 'auth_token'
+
           // upload
-          await fetch(`${API_BASE_URL}/api/recordings`, {
+          const response = await fetch(`${API_BASE_URL}/api/recordings`, {
             method: "POST",
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
             body: formData,
           });
+
+          if (!response.ok) {
+            throw new Error('Upload failed: ' + response.statusText);
+          }
+
+          const result = await response.json();
+          console.log('Upload successful:', result);
         } catch (uploadErr) {
           console.error("Upload error:", uploadErr);
           alert("Upload failed. See console for details.");
