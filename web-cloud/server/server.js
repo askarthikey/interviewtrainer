@@ -552,65 +552,140 @@ app.post('/api/contact/submit', async (req, res) => {
 app.post("/api/transcribe", upload.single("audio"), transcribeAudio);
 app.post("/api/transcribe/stream", upload.single("audio"), transcribeStream);
 
-// ====== 🎥 Your Recording APIs ======
+// ====== 🎥 Your Recording APIs with Supabase ======
 
-// Multer setup
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = "./uploads/recordings";
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
+const { uploadToSupabase, deleteFromSupabase } = require('./utils/storageService');
+
+// Multer setup for memory storage (we'll upload to Supabase)
+const uploadRecordingMemory = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100MB limit
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['video/webm', 'video/mp4', 'video/ogg', 'video/x-matroska'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only video files are allowed.'));
+    }
+  }
 });
-const uploadRecording = multer({ storage });
 
-// Save Recording
-app.post("/api/recordings", uploadRecording.single("file"), async (req, res) => {
+// Save Recording with Supabase
+app.post("/api/recordings", uploadRecordingMemory.single("file"), async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file provided" });
+    }
+
+    console.log(`📹 Receiving recording: ${req.file.originalname} (${(req.file.size / 1024 / 1024).toFixed(2)} MB)`);
+
+    // Upload to Supabase
+    const uploadResult = await uploadToSupabase(
+      req.file.buffer,
+      req.file.originalname,
+      'recordings',
+      req.file.mimetype
+    );
+
+    if (!uploadResult.success) {
+      console.error('Upload to Supabase failed:', uploadResult.error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "Failed to upload to cloud storage",
+        error: uploadResult.error 
+      });
+    }
+
+    // Save metadata to MongoDB
     const recording = {
-      filename: req.file.filename,
-      path: `/uploads/recordings/${req.file.filename}`,
-      role: req.body.role || "unknown",             // save role
-      difficulty: req.body.difficulty || "unknown", // save difficulty
+      filename: req.file.originalname,
+      path: uploadResult.path,        // Supabase path
+      url: uploadResult.url,           // Public URL
+      bucket: uploadResult.bucket,     // Bucket name
+      role: req.body.role || "unknown",
+      difficulty: req.body.difficulty || "unknown",
+      size: req.file.size,
+      mimetype: req.file.mimetype,
       createdAt: new Date(),
     };
-    await db.collection("recordings").insertOne(recording);
+
+    const result = await db.collection("recordings").insertOne(recording);
+    recording._id = result.insertedId;
+
+    console.log(`✅ Recording saved successfully with ID: ${result.insertedId}`);
+
     res.json({ success: true, recording });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Error saving recording" });
+    console.error('❌ Recording upload error:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error saving recording",
+      error: err.message 
+    });
   }
 });
 
 
-// Fetch Recordings (only if file exists)
+// Fetch Recordings from Supabase
 app.get("/api/recordings", async (req, res) => {
   try {
-    const recs = await db
+    const recordings = await db
       .collection("recordings")
       .find()
       .sort({ createdAt: -1 })
       .toArray();
 
-    // Filter out recordings whose files are missing
-    const existingRecs = recs.filter((rec) => {
-      const filePath = path.join(__dirname, rec.path);
-      return fs.existsSync(filePath);
-    });
-
-    res.json(existingRecs);
+    console.log(`📋 Fetched ${recordings.length} recordings`);
+    res.json(recordings);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Error fetching recordings" });
+    console.error('❌ Error fetching recordings:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error fetching recordings",
+      error: err.message 
+    });
   }
 });
 
+// Delete Recording from Supabase
+app.delete("/api/recordings/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const recording = await db.collection("recordings").findOne({ _id: new ObjectId(id) });
 
-// Serve recordings
-app.use("/uploads/recordings", express.static("uploads/recordings"));
+    if (!recording) {
+      return res.status(404).json({ success: false, message: "Recording not found" });
+    }
+
+    console.log(`🗑️  Deleting recording: ${recording.filename}`);
+
+    // Delete from Supabase
+    if (recording.path) {
+      const deleteResult = await deleteFromSupabase(recording.path, recording.bucket);
+      if (!deleteResult.success) {
+        console.warn('⚠️  Failed to delete from Supabase:', deleteResult.error);
+      }
+    }
+
+    // Delete from MongoDB
+    await db.collection("recordings").deleteOne({ _id: new ObjectId(id) });
+
+    console.log('✅ Recording deleted successfully');
+    res.json({ success: true, message: "Recording deleted successfully" });
+  } catch (err) {
+    console.error('❌ Error deleting recording:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error deleting recording",
+      error: err.message 
+    });
+  }
+});
+
+// No longer serving static files - recordings are now on Supabase
+// app.use("/uploads/recordings", express.static("uploads/recordings"));
 
 // ===== Error handler =====
 app.use((err, req, res, next) => {
