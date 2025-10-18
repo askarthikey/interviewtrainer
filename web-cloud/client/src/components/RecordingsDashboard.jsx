@@ -276,7 +276,7 @@ export default function RecordingsDashboard() {
         {/* --- Sidebar --- */}
         <div className="lg:col-span-1 space-y-6">
           {/* Filter (Refactored to Custom Dropdown) */}
-          <div className="p-6 bg-gray-200 rounded-xl shadow-lg">
+          <div className="p-6 bg-white rounded-xl shadow-lg">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Filter</h2>
             
             {/* Custom Select Implementation with ref for outside click */}
@@ -324,7 +324,7 @@ export default function RecordingsDashboard() {
           </div>
 
           {/* Calendar (Enhanced) */}
-          <div className="p-6 bg-gray-200 rounded-xl shadow-lg">
+          <div className="p-6 bg-white rounded-xl shadow-lg">
             <div className="flex justify-between items-center mb-4 text-gray-800 font-semibold text-xl">
               <button onClick={handlePrevMonth} className="p-1 rounded-full hover:bg-gray-300 transition duration-200">
                 <ChevronLeft className="w-6 h-6" />
