@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 import google.generativeai as genai
 from gtts import gTTS
