@@ -13,8 +13,7 @@ import PracticeSection from './components/PracticeSection';
 import Session from './components/Session';
 import ProfileRedirect from './components/ProfileRedirect';
 import ResumeAnalyzer from './components/ResumeAnalyzer';
-import Page7 from './components/Page7.jsx';
-import Page9 from './components/Page9.jsx';
+import StartInterview from './components/StartInterview.jsx';
 import InterviewReport from './components/InterviewReport.jsx';
 import RecordingsDashboard from './components/RecordingsDashboard.jsx';
 import ContactUs from './components/ContactUs.jsx';
@@ -58,8 +57,7 @@ function App() {
               <Route path="recordings" element={<ProtectedRoute><RecordingsDashboard /></ProtectedRoute>} />
               <Route path="profile-redirect" element={<ProtectedRoute><ProfileRedirect /></ProtectedRoute>} />
               <Route path="resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
-              <Route path="/page7" element={<ProtectedRoute><Page7 /></ProtectedRoute>} />
-              <Route path="/page9" element={<ProtectedRoute><Page9 /></ProtectedRoute>} />
+              <Route path="/start-interview" element={<ProtectedRoute><StartInterview /></ProtectedRoute>} />
             </Route>
           </Routes>
         </div>
