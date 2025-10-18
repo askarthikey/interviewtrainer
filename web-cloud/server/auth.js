@@ -179,5 +179,7 @@ const createAuthFunctions = (db) => {
 module.exports = {
   createAuthFunctions,
   generateToken,
-  verifyToken
+  verifyToken,
+  hashPassword,
+  comparePassword
 };
