@@ -9,6 +9,7 @@ function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [profileImage, setProfileImage] = useState(null);
+  const [confirmText, setConfirmText] = useState('');
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -31,7 +32,8 @@ function ProfilePage() {
 
   const menuItems = [
     'Personal Information',
-    'Education'
+    'Education',
+    'Delete Account'
   ];
 
   // Load profile data on component mount
@@ -63,6 +65,82 @@ function ProfilePage() {
       }
     }
   }, [user]);
+
+  const renderDeleteAccount = () => {
+  
+
+  const handleDelete = async () => {
+    if (confirmText !== 'DELETE_MY_ACCOUNT') {
+      showMessage('error', 'Please type DELETE_MY_ACCOUNT to confirm');
+      return;
+    }
+
+    if (!window.confirm('Are you sure you want to permanently delete your account? This action cannot be undone.')) return;
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_BASE_URL}/api/profile/account`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ confirmDelete: confirmText })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showMessage('success', data.message || 'Account deleted successfully');
+        // Optionally log out user and redirect
+        localStorage.removeItem('auth_token');
+        window.location.href = '/signin';
+      } else {
+        showMessage('error', data.message || 'Failed to delete account');
+      }
+
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      showMessage('error', 'Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 shadow-md">
+        <h3 className="text-lg font-bold text-red-800 mb-3">Delete Account</h3>
+        <p className="text-sm text-red-700">
+          This will permanently delete your account and all associated data. This action cannot be undone.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <label className="block text-sm font-semibold text-gray-900">Type <span className="font-bold">DELETE_MY_ACCOUNT</span> to confirm</label>
+        <input
+          type="text"
+          value={confirmText}
+          onChange={(e) => setConfirmText(e.target.value)}
+          placeholder="DELETE_MY_ACCOUNT"
+          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500"
+        />
+      </div>
+
+      <button
+        onClick={handleDelete}
+        disabled={loading}
+        className={`px-6 py-3 rounded-xl text-white font-semibold transition-all ${
+          loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 shadow-lg'
+        }`}
+      >
+        {loading ? '⏳ Deleting...' : 'Delete My Account'}
+      </button>
+    </div>
+  );
+};
+
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem('auth_token');
@@ -406,6 +484,8 @@ function ProfilePage() {
             </div>
           </div>
         );
+        case 'Delete Account':
+          return renderDeleteAccount();
       default:
         return (
           <div className="flex flex-col items-center justify-center p-8 text-center text-gray-500">
