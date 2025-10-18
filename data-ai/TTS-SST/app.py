@@ -5,6 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
 import logging
+import hashlib
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
@@ -76,7 +77,7 @@ def generate_questions():
     return jsonify({"questions": out})
 
 # -------------------------
-# Text-to-speech
+# Text-to-speech (with caching added)
 # -------------------------
 @app.route("/api/tts", methods=["POST"])
 def tts():
@@ -87,11 +88,18 @@ def tts():
     if not text:
         return jsonify({"error": "Text required"}), 400
 
-    filename = f"tts_{qid}.mp3"
+    # --- Added feature: cache based on text hash ---
+    hash_name = hashlib.md5(text.encode()).hexdigest()
+    filename = f"tts_{hash_name}.mp3"
     out_path = TTS_DIR / filename
 
-    gTTS(text=text, lang="en").save(str(out_path))
+    # If already generated, reuse the same file
+    if not out_path.exists():
+        gTTS(text=text, lang="en").save(str(out_path))
+    # ------------------------------------------------
+
     return jsonify({"url": f"/static/tts/{filename}"})
+
 
 # -------------------------
 # Analyze transcript
