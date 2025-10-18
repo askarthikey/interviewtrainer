@@ -12,6 +12,7 @@ const { createAuthFunctions, generateToken, verifyToken } = require("./auth");
 const { initPassport } = require("./oauth");
 const { upload, transcribeAudio, transcribeStream } = require("./whisper");
 const codeExecutorRoutes = require("./routes/codeExecutor");
+const { initProfileRoutes } = require("./routes/profile");
 
 require("dotenv").config();
 
@@ -44,12 +45,18 @@ app.use(passport.session());
 // ===== DB Setup =====
 let db;
 let authFunctions;
+let profileRoutes;
 
 MongoClient.connect(process.env.DB_URL)
   .then((client) => {
     db = client.db("interviewtrainer");
     authFunctions = createAuthFunctions(db);
     initPassport(db);
+    profileRoutes = initProfileRoutes(db);
+    
+    // Initialize profile routes after DB connection
+    app.use("/api", authenticateToken, profileRoutes);
+    
     console.log("DB connection successful!! ✅");
   })
   .catch((err) =>
