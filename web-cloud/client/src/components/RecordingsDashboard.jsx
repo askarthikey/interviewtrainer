@@ -1,6 +1,6 @@
 // Here recordings will be found
-import React, { useEffect, useState, useRef } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react"; // Added useRef
+import { ChevronDown, ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react"; // Added ChevronDown
 
 // Get API URL from environment or fallback to localhost
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -11,16 +11,15 @@ export default function RecordingsDashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // --- Combined State Variables ---
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const dropdownRef = useRef(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // --- New State for Custom Filter Dropdown ---
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const filterOptions = ["all", "today", "yesterday", "last week", "last month"];
+  // -------------------------------------------
 
-  // --- Combined Fetch Logic (Keeping the main branch's authenticated async/await structure) ---
   useEffect(() => {
     const fetchRecordings = async () => {
       const token = localStorage.getItem('auth_token');
@@ -46,9 +45,7 @@ export default function RecordingsDashboard() {
         if (response.status === 401) {
           setError('Session expired or invalid. Please log in again.');
           setLoading(false);
-          // Clear invalid token
           localStorage.removeItem('auth_token');
-          // Optionally redirect to login after 2 seconds
           setTimeout(() => {
             window.location.href = '/signin';
           }, 2000);
@@ -62,11 +59,9 @@ export default function RecordingsDashboard() {
         const data = await response.json();
         console.log('Fetched recordings:', data);
         
-        // Keep only recordings with a valid path
         const existing = data.filter((rec) => rec.path);
         setRecordings(existing);
         setError(null);
-        
       } catch (err) {
         console.error("Error fetching recordings:", err);
         setError('Failed to load recordings. Please try again.');
@@ -78,6 +73,8 @@ export default function RecordingsDashboard() {
     fetchRecordings();
   }, []);
 
+
+  // --- New useEffect for closing the filter dropdown on outside click ---
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -98,23 +95,32 @@ export default function RecordingsDashboard() {
     setFilter(newFilter);
     setIsFilterOpen(false);  
   };
+  // ---------------------------------------------------------------------
 
+  // ===== Filter logic (remains the same) =====
   const filteredRecordings = recordings.filter((rec) => {
     const today = new Date().toISOString().slice(0, 10);
     const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
     const lastWeek = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
     const lastMonth = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+
     const recDate = rec.createdAt.slice(0, 10);
 
     switch (filter) {
-      case "today": return recDate === today;
-      case "yesterday": return recDate === yesterday;
-      case "last week": return recDate > lastWeek;
-      case "last month": return recDate > lastMonth;
-      default: return true;
+      case "today":
+        return recDate === today;
+      case "yesterday":
+        return recDate === yesterday;
+      case "last week":
+        return recDate > lastWeek;
+      case "last month":
+        return recDate > lastMonth;
+      default:
+        return true;
     }
   });
 
+  // ===== Calendar helpers (Enhanced) =====
   const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
@@ -124,10 +130,12 @@ export default function RecordingsDashboard() {
     const numDays = daysInMonth(year, month);
     const firstDay = firstDayOfMonth(year, month);
     
+    // Logic for highlighting today's date
     const todayActual = new Date();
     const isThisActualMonth = month === todayActual.getMonth() && year === todayActual.getFullYear();
     const actualDayOfMonth = todayActual.getDate();
 
+    // Group recordings by day for the current month
     const recordingsByDay = recordings.reduce((acc, rec) => {
       const recDate = new Date(rec.createdAt);
       if (recDate.getFullYear() === year && recDate.getMonth() === month) {
@@ -137,12 +145,15 @@ export default function RecordingsDashboard() {
       return acc;
     }, {});
 
+
     const calendarDays = [];
 
+    // Add padding days
     for (let i = 0; i < firstDay; i++) {
-      calendarDays.push(<div key={`empty-${i}`} className="w-10 h-10"></div>);
+      calendarDays.push(<div key={`empty-${i}`} className="w-8 h-8"></div>);
     }
 
+    // Add actual days
     for (let i = 1; i <= numDays; i++) {
       const isToday = isThisActualMonth && i === actualDayOfMonth;
       const count = recordingsByDay[i] || 0;
@@ -151,20 +162,16 @@ export default function RecordingsDashboard() {
         <div
           key={`day-${i}`}
           className={`
-            relative w-10 h-10 flex flex-col items-center justify-center rounded-full 
+            relative w-8 h-8 flex flex-col items-center justify-center rounded-full 
             cursor-pointer text-sm font-medium transition duration-200 ease-in-out
-            ${isToday 
-              ? 'bg-blue-500 text-white shadow-lg'
-              : 'text-gray-100 hover:bg-gray-600'
-            }
+            ${isToday ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-gray-300'}
           `}
         >
           <span className="z-10">{i}</span>
-
           {count > 0 && (
             <span
               className={`
-                absolute bottom-1 w-1.5 h-1.5 rounded-full transition-colors duration-200
+                absolute bottom-0.5 w-1.5 h-1.5 rounded-full transition-colors duration-200
                 ${isToday ? 'bg-white' : 'bg-green-600'} 
               `}
               title={`${count} recording${count > 1 ? 's' : ''}`}
@@ -176,12 +183,13 @@ export default function RecordingsDashboard() {
     return calendarDays;
   };
 
-  const handlePrevMonth = () =>
-    setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
-  const handleNextMonth = () =>
-    setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  const handlePrevMonth = () => setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  const handleNextMonth = () => setSelectedDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
 
   const openModal = (recording) => {
+    console.log('Opening recording:', recording);
+    console.log('Video URL:', recording.url);
+    console.log('Video path:', recording.path);
     setSelectedRecording(recording);
     setIsModalOpen(true);
   };
@@ -194,7 +202,7 @@ export default function RecordingsDashboard() {
   return (
     <div className="bg-gray-100 text-gray-800 min-h-screen font-sans p-4 sm:p-8">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Main Recordings Section */}
+        {/* Main Recordings */}
         <div className="lg:col-span-3 space-y-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-3xl font-extrabold text-gray-800">Interview Recordings</h1>
@@ -205,7 +213,7 @@ export default function RecordingsDashboard() {
               </span>
             </div>
           </div>
-          
+
           {/* Loading State */}
           {loading && (
             <div className="flex justify-center items-center py-20">
@@ -237,7 +245,7 @@ export default function RecordingsDashboard() {
                 filteredRecordings.map((rec) => (
                   <div
                     key={rec._id}
-                    className="relative aspect-video bg-gray-300 rounded-2xl overflow-hidden shadow-lg flex items-center justify-center group cursor-pointer"
+                    className="relative aspect-video bg-gray-300 rounded-xl overflow-hidden shadow-lg flex items-center justify-center group cursor-pointer"
                     onClick={() => openModal(rec)}
                   >
                     <PlayCircle className="absolute w-16 h-16 text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition duration-300 z-10" />
@@ -254,7 +262,7 @@ export default function RecordingsDashboard() {
                       <span className="block text-xs text-gray-300">
                         {new Date(rec.createdAt).toLocaleDateString()}
                       </span>
-                      <span className="block block text-xs text-gray-300">
+                      <span className="block text-xs text-gray-300">
                         Role: {rec.role}, Difficulty: {rec.difficulty}
                       </span>
                     </div>
@@ -264,12 +272,12 @@ export default function RecordingsDashboard() {
             </div>
           )}
         </div>
-        {/* --- */}
-        {/* Sidebar */}
+
+        {/* --- Sidebar --- */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Filter (NOW Blackish-Grayish Gradient & Rounded) */}
-          <div className="p-6 bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl shadow-lg border border-gray-600">
-            <h2 className="text-xl font-semibold text-gray-200 mb-4">Filter</h2>
+          {/* Filter (Refactored to Custom Dropdown) */}
+          <div className="p-6 bg-gray-200 rounded-xl shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Filter</h2>
             
             {/* Custom Select Implementation with ref for outside click */}
             <div className="relative w-full" ref={dropdownRef}>
@@ -277,7 +285,7 @@ export default function RecordingsDashboard() {
               <button
                 type="button"
                 className={`
-                  w-full p-2.5 bg-white border border-gray-400 text-gray-700 shadow-inner rounded-xl 
+                  w-full p-2.5 bg-gray-300 border border-gray-400 text-gray-700 shadow-inner rounded-xl 
                   flex justify-between items-center transition duration-200 
                   ${isFilterOpen ? 'border-blue-500 ring-2 ring-blue-500' : 'hover:border-blue-400'}
                 `}
@@ -287,7 +295,7 @@ export default function RecordingsDashboard() {
                 <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : 'rotate-0'}`} />
               </button>
 
-              {/* Dropdown Menu - Styled to match your image */}
+              {/* Dropdown Menu */}
               {isFilterOpen && (
                 <div 
                   className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-xl 
@@ -315,26 +323,20 @@ export default function RecordingsDashboard() {
             </div>
           </div>
 
-          {/* Calendar (Blackish-Grayish Gradient & Rounded) */}
-          <div className="p-6 bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl shadow-xl border border-gray-600">
-            <div className="flex justify-between items-center mb-4 text-gray-200 font-semibold text-xl">
-              <button
-                onClick={handlePrevMonth}
-                className="p-2 rounded-full hover:bg-gray-600 transition duration-200"
-              >
-                <ChevronLeft className="w-5 h-5" />
+          {/* Calendar (Enhanced) */}
+          <div className="p-6 bg-gray-200 rounded-xl shadow-lg">
+            <div className="flex justify-between items-center mb-4 text-gray-800 font-semibold text-xl">
+              <button onClick={handlePrevMonth} className="p-1 rounded-full hover:bg-gray-300 transition duration-200">
+                <ChevronLeft className="w-6 h-6" />
               </button>
               <span>
                 {selectedDate.toLocaleString("default", { month: "long", year: "numeric" })}
               </span>
-              <button
-                onClick={handleNextMonth}
-                className="p-2 rounded-full hover:bg-gray-600 transition duration-200"
-              >
-                <ChevronRight className="w-5 h-5" />
+              <button onClick={handleNextMonth} className="p-1 rounded-full hover:bg-gray-300 transition duration-200">
+                <ChevronRight className="w-6 h-6" />
               </button>
             </div>
-            <div className="grid grid-cols-7 text-center text-sm font-medium text-gray-300 mb-2">
+            <div className="grid grid-cols-7 text-center text-sm font-medium text-gray-500 mb-2">
               <span>Su</span>
               <span>Mo</span>
               <span>Tu</span>
@@ -348,7 +350,7 @@ export default function RecordingsDashboard() {
         </div>
       </div>
 
-      {/* Video Modal - LeetCode Glassmorphism Theme (Kept main branch styling) */}
+      {/* Video Modal (Remains the same) */}
       {isModalOpen && selectedRecording && (
         <div 
           className="fixed inset-0 backdrop-blur-lg bg-gradient-to-br from-gray-900/80 via-slate-900/80 to-zinc-900/80 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
@@ -361,6 +363,7 @@ export default function RecordingsDashboard() {
               boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
             }}
           >
+            {/* Close Button */}
             <button
               onClick={closeModal}
               className="absolute top-6 right-6 z-50 bg-red-500/20 hover:bg-red-500/30 backdrop-blur-md text-white rounded-full p-2.5 transition-all duration-200 border border-red-400/30 hover:border-red-400/50 hover:scale-110"
