@@ -209,3 +209,16 @@ Mitigation: Sanitize, validate, and store files securely; scan for threats.
 Issue: Users don’t know how their data is used or who sees it.
 Mitigation: Provide clear privacy policy and visible data settings.
 
+**InterviewTrainer: Baseline and Goal Overview**
+
+1. The current version of InterviewTrainer operates as a prototype with basic AI-driven capabilities, showing potential but requiring enhancement in performance and scalability.
+
+2. Present metrics indicate 75% accuracy in question relevance and 70% in answer evaluation, supported by precision (72%) and recall (68%), reflecting moderate reliability.
+
+3. Major challenges include dependence on external APIs, limited dataset coverage, and shallow feedback analysis lacking tone, confidence, and delivery assessment.
+
+4. The upcoming development phase aims to achieve over 90% accuracy, richer, multi-dimensional feedback, and latency below 2 seconds for improved real-time interaction.
+
+5. With these advancements, InterviewTrainer is expected to evolve into a robust, scalable, and intelligent interview training platform, offering accurate evaluation and deeply personalized feedback.
+
+6. Performance scalability will also be improved to support enterprise-level usage, allowing 100+ concurrent users with minimal lag or errors.

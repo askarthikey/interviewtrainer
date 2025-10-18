@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
 import dropin from 'braintree-web-drop-in';
-// import braintree from 'braintree-web-drop-in';
-//this is the pricing page
+
+// Get API URL from environment or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function Pricing() {
   const [expandedFaq, setExpandedFaq] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const [showGiftModal, setShowGiftModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
+  const [discountType, setDiscountType] = useState(null);
   const [dropinInstance, setDropinInstance] = useState(null);
   const [message, setMessage] = useState({ text: '', type: '' });
 
@@ -19,16 +25,28 @@ function Pricing() {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
 
-  // This function initiates the payment modal
   const handleUpgradeClick = (planName) => {
     setSelectedPlan(plans[planName]);
     setShowPaymentModal(true);
   };
 
-  // This effect runs when the payment modal is shown
+  const handleLearnMoreClick = (planDetails) => {
+    setSelectedPlanDetails(planDetails);
+    setShowDetailsModal(true);
+  };
+
+  const handleDiscountClick = (type) => {
+    setDiscountType(type);
+    setShowDiscountModal(true);
+  };
+
+  const handleGiftClick = () => {
+    setShowGiftModal(true);
+  };
+
   useEffect(() => {
     if (showPaymentModal) {
-      fetch('http://localhost:5000/client_token')
+      fetch(`${API_BASE_URL}/client_token`)
         .then(res => res.json())
         .then(data => {
           if (data.clientToken) {
@@ -39,8 +57,8 @@ function Pricing() {
                 cardholderName: { required: true },
                 cardNumber: { maskInput: true },
                 cvv: { maskInput: true },
-                expirationDate: { maskInput: true},
-                pin: { maskInput: true}
+                expirationDate: { maskInput: true },
+                pin: { maskInput: true }
               }
             }, (err, instance) => {
               if (err) {
@@ -62,7 +80,6 @@ function Pricing() {
     }
   }, [showPaymentModal]);
 
-  // Handles the payment submission
   const handlePaymentSubmit = () => {
     if (!dropinInstance) {
       setMessage({ text: 'Payment form is not ready.', type: 'error' });
@@ -77,7 +94,7 @@ function Pricing() {
         return;
       }
 
-      fetch('http://localhost:4000/subscribe', {
+      fetch(`${API_BASE_URL}/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,6 +108,7 @@ function Pricing() {
           setMessage({ text: 'Subscription successful! 🎉', type: 'success' });
           setTimeout(() => {
             setShowPaymentModal(false);
+            setMessage({ text: '', type: '' });
           }, 3000);
         } else {
           setMessage({ text: `Subscription failed: ${data.message}`, type: 'error' });
@@ -118,7 +136,17 @@ function Pricing() {
       ],
       buttonText: "Get Started",
       popular: false,
-      tier: "free"
+      tier: "free",
+      details: {
+        title: "Free Plan Details",
+        description: "The Free plan is designed for individuals and small teams who are just starting out. It provides essential features to get you up and running without any cost. It's a great way to experience the core functionalities of our platform.",
+        keyFeatures: [
+          "Access to basic project management tools",
+          "Up to 1 GB of cloud storage",
+          "Email support during business hours",
+          "Access to our community forums for peer support and tips"
+        ]
+      }
     },
     {
       name: "Gold",
@@ -134,7 +162,18 @@ function Pricing() {
       ],
       buttonText: "Upgrade Now",
       popular: true,
-      tier: "gold"
+      tier: "gold",
+      details: {
+        title: "Gold Plan Details",
+        description: "The Gold plan is our most popular choice, offering a significant upgrade for growing businesses and professionals. It includes everything in the Free plan plus enhanced features and dedicated support to help you scale your operations efficiently.",
+        keyFeatures: [
+          "All features from the Free plan",
+          "Unlimited cloud storage for all your files and projects",
+          "24/7 priority support via email and chat",
+          "Comprehensive analytics and reporting tools",
+          "Ability to integrate with third-party applications"
+        ]
+      }
     },
     {
       name: "Premium",
@@ -150,30 +189,41 @@ function Pricing() {
       ],
       buttonText: "Go Premium",
       popular: false,
-      tier: "premium"
+      tier: "premium",
+      details: {
+        title: "Premium Plan Details",
+        description: "The Premium plan is the ultimate solution for large enterprises and power users who require a fully customized and highly supported environment. This plan provides all the advanced tools and a dedicated team to ensure your success.",
+        keyFeatures: [
+          "All features from the Gold plan",
+          "White-labeling to brand the platform as your own",
+          "24/7 phone support for immediate assistance",
+          "Access to custom development for specific needs",
+          "A dedicated account manager to assist with strategy and implementation"
+        ]
+      }
     }
   ];
 
   const faqs = [
     {
-      question: "Lorem ipsum dolor sit amet, consectetur ?",
-      answer: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Mauris tempor rutrum libortis."
+      question: "What payment methods do you accept?",
+      answer: "We accept all major credit and debit cards, including Visa, MasterCard, American Express, and Discover. All payments are securely processed through Braintree."
     },
     {
-      question: "Lorem ipsum dolor sit amet, consectetur ?",
-      answer: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Mauris tempor rutrum libortis."
+      question: "Can I change my plan later?",
+      answer: "Yes, you can upgrade or downgrade your subscription at any time. Changes will be effective on your next billing cycle."
     },
     {
-      question: "Lorem ipsum dolor sit amet, consectetur ?",
-      answer: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Mauris tempor rutrum libortis."
+      question: "What is your refund policy?",
+      answer: "We offer a 30-day money-back guarantee for all new subscriptions. If you are not satisfied, you can request a full refund within the first 30 days."
     },
     {
-      question: "Lorem ipsum dolor sit amet, consectetur ?",
-      answer: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Mauris tempor rutrum libortis."
+      question: "Is my data secure?",
+      answer: "Absolutely. We use industry-standard encryption and security protocols to protect your data. Our payment processing is handled by Braintree, a trusted and secure payment gateway."
     },
     {
-      question: "Lorem ipsum dolor sit amet, consectetur ?",
-      answer: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Mauris tempor rutrum libortis."
+      question: "Do you offer discounts for non-profits?",
+      answer: "Yes, we have special pricing for non-profit organizations and educational institutions. Please contact our support team for more details."
     }
   ];
 
@@ -211,6 +261,92 @@ function Pricing() {
         </div>
       )}
 
+      {/* Plan Details Modal */}
+      {showDetailsModal && selectedPlanDetails && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+            <div className="mt-3 text-left">
+              <h3 className="text-3xl leading-8 font-extrabold text-gray-900 mb-4">{selectedPlanDetails.title}</h3>
+              <p className="text-gray-600 mb-6">{selectedPlanDetails.description}</p>
+              <h4 className="text-xl font-bold text-gray-800 mb-2">Key Features:</h4>
+              <ul className="list-disc list-inside space-y-2 text-gray-700">
+                {selectedPlanDetails.keyFeatures.map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </ul>
+              <div className="items-center px-4 py-3 text-right">
+                <button
+                  onClick={() => setShowDetailsModal(false)}
+                  className="mt-4 px-6 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Discount Modal */}
+      {showDiscountModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white text-center">
+            <h3 className="text-2xl leading-6 font-medium text-gray-900 mb-4">
+              {discountType === 'student' ? 'Student Discount' : 'Professional Discount'}
+            </h3>
+            <p className="text-gray-600 mb-4">
+              {discountType === 'student'
+                ? "We offer a special discount for students. To apply, please contact our support team with a valid student ID."
+                : "Professional organizations can qualify for special pricing. Contact our sales team to discuss your specific needs."}
+            </p>
+            <div className="mt-4">
+              <button
+                onClick={() => setShowDiscountModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md shadow-sm hover:bg-gray-300"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Gift Modal */}
+      {showGiftModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white text-center">
+            <h3 className="text-2xl leading-6 font-medium text-gray-900 mb-4">Gift a Subscription</h3>
+            <p className="text-gray-600 mb-4">
+              To gift a subscription, please enter the recipient's email address and select the desired plan. We will send them an email with instructions on how to redeem their gift.
+            </p>
+            <div className="mt-4">
+              <input
+                type="email"
+                placeholder="Recipient's Email"
+                className="w-full p-2 border border-gray-300 rounded-md mb-2"
+              />
+              <select className="w-full p-2 border border-gray-300 rounded-md mb-4">
+                <option>Select a Plan</option>
+                <option value="gold">Gold</option>
+                <option value="premium">Premium</option>
+              </select>
+              <button
+                onClick={() => alert("Gift sent sucessfully!")}
+                className="w-full px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-700"
+              >
+                Send Gift
+              </button>
+              <button
+                onClick={() => setShowGiftModal(false)}
+                className="mt-2 w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-md shadow-sm hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Pricing Section */}
       <section className="hero-section text-center mb-16">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
@@ -219,7 +355,6 @@ function Pricing() {
         <p className="hero-subtitle text-lg sm:text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
           Select the perfect subscription tier for your needs
         </p>
-
         <div className="subscription-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
           {subscriptionTiers.map((tier, index) => (
             <div
@@ -257,11 +392,11 @@ function Pricing() {
               <div className="tier-footer p-8 pt-0">
                 <button
                   onClick={() => handleUpgradeClick(tier.tier)}
-                  className={`tier-btn w-full py-4 px-6 mb-4 rounded-xl text-lg font-semibold text-white ${tier.tier === 'free' ? 'bg-gradient-to-r from-purple-500 to-purple-600 shadow-md hover:shadow-lg' : tier.tier === 'gold' ? 'bg-gradient-to-r from-yellow-400 to-amber-500 shadow-md hover:shadow-lg' : 'bg-gradient-to-r from-purple-500 to-purple-600 shadow-md hover:shadow-lg'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 transform hover:-translate-y-1`}
+                  className={`tier-btn w-full py-4 px-6 mb-4 rounded-xl text-lg font-semibold text-white ${tier.tier === 'free' ? 'bg-gray-700 hover:bg-gray-800' : tier.tier === 'gold' ? 'bg-gradient-to-r from-yellow-400 to-amber-500 shadow-md hover:shadow-lg' : 'bg-gradient-to-r from-purple-500 to-purple-600 shadow-md hover:shadow-lg'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 transform hover:-translate-y-1`}
                 >
                   {tier.buttonText}
                 </button>
-                <a href="#" className="read-more text-blue-600 text-base font-semibold hover:text-blue-800 transition-colors duration-200">Learn More</a>
+                <button onClick={() => handleLearnMoreClick(tier.details)} className="read-more text-blue-600 text-base font-semibold hover:text-blue-800 transition-colors duration-200">Learn More</button>
               </div>
             </div>
           ))}
@@ -271,17 +406,17 @@ function Pricing() {
       {/* Other Sections */}
       <section className="discounts-section text-center mb-16 p-10 bg-white rounded-xl shadow-lg">
         <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-          Check for Discounts..!
+          Check for Discounts!
         </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempor rutrum libertis dapibus lorem lorem diam eros, pulvinar pretium felis ac, blandit sagittis.
+          We offer special pricing for students, non-profits, and educational institutions. Contact our sales team to see if you qualify.
         </p>
         <div className="discount-buttons flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="discount-btn student py-3 px-6 rounded-md text-gray-900 font-semibold border-2 border-gray-900 bg-white hover:bg-gray-900 hover:text-white transition-colors duration-300">
-            student discount
+          <button onClick={() => handleDiscountClick('student')} className="discount-btn student py-3 px-6 rounded-md text-gray-900 font-semibold border-2 border-gray-900 bg-white hover:bg-gray-900 hover:text-white transition-colors duration-300">
+            Student Discount
           </button>
-          <button className="discount-btn professional py-3 px-6 rounded-md text-gray-900 font-semibold border-2 border-gray-900 bg-white hover:bg-gray-900 hover:text-white transition-colors duration-300">
-            professional discount
+          <button onClick={() => handleDiscountClick('professional')} className="discount-btn professional py-3 px-6 rounded-md text-gray-900 font-semibold border-2 border-gray-900 bg-white hover:bg-gray-900 hover:text-white transition-colors duration-300">
+            Professional Discount
           </button>
         </div>
       </section>
@@ -310,12 +445,12 @@ function Pricing() {
 
       <section className="gift-section text-center mb-16 p-10 bg-white rounded-xl shadow-lg">
         <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-          Gift a XXXX2
+          Gift a Subscription
         </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tempor rutrum libertis dapibus lorem lorem diam eros, pulvinar pretium felis ac, blandit sagittis. Donec vitae magna quis lorem suscipit faucibus vel et dolor.
+          Share the gift of productivity with a loved one, friend, or colleague. A subscription is the perfect gift for anyone looking to unlock their full potential.
         </p>
-        <button className="get-now-btn py-3 px-8 rounded-md text-white font-semibold text-lg bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors duration-300">
+        <button onClick={handleGiftClick} className="get-now-btn py-3 px-8 rounded-md text-white font-semibold text-lg bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors duration-300">
           Get Now
         </button>
       </section>

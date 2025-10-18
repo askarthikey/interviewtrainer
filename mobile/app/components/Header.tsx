@@ -1,3 +1,6 @@
+
+//comment done by vinay kumar to raise pr
+
 import { useAuth, useClerk, useUser } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -26,41 +29,44 @@ const Header = () => {
 
   const navigateTo = (screen: string) => {
     setMenuVisible(false);
-    
-    switch(screen) {
-      case 'home':
-        router.push('/(home)');
+
+    switch (screen) {
+      case "home":
+        router.push("/(home)");
         break;
-      case 'resume':
-        router.push('/(home)/resume');
+      case "about":
+        router.push("/(home)/about");
         break;
-      case 'interview':
-        router.push('/(home)/interview');
+      case "resume":
+        router.push("/(home)/resume");
         break;
-      case 'usecases':
-        router.push('/(home)/usecases');
+      case "interview":
+        router.push("/(home)/interview");
         break;
-      case 'Profile':
-        router.push('/(home)/profile');
+      case "usecases":
+        router.push("/(home)/usecases");
         break;
-      case 'SignIn':
-        router.push('/(auth)/sign-in');
+      case "Profile":
+        router.push("/(home)/profile");
         break;
-      case 'SignUp':
-        router.push('/(auth)/sign-up');
+      case "SignIn":
+        router.push("/(auth)/sign-in");
         break;
-      case 'AfterInterview':
-        router.push('/(home)/after-interview');
+      case "SignUp":
+        router.push("/(auth)/sign-up");
+        break;
+      case "AfterInterview":
+        router.push("/(home)/after-interview");
         break;
       default:
-        router.push('/(home)');
+        router.push("/(home)");
     }
   };
 
   const handleSignOut = async () => {
     try {
       await signOut();
-      router.replace('/');
+      // Let Clerk handle navigation automatically
       setProfileDropdownVisible(false);
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
@@ -68,14 +74,14 @@ const Header = () => {
   };
 
   const getInitials = () => {
-    if (!user) return '?';
-    
+    if (!user) return "?";
+
     if (user.firstName && user.lastName) {
       return `${user.firstName[0]}${user.lastName[0]}`;
     } else if (user.firstName) {
       return user.firstName[0];
     } else {
-      const email = user.emailAddresses[0]?.emailAddress || '';
+      const email = user.emailAddresses[0]?.emailAddress || "";
       return email.charAt(0).toUpperCase();
     }
   };
@@ -87,8 +93,8 @@ const Header = () => {
 
         <View style={styles.rightContainer}>
           {isSignedIn ? (
-            <TouchableOpacity 
-              style={styles.profileButton} 
+            <TouchableOpacity
+              style={styles.profileButton}
               onPress={toggleProfileDropdown}
             >
               <View style={styles.profileIcon}>
@@ -96,9 +102,9 @@ const Header = () => {
               </View>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.signInButton}
-              onPress={() => navigateTo('SignIn')}
+              onPress={() => navigateTo("SignIn")}
             >
               <Text style={styles.signInText}>Sign In</Text>
             </TouchableOpacity>
@@ -116,45 +122,82 @@ const Header = () => {
           visible={menuVisible}
           onRequestClose={() => setMenuVisible(false)}
         >
-          <TouchableOpacity 
-            style={styles.modalOverlay} 
-            activeOpacity={1} 
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
             onPress={() => setMenuVisible(false)}
           >
             <View style={[styles.menuContainer, { top: insets.top + 60 }]}>
-              <TouchableOpacity 
-                style={styles.menuItem} 
-                onPress={() => navigateTo('home')}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => navigateTo("home")}
               >
-                <Ionicons name="home-outline" size={20} color="#333" style={styles.menuIcon} />
+                <Ionicons
+                  name="home-outline"
+                  size={20}
+                  color="#333"
+                  style={styles.menuIcon}
+                />
                 <Text style={styles.menuText}>Home</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.menuItem} 
-                onPress={() => navigateTo('resume')}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => navigateTo("resume")}
               >
-                <Ionicons name="document-text-outline" size={20} color="#333" style={styles.menuIcon} />
+                <Ionicons
+                  name="document-text-outline"
+                  size={20}
+                  color="#333"
+                  style={styles.menuIcon}
+                />
                 <Text style={styles.menuText}>Resume Analyzer</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.menuItem} 
-                onPress={() => navigateTo('usecases')}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => navigateTo("about")}
               >
-                <Ionicons name="briefcase-outline" size={20} color="#333" style={styles.menuIcon} />
+                <Ionicons
+                  name="information-circle-outline"
+                  size={20}
+                  color="#333"
+                  style={styles.menuIcon}
+                />
+                <Text style={styles.menuText}>About</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => navigateTo("usecases")}
+              >
+                <Ionicons
+                  name="briefcase-outline"
+                  size={20}
+                  color="#333"
+                  style={styles.menuIcon}
+                />
                 <Text style={styles.menuText}>Use Cases</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.menuItem} 
-                onPress={() => navigateTo('interview')}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => navigateTo("interview")}
               >
-                <Ionicons name="mic-outline" size={20} color="#333" style={styles.menuIcon} />
+                <Ionicons
+                  name="mic-outline"
+                  size={20}
+                  color="#333"
+                  style={styles.menuIcon}
+                />
                 <Text style={styles.menuText}>Interview Analyzer</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.menuItem} 
-                onPress={() => navigateTo('AfterInterview')}
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => navigateTo("AfterInterview")}
               >
-                <Ionicons name="stats-chart-outline" size={20} color="#333" style={styles.menuIcon} />
+                <Ionicons
+                  name="stats-chart-outline"
+                  size={20}
+                  color="#333"
+                  style={styles.menuIcon}
+                />
                 <Text style={styles.menuText}>Interview Results</Text>
               </TouchableOpacity>
             </View>
@@ -169,35 +212,49 @@ const Header = () => {
             visible={profileDropdownVisible}
             onRequestClose={() => setProfileDropdownVisible(false)}
           >
-            <TouchableOpacity 
-              style={styles.modalOverlay} 
-              activeOpacity={1} 
+            <TouchableOpacity
+              style={styles.modalOverlay}
+              activeOpacity={1}
               onPress={() => setProfileDropdownVisible(false)}
             >
               <View style={[styles.profileDropdown, { top: insets.top + 60 }]}>
                 <View style={styles.profileHeader}>
                   <View style={styles.profileIconLarge}>
-                    <Text style={styles.profileInitialsLarge}>{getInitials()}</Text>
+                    <Text style={styles.profileInitialsLarge}>
+                      {getInitials()}
+                    </Text>
                   </View>
-                  <Text style={styles.profileName}>{user?.fullName || user?.emailAddresses[0]?.emailAddress}</Text>
+                  <Text style={styles.profileName}>
+                    {user?.fullName || user?.emailAddresses[0]?.emailAddress}
+                  </Text>
                 </View>
-                
-                <TouchableOpacity 
-                  style={styles.profileMenuItem} 
+
+                <TouchableOpacity
+                  style={styles.profileMenuItem}
                   onPress={() => {
                     setProfileDropdownVisible(false);
-                    navigateTo('Profile');
+                    navigateTo("Profile");
                   }}
                 >
-                  <Ionicons name="person-outline" size={20} color="#333" style={styles.menuIcon} />
+                  <Ionicons
+                    name="person-outline"
+                    size={20}
+                    color="#333"
+                    style={styles.menuIcon}
+                  />
                   <Text style={styles.menuText}>My Profile</Text>
                 </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={[styles.profileMenuItem, styles.signOutMenuItem]} 
+
+                <TouchableOpacity
+                  style={[styles.profileMenuItem, styles.signOutMenuItem]}
                   onPress={handleSignOut}
                 >
-                  <Ionicons name="log-out-outline" size={20} color="#e53935" style={styles.menuIcon} />
+                  <Ionicons
+                    name="log-out-outline"
+                    size={20}
+                    color="#e53935"
+                    style={styles.menuIcon}
+                  />
                   <Text style={styles.signOutText}>Sign Out</Text>
                 </TouchableOpacity>
               </View>
@@ -211,7 +268,7 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -225,14 +282,24 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     backgroundColor: '#fff',
+    borderRadius: 18,
+    margin: 8,
+    // Add a subtle border for separation
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#ff512f',
+    letterSpacing: 1,
+    textShadowColor: '#fff',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   profileButton: {
     marginRight: 16,
@@ -241,12 +308,12 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#4285F4',
+    backgroundColor: '#ff512f',
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileInitials: {
-    color: 'white',
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -254,17 +321,17 @@ const styles = StyleSheet.create({
     marginRight: 16,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: '#4285F4',
+    backgroundColor: '#ff512f',
     borderRadius: 4,
   },
   signInText: {
-    color: 'white',
+    color: '#fff',
     fontSize: 14,
     fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   menuContainer: {
     position: 'absolute',
@@ -278,20 +345,24 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     width: 220,
+    borderWidth: 1,
+    borderColor: '#ff512f',
   },
   menuItem: {
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderBottomColor: "#eee",
+    flexDirection: "row",
+    alignItems: "center",
   },
   menuIcon: {
     marginRight: 10,
   },
   menuText: {
     fontSize: 16,
+    color: '#1e3c72',
+    fontWeight: '600',
   },
   profileDropdown: {
     position: 'absolute',
@@ -304,24 +375,26 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     width: 220,
+    borderWidth: 1,
+    borderColor: '#ff512f',
   },
   profileHeader: {
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   profileIconLarge: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#4285F4',
+    backgroundColor: '#ff512f',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
   },
   profileInitialsLarge: {
-    color: 'white',
+    color: '#fff',
     fontSize: 24,
     fontWeight: '600',
   },
@@ -329,21 +402,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
+    color: '#1e3c72',
   },
   profileMenuItem: {
     paddingVertical: 12,
     paddingHorizontal: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   signOutMenuItem: {
     borderBottomWidth: 0,
   },
   signOutText: {
-    color: '#e53935',
+    color: '#ff512f',
     fontSize: 16,
+    fontWeight: '700',
   },
 });
 

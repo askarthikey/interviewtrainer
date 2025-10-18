@@ -1,5 +1,9 @@
+// askarthikey made this page
 import React, { useState, useRef, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
+
+// Get API URL from environment or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const CodeEditor = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('javascript');
@@ -26,7 +30,7 @@ const CodeEditor = () => {
   // Real code execution using backend API
   const executeCode = async (code, language) => {
     try {
-      const response = await fetch('http://localhost:3001/api/execute', {
+      const response = await fetch(`${API_BASE_URL}/api/execute`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

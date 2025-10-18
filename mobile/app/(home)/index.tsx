@@ -21,6 +21,7 @@ export default function HomePage() {
           <Text style={styles.welcomeText}>Ready to Ace Your Next Interview?</Text>
           <Text style={styles.subtitle}>
             Practice with AI mock interviews, get personalized feedback, and improve your performance.
+            Track your progress.
           </Text>
         </View>
 
@@ -105,7 +106,7 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+  backgroundColor: '#ffffff'
   },
   scrollContainer: {
     flex: 1,

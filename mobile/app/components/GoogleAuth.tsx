@@ -38,6 +38,7 @@ const GoogleAuth = () => {
 
       if (createdSessionId) {
         await setActive!({ session: createdSessionId });
+        console.log('✅ Google OAuth successful, redirecting to home...');
         router.replace('/(home)');
       } else {
         Alert.alert("Authentication", "Failed to complete authentication. Please try again.");

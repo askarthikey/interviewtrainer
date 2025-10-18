@@ -1,5 +1,5 @@
 import { useAuth } from "@clerk/clerk-expo";
-import { Link, Redirect } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
   Animated,
@@ -12,6 +12,7 @@ import {
 
 export default function Index() {
   const { isSignedIn, isLoaded } = useAuth();
+  const router = useRouter();
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -22,9 +23,20 @@ export default function Index() {
     }).start();
   }, []);
 
-  // Redirect to home if already signed in
-  if (isLoaded && isSignedIn) {
-    return <Redirect href="/(home)" />;
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.replace('/(home)');
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  // Show loading while auth is loading
+  if (!isLoaded) {
+    return null; // or a loading spinner
+  }
+
+  // Don't redirect here, let useEffect handle it
+  if (isSignedIn) {
+    return null;
   }
 
   return (
@@ -36,16 +48,18 @@ export default function Index() {
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.primaryButton}>
-            <Link href="/(auth)/sign-in" asChild>
-              <Text style={styles.primaryButtonText}>Login</Text>
-            </Link>
+          <TouchableOpacity 
+            style={styles.primaryButton}
+            onPress={() => router.push('/(auth)/sign-in')}
+          >
+            <Text style={styles.primaryButtonText}>Login</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
-            <Link href="/(auth)/sign-up" asChild>
-              <Text style={styles.secondaryButtonText}>Create Account</Text>
-            </Link>
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => router.push('/(auth)/sign-up')}
+          >
+            <Text style={styles.secondaryButtonText}>Create Account</Text>
           </TouchableOpacity>
         </View>
 
@@ -64,7 +78,8 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
+    // For gradients, use a gradient component in the parent view. Fallback color:
+    backgroundColor: '#1e3c72',
   },
   content: {
     flex: 1,
@@ -72,76 +87,98 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 60,
     paddingHorizontal: 20,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
   },
   logoContainer: {
     alignItems: "center",
     marginBottom: 40,
   },
   logo: {
-    fontSize: 32,
+    fontSize: 38,
     fontWeight: "bold",
-    color: "#333",
+    color: "#fff",
     marginBottom: 10,
+    letterSpacing: 1,
+    textShadowColor: '#2a5298',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   tagline: {
-    fontSize: 16,
-    color: "#666",
-    textAlign: "center",
+    fontSize: 18,
+    color: '#cfd9df',
+    textAlign: 'center',
+    fontWeight: '500',
+    marginBottom: 8,
   },
   buttonContainer: {
     width: "100%",
     marginVertical: 20,
   },
   primaryButton: {
-    backgroundColor: "#4285F4",
-    borderRadius: 8,
-    paddingVertical: 15,
-    alignItems: "center",
+    // For gradients, use a gradient component in the parent view. Fallback color:
+    backgroundColor: '#ff512f',
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowColor: '#dd2476',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 4,
   },
   primaryButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 1,
+    textShadowColor: '#dd2476',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   secondaryButton: {
-    backgroundColor: "transparent",
-    borderColor: "#4285F4",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingVertical: 15,
-    alignItems: "center",
+    backgroundColor: 'transparent',
+    borderColor: '#ff512f',
+    borderWidth: 2,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
   },
   secondaryButtonText: {
-    color: "#4285F4",
-    fontSize: 16,
-    fontWeight: "600",
+    color: '#ff512f',
+    fontSize: 18,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
   featuresContainer: {
-    width: "100%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    width: '100%',
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: '#2a5298',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
+    marginTop: 24,
   },
   featuresTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 10,
-    color: "#333",
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 12,
+    color: '#1e3c72',
+    letterSpacing: 1,
   },
   featureItem: {
-    fontSize: 14,
-    marginVertical: 5,
-    color: "#555",
+    fontSize: 16,
+    marginVertical: 6,
+    color: '#2a5298',
+    fontWeight: '500',
   },
 });

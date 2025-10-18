@@ -168,7 +168,8 @@ TODO(anish66-dev, Ganesh-131)
 
 TODO(Vinaykumarp2005)
 
-## focus on prototyping to uncover unknowns/learn specific tech(Ganesh-131)
+
+## focus on prototyping to uncover unknowns/learn specific tech (Ganesh-131)
 # Identified Unknowns and Risks for Prototyping
 
 ## Job Description and Resume Parsing

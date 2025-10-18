@@ -27,6 +27,7 @@ app = Flask(__name__, static_folder=str(STATIC_DIR), template_folder=str(BASE_DI
 
 # -------------------------
 # Generate questions
+# 3-4 prompts are used.
 # -------------------------
 @app.route("/api/generate_questions", methods=["POST"])
 def generate_questions():
@@ -48,7 +49,7 @@ def generate_questions():
     model = genai.GenerativeModel("gemini-2.5-flash")
     resp = model.generate_content(prompt)
     raw = resp.text or ""
-
+## Try to load the JSON data directly from the variable 'raw'
     try:
         data = json.loads(raw)
     except Exception:

@@ -1,8 +1,11 @@
+// added comment by vinay kumar
+
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 import Constants from 'expo-constants'
 import { useFonts } from 'expo-font'
 import { Slot, SplashScreen } from 'expo-router'
+import { StatusBar } from 'react-native'
 import { useEffect } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
@@ -16,8 +19,7 @@ export default function RootLayout() {
   })
 
   // Get the publishable key from environment variables
-  const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || 
-    Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY
+  const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY 
 
   useEffect(() => {
     // Hide splash screen when resources are loaded
@@ -30,7 +32,8 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <ClerkProvider 
+      <StatusBar barStyle={'dark-content'} />
+      <ClerkProvider
         publishableKey={publishableKey}
         tokenCache={tokenCache}
       >
