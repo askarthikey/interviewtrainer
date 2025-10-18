@@ -580,13 +580,14 @@ const uploadRecordingMemory = multer({
 });
 
 // Save Recording with Supabase
-app.post("/api/recordings", uploadRecordingMemory.single("file"), async (req, res) => {
+app.post("/api/recordings", authenticateToken, uploadRecordingMemory.single("file"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: "No file provided" });
     }
 
     console.log(`📹 Receiving recording: ${req.file.originalname} (${(req.file.size / 1024 / 1024).toFixed(2)} MB)`);
+    console.log(`👤 User ID: ${req.user._id}`);
 
     // Upload to Supabase
     const uploadResult = await uploadToSupabase(
@@ -605,8 +606,10 @@ app.post("/api/recordings", uploadRecordingMemory.single("file"), async (req, re
       });
     }
 
-    // Save metadata to MongoDB
+    // Save metadata to MongoDB with userId
     const recording = {
+      userId: req.user._id.toString(),  // Store user ID
+      userEmail: req.user.email,        // Store user email for reference
       filename: req.file.originalname,
       path: uploadResult.path,        // Supabase path
       url: uploadResult.url,           // Public URL
@@ -621,7 +624,7 @@ app.post("/api/recordings", uploadRecordingMemory.single("file"), async (req, re
     const result = await db.collection("recordings").insertOne(recording);
     recording._id = result.insertedId;
 
-    console.log(`✅ Recording saved successfully with ID: ${result.insertedId}`);
+    console.log(`✅ Recording saved successfully with ID: ${result.insertedId} for user: ${req.user.email}`);
 
     res.json({ success: true, recording });
   } catch (err) {
@@ -635,16 +638,18 @@ app.post("/api/recordings", uploadRecordingMemory.single("file"), async (req, re
 });
 
 
-// Fetch Recordings from Supabase
-app.get("/api/recordings", async (req, res) => {
+// Fetch Recordings from Supabase - Only user's own recordings
+app.get("/api/recordings", authenticateToken, async (req, res) => {
   try {
+    const userId = req.user._id.toString();
+    
     const recordings = await db
       .collection("recordings")
-      .find()
+      .find({ userId: userId })  // Filter by user ID
       .sort({ createdAt: -1 })
       .toArray();
 
-    console.log(`📋 Fetched ${recordings.length} recordings`);
+    console.log(`📋 Fetched ${recordings.length} recordings for user: ${req.user.email}`);
     res.json(recordings);
   } catch (err) {
     console.error('❌ Error fetching recordings:', err);
