@@ -32,7 +32,6 @@ function ProfilePage() {
   });
 
   const menuItems = [
-    'Profile name',
     'Personal Information',
     'Education',
     'Reset Password',
@@ -335,28 +334,32 @@ function ProfilePage() {
 
   const renderEmailSettings = () => {
     return (
-      <div className="profile-form">
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">Manage Your Email Address</h3>
+      <div className="space-y-8 max-w-2xl">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border-2 border-blue-200">
+          <p className="text-sm text-gray-700">Manage your email address and communication preferences</p>
+        </div>
         <div className="space-y-6">
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Current Email</label>
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border-2 border-gray-200">
+            <label className="block text-sm font-bold text-gray-900 mb-3">Current Email (Verified)</label>
             <input
               type="email"
               value={formData.email}
               readOnly
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl shadow-sm bg-gray-100 cursor-not-allowed text-gray-700 font-medium"
             />
+            <p className="text-xs text-green-700 mt-3 font-semibold">This is your verified email address</p>
           </div>
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Change Email</label>
+          <div className="border-t-2 border-gray-200 pt-8">
+            <label className="block text-sm font-bold text-gray-900 mb-3">New Email Address</label>
             <input
               type="email"
               name="newEmail"
               value={formData.newEmail}
               onChange={handleInputChange}
-              placeholder="Enter your new email"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter your new email address"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
             />
+            <p className="text-xs text-gray-600 mt-3">A verification link will be sent to your new email address</p>
           </div>
         </div>
       </div>
@@ -367,144 +370,194 @@ function ProfilePage() {
     switch (activeSection) {
       case 'Personal Information':
         return (
-          <div className="profile-form">
-            <div className="form-grid grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="space-y-10">
+            {/* Profile Photo Upload Section */}
+            <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-8 border-2 border-blue-200 shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <h4 className="text-xl font-bold text-gray-900">Profile Photo</h4>
+                  <p className="text-sm text-gray-600 mt-1">Upload a professional photo to complete your profile</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-8">
+                <div className="flex-shrink-0">
+                  {profileImage ? (
+                    <img
+                      src={profileImage}
+                      alt="Profile"
+                      className="w-28 h-28 rounded-full object-cover border-4 border-blue-300 shadow-lg ring-4 ring-blue-100"
+                    />
+                  ) : (
+                    <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold border-4 border-blue-300 shadow-lg ring-4 ring-blue-100">
+                      {user?.firstName?.[0]}{user?.lastName?.[0]}
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-gray-700 mb-4 font-medium">📸 Supported formats: JPG, PNG (Max 5MB)</p>
+                  <label className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all cursor-pointer shadow-md hover:shadow-lg hover:scale-105 font-semibold">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>{loading ? 'Uploading...' : 'Choose Photo'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e.target.files[0])}
+                      className="hidden"
+                      disabled={loading}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Personal Information form fields */}
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">First Name</label>
                 <input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
+                  placeholder="Enter your first name"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Last name</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Last Name</label>
                 <input
                   type="text"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
+                  placeholder="Enter your last name"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Email</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="abc@gmail.com"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Position</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Current Position</label>
                 <input
                   type="text"
                   name="currentPosition"
                   value={formData.currentPosition}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., Senior Developer"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Experience</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Experience</label>
                 <input
                   type="text"
                   name="experience"
                   value={formData.experience}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., 5 years"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Skills</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Skills</label>
                 <input
                   type="text"
                   name="skills"
                   value={formData.skills}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., React, Node.js, Python"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Company</label>
                 <input
                   type="text"
                   name="company"
                   value={formData.company}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., Tech Company Inc."
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Country</label>
                 <select
                   name="country"
                   value={formData.country}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 >
-                  <option value="">Select</option>
-                  <option value="US">India</option>
+                  <option value="">Select Country</option>
+                  <option value="IN">India</option>
                   <option value="UK">United Kingdom</option>
-                  <option value="CA">United States</option>
+                  <option value="US">United States</option>
                   <option value="AU">Australia</option>
                 </select>
               </div>
             </div>
-            <div className="form-group full-width mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">About you</label>
+            <div className="mt-10 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 border-2 border-gray-200">
+              <label className="block text-sm font-bold text-gray-900 mb-3">About You</label>
               <textarea
                 name="about"
                 value={formData.about}
                 onChange={handleInputChange}
-                placeholder="Text area"
-                rows="4"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Tell us about yourself, your background, and your professional goals..."
+                rows="5"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 resize-none bg-white"
               />
             </div>
           </div>
         );
       case 'Education':
         return (
-          <div className="profile-form">
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">Education Details</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="space-y-8">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border-2 border-blue-200">
+              <p className="text-sm text-gray-700">Add your educational qualifications to enhance your profile credibility</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Education form fields */}
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">School/University</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">School/University</label>
                 <input
                   type="text"
                   name="school"
                   value={formData.school}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., Stanford University"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Degree</label>
                 <input
                   type="text"
                   name="degree"
                   value={formData.degree}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., Bachelor of Science"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Graduation Date</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Graduation Date</label>
                 <input
-                  type="text"
+                  type="date"
                   name="graduationDate"
                   value={formData.graduationDate}
                   onChange={handleInputChange}
-                  placeholder="e.g., May 2022"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
             </div>
@@ -512,38 +565,48 @@ function ProfilePage() {
         );
       case 'Reset Password':
         return (
-          <div className="profile-form">
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">Change Your Password</h3>
-            <div className="grid grid-cols-1 gap-y-6">
+          <div className="space-y-8 max-w-2xl">
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 rounded-2xl p-6 shadow-md">
+              <div className="flex items-start space-x-3">
+                <div>
+                  <p className="text-sm font-semibold text-red-900">Security Tip</p>
+                  <p className="text-sm text-red-800 mt-1">Use a strong password with uppercase, lowercase, numbers, and special characters (!@#$%^&*)</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
               {/* Reset Password form fields */}
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Current Password</label>
                 <input
                   type="password"
                   name="currentPassword"
                   value={formData.currentPassword}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter your current password"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">New Password</label>
                 <input
                   type="password"
                   name="newPassword"
                   value={formData.newPassword}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter your new password"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">Confirm New Password</label>
                 <input
                   type="password"
                   name="confirmNewPassword"
                   value={formData.confirmNewPassword}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Confirm your new password"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-300 bg-white"
                 />
               </div>
             </div>
@@ -568,76 +631,113 @@ function ProfilePage() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-100 min-h-screen">
+    <div className="flex flex-col lg:flex-row bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 min-h-screen">
       {/* Sidebar */}
-      <div className="w-full lg:w-64 bg-white p-6 shadow-md lg:shadow-none flex-shrink-0">
-        <div className="flex flex-col items-center mb-6">
-          {profileImage ? (
-            <img 
-              src={profileImage} 
-              alt="Profile" 
-              className="w-24 h-24 rounded-full object-cover mb-2"
-            />
-          ) : (
-            <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 mb-2 text-lg font-semibold">
-              {user?.firstName?.[0]}{user?.lastName?.[0]}
-            </div>
-          )}
-          <div className="font-semibold text-lg text-gray-900">
-            {user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}
+      <div className="w-full lg:w-80 bg-white border-r border-gray-200 p-8 flex-shrink-0 shadow-lg">
+        {/* Profile Header */}
+        <div className="flex flex-col items-center mb-8 pb-8 border-b-2 border-gradient-to-r from-blue-200 to-indigo-200">
+          <div className="relative mb-6">
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover border-4 border-blue-200 shadow-xl ring-4 ring-blue-100"
+              />
+            ) : (
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 via-blue-400 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold shadow-xl ring-4 ring-blue-100">
+                {user?.firstName?.[0]}{user?.lastName?.[0]}
+              </div>
+            )}
+            <div className="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-3 border-white shadow-md"></div>
           </div>
-          <div className="text-sm text-gray-500">{user?.email}</div>
+          <div className="text-center w-full">
+            <h3 className="font-bold text-xl text-gray-900 truncate">
+              {user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}
+            </h3>
+            <p className="text-sm text-gray-500 mt-2 truncate hover:text-gray-700 transition-colors">{user?.email}</p>
+            {user?.currentPosition && (
+              <div className="mt-3 inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
+                {user?.currentPosition}
+              </div>
+            )}
+          </div>
         </div>
-        
+
+        {/* Navigation Menu */}
         <nav className="flex flex-col space-y-2">
           {menuItems.map((item) => (
             <button
               key={item}
-              className={`py-3 px-4 rounded-lg text-left font-medium transition-colors duration-200 ${
+              className={`py-3 px-4 rounded-xl text-left font-medium transition-all duration-300 flex items-center space-x-3 ${
                 activeSection === item
-                  ? 'bg-blue-500 text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-200'
+                  ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-l-4 border-blue-600 pl-3 shadow-sm'
+                  : 'text-gray-600 hover:bg-gray-50 border-l-4 border-transparent hover:text-gray-900'
               }`}
               onClick={() => setActiveSection(item)}
             >
-              {item}
+              <span className="text-lg">
+                {item === 'Personal Information' && '👤'}
+                {item === 'Education' && '🎓'}
+                {item === 'Reset Password' && '🔐'}
+                {item === 'Social' && '👥'}
+                {item === 'Email Settings' && '✉️'}
+              </span>
+              <span>{item}</span>
             </button>
           ))}
         </nav>
       </div>
 
       {/* Content Area */}
-      <div className="flex-grow p-6 lg:p-10">
-        <div className="bg-white p-6 sm:p-8 rounded-lg shadow-md max-w-4xl mx-auto">
-          <div className="mb-8 border-b pb-4">
-            <h2 className="text-3xl font-bold text-gray-900">
-              {activeSection === 'Profile name' ? 'Profile' : activeSection}
-            </h2>
-            <p className="mt-1 text-gray-500">
-              {activeSection === 'Personal Information' ? 'Add about yourself' : `Manage your ${activeSection.toLowerCase()}`}
-            </p>
+      <div className="flex-grow p-6 lg:p-12">
+        <div className="bg-white rounded-3xl shadow-2xl max-w-5xl mx-auto overflow-hidden border border-gray-100">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 px-8 py-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-5 rounded-full -mr-20 -mt-20"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white opacity-5 rounded-full -ml-16 -mb-16"></div>
+            <div className="relative z-10">
+              <h2 className="text-4xl font-bold text-white">
+                {activeSection === 'Profile name' ? 'Profile Settings' : activeSection}
+              </h2>
+              <p className="mt-3 text-blue-100 text-lg font-medium">
+                {activeSection === 'Personal Information' ? '👤 Update your professional information and profile photo' :
+                 activeSection === 'Education' ? '🎓 Manage your educational background and qualifications' :
+                 activeSection === 'Reset Password' ? '🔐 Change your password securely' :
+                 activeSection === 'Social' ? '👥 Connect with other users and view your network' :
+                 activeSection === 'Email Settings' ? '✉️ Manage your email preferences and address' :
+                 'Manage your profile'}
+              </p>
+            </div>
           </div>
 
           {/* Message Display */}
           {message.text && (
-            <div className={`mb-6 p-4 rounded-md ${
-              message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 
-              'bg-red-50 text-red-800 border border-red-200'
+            <div className={`mx-8 mt-6 p-4 rounded-xl border-l-4 shadow-md animate-in fade-in slide-in-from-top-2 ${
+              message.type === 'success'
+                ? 'bg-green-50 text-green-800 border-green-500'
+                : 'bg-red-50 text-red-800 border-red-500'
             }`}>
-              {message.text}
+              <div className="flex items-center">
+                <span className="mr-3 text-xl">
+                  {message.type === 'success' ? '✓' : '✕'}
+                </span>
+                <span className="font-medium">{message.text}</span>
+              </div>
             </div>
           )}
 
-          <div className="flex items-center space-x-6 mb-8">
+          {/* Profile Image Section */}
+          {activeSection === 'Profile name' && (
+          <div className="flex items-center space-x-8 px-8 py-10 border-b border-gray-200">
             <div className="relative">
               {profileImage ? (
-                <img 
-                  src={profileImage} 
-                  alt="Profile" 
-                  className="w-28 h-28 rounded-full object-cover"
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-blue-100 shadow-lg"
                 />
               ) : (
-                <div className="w-28 h-28 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 flex-shrink-0">
+                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-3xl font-bold flex-shrink-0 border-4 border-blue-100 shadow-lg">
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </div>
               )}
@@ -650,30 +750,41 @@ function ProfilePage() {
               />
             </div>
             <div>
-              <label 
+              <label
                 htmlFor="profileImageUpload"
-                className="px-5 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer inline-block"
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 cursor-pointer inline-block transition-colors shadow-md"
               >
-                {loading ? 'Uploading...' : 'Change Photo'}
+                {loading ? 'Uploading...' : '📷 Change Photo'}
               </label>
-              <p className="text-xs text-gray-500 mt-2">JPG, PNG, GIF up to 5MB</p>
+              <p className="text-sm text-gray-500 mt-3">JPG, PNG, GIF up to 5MB</p>
             </div>
           </div>
-          
-          {renderContent()}
+          )}
 
+          {/* Form Content */}
+          <div className="px-8 py-12 bg-gradient-to-b from-white to-gray-50">
+            {renderContent()}
+          </div>
+
+          {/* Action Buttons */}
           {activeSection !== 'Social' && (
-            <div className="mt-8 text-right">
+            <div className="px-8 py-8 border-t-2 border-gray-100 flex justify-end space-x-4 bg-gradient-to-r from-gray-50 to-blue-50">
               <button
-                className={`px-6 py-3 font-semibold rounded-md shadow-lg transition-colors duration-200 ${
-                  loading 
-                    ? 'bg-gray-400 text-white cursor-not-allowed' 
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                className="px-6 py-3 font-semibold rounded-xl border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400 transition-all duration-300 hover:shadow-md"
+                onClick={() => setActiveSection('Personal Information')}
+              >
+                Cancel
+              </button>
+              <button
+                className={`px-8 py-3 font-semibold rounded-xl shadow-lg transition-all duration-300 flex items-center space-x-2 ${
+                  loading
+                    ? 'bg-gray-400 text-white cursor-not-allowed opacity-75'
+                    : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105'
                 }`}
                 onClick={handleUpdate}
                 disabled={loading}
               >
-                {loading ? 'Updating...' : 'Update'}
+                <span>{loading ? '⏳ Saving...' : '✓ Save Changes'}</span>
               </button>
             </div>
           )}
