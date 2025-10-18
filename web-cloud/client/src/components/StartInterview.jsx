@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 // Get API URL from environment or fallback to localhost
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-export default function Page9() {
+export default function StartInterview() {
   const [role, setRole] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [allowAccess, setAllowAccess] = useState(false);
