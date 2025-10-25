@@ -9,6 +9,9 @@ const ResumeUpload = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Backend API URL from environment
+  const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5002";
+
   const handleFileChange = (e) => setResumeFile(e.target.files[0]);
   const handleJobRoleChange = (e) => setJobRole(e.target.value);
 
@@ -26,7 +29,7 @@ const ResumeUpload = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://127.0.0.1:8000/analyze", formData);
+      const res = await axios.post(`${API_URL}/analyze`, formData);
       setAnalysis(res.data.analysis);
     } catch (err) {
       console.error(err);
@@ -36,17 +39,14 @@ const ResumeUpload = () => {
     }
   };
 
-  // Split sections and clean Markdown-style characters
   const renderSections = (text) => {
     const sections = text.split(/### /).filter(Boolean);
     return sections.map((sec, idx) => {
       const [title, ...contentArr] = sec.split("\n");
       const content = contentArr.join("\n").trim();
-
       const cleanContent = content
-        .replace(/\*\*(.*?)\*\*/g, "$1") // remove bold asterisks
-        .replace(/^\*\s+/gm, "• "); // replace * with bullets
-
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/^\*\s+/gm, "• ");
       return (
         <details key={idx} open={idx === 0} className="analysis-section">
           <summary>{title}</summary>
