@@ -1,6 +1,6 @@
 // Here recordings will be found
-import React, { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react"; // Added useRef
+import { ChevronDown, ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react"; // Added ChevronDown
 
 // Get API URL from environment or fallback to localhost
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -14,9 +14,15 @@ export default function RecordingsDashboard() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // --- New State for Custom Filter Dropdown ---
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const filterOptions = ["all", "today", "yesterday", "last week", "last month"];
+  // -------------------------------------------
+
   useEffect(() => {
     const fetchRecordings = async () => {
-      const token = localStorage.getItem('auth_token'); // Fixed: was 'token', now 'auth_token'
+      const token = localStorage.getItem('auth_token');
       
       console.log('Token exists:', !!token);
       console.log('Token value:', token ? token.substring(0, 20) + '...' : 'null');
@@ -39,9 +45,7 @@ export default function RecordingsDashboard() {
         if (response.status === 401) {
           setError('Session expired or invalid. Please log in again.');
           setLoading(false);
-          // Clear invalid token
           localStorage.removeItem('auth_token');
-          // Optionally redirect to login after 2 seconds
           setTimeout(() => {
             window.location.href = '/signin';
           }, 2000);
@@ -55,7 +59,6 @@ export default function RecordingsDashboard() {
         const data = await response.json();
         console.log('Fetched recordings:', data);
         
-        // Keep only recordings with a valid path
         const existing = data.filter((rec) => rec.path);
         setRecordings(existing);
         setError(null);
@@ -70,7 +73,31 @@ export default function RecordingsDashboard() {
     fetchRecordings();
   }, []);
 
-  // ===== Filter logic =====
+
+  // --- New useEffect for closing the filter dropdown on outside click ---
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
+      }
+    }
+
+    if (isFilterOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFilterOpen]);
+
+  const handleFilterSelect = (newFilter) => {
+    setFilter(newFilter);
+    setIsFilterOpen(false);  
+  };
+  // ---------------------------------------------------------------------
+
+  // ===== Filter logic (remains the same) =====
   const filteredRecordings = recordings.filter((rec) => {
     const today = new Date().toISOString().slice(0, 10);
     const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
@@ -93,7 +120,7 @@ export default function RecordingsDashboard() {
     }
   });
 
-  // ===== Calendar helpers =====
+  // ===== Calendar helpers (Enhanced) =====
   const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
@@ -102,18 +129,57 @@ export default function RecordingsDashboard() {
     const month = selectedDate.getMonth();
     const numDays = daysInMonth(year, month);
     const firstDay = firstDayOfMonth(year, month);
+    
+    // Logic for highlighting today's date
+    const todayActual = new Date();
+    const isThisActualMonth = month === todayActual.getMonth() && year === todayActual.getFullYear();
+    const actualDayOfMonth = todayActual.getDate();
+
+    // Group recordings by day for the current month
+    const recordingsByDay = recordings.reduce((acc, rec) => {
+      const recDate = new Date(rec.createdAt);
+      if (recDate.getFullYear() === year && recDate.getMonth() === month) {
+        const day = recDate.getDate();
+        acc[day] = (acc[day] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
 
     const calendarDays = [];
-    for (let i = 0; i < firstDay; i++) calendarDays.push(<div key={`empty-${i}`} className="w-8 h-8"></div>);
-    for (let i = 1; i <= numDays; i++)
+
+    // Add padding days
+    for (let i = 0; i < firstDay; i++) {
+      calendarDays.push(<div key={`empty-${i}`} className="w-8 h-8"></div>);
+    }
+
+    // Add actual days
+    for (let i = 1; i <= numDays; i++) {
+      const isToday = isThisActualMonth && i === actualDayOfMonth;
+      const count = recordingsByDay[i] || 0;
+
       calendarDays.push(
         <div
           key={`day-${i}`}
-          className="w-8 h-8 flex items-center justify-center cursor-pointer rounded-full hover:bg-blue-200"
+          className={`
+            relative w-8 h-8 flex flex-col items-center justify-center rounded-full 
+            cursor-pointer text-sm font-medium transition duration-200 ease-in-out
+            ${isToday ? 'bg-blue-500 text-white shadow-lg' : 'hover:bg-gray-300'}
+          `}
         >
-          {i}
+          <span className="z-10">{i}</span>
+          {count > 0 && (
+            <span
+              className={`
+                absolute bottom-0.5 w-1.5 h-1.5 rounded-full transition-colors duration-200
+                ${isToday ? 'bg-white' : 'bg-green-600'} 
+              `}
+              title={`${count} recording${count > 1 ? 's' : ''}`}
+            />
+          )}
         </div>
       );
+    }
     return calendarDays;
   };
 
@@ -207,27 +273,59 @@ export default function RecordingsDashboard() {
           )}
         </div>
 
-        {/* Sidebar */}
+        {/* --- Sidebar --- */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Filter */}
-          <div className="p-6 bg-gray-200 rounded-xl shadow-lg">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Filter</h2>
-            <select
-              className="w-full p-2 rounded-lg bg-gray-300 border border-gray-400 text-gray-700"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            >
-              <option value="all">all</option>
-              <option value="today">today</option>
-              <option value="yesterday">yesterday</option>
-              <option value="last week">last week</option>
-              <option value="last month">last month</option>
-            </select>
+          {/* Filter (Refactored to Custom Dropdown) */}
+          <div className="p-6 bg-white rounded-xl shadow-lg">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Filter</h2>
+            
+            {/* Custom Select Implementation with ref for outside click */}
+            <div className="relative w-full" ref={dropdownRef}>
+              {/* Visible Select Button */}
+              <button
+                type="button"
+                className={`
+                  w-full p-2.5 bg-gray-300 border border-gray-400 text-gray-700 shadow-inner rounded-xl 
+                  flex justify-between items-center transition duration-200 
+                  ${isFilterOpen ? 'border-blue-500 ring-2 ring-blue-500' : 'hover:border-blue-400'}
+                `}
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+              >
+                <span className="capitalize">{filter}</span>
+                <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : 'rotate-0'}`} />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isFilterOpen && (
+                <div 
+                  className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-xl 
+                                     shadow-xl overflow-hidden z-20"
+                >
+                  <ul className="py-1">
+                    {filterOptions.map((option) => (
+                      <li
+                        key={option}
+                        className={`
+                          p-2.5 text-gray-800 capitalize cursor-pointer transition-colors duration-150
+                          ${filter === option 
+                            ? 'bg-blue-600 text-white font-semibold' 
+                            : 'hover:bg-blue-100 hover:text-gray-900' 
+                          }
+                        `}
+                        onClick={() => handleFilterSelect(option)}
+                      >
+                        {option}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Calendar */}
-          <div className="p-6 bg-gray-200 rounded-xl shadow-lg">
-            <div className="flex justify-between items-center mb-4 text-gray-700 font-semibold text-xl">
+          {/* Calendar (Enhanced) */}
+          <div className="p-6 bg-white rounded-xl shadow-lg">
+            <div className="flex justify-between items-center mb-4 text-gray-800 font-semibold text-xl">
               <button onClick={handlePrevMonth} className="p-1 rounded-full hover:bg-gray-300 transition duration-200">
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -247,12 +345,12 @@ export default function RecordingsDashboard() {
               <span>Fr</span>
               <span>Sa</span>
             </div>
-            <div className="grid grid-cols-7 text-center">{renderCalendar()}</div>
+            <div className="grid grid-cols-7 text-center gap-y-1">{renderCalendar()}</div>
           </div>
         </div>
       </div>
 
-      {/* Video Modal - LeetCode Glassmorphism Theme */}
+      {/* Video Modal (Remains the same) */}
       {isModalOpen && selectedRecording && (
         <div 
           className="fixed inset-0 backdrop-blur-lg bg-gradient-to-br from-gray-900/80 via-slate-900/80 to-zinc-900/80 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
