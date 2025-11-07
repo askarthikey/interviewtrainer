@@ -14,7 +14,7 @@ function Header() {
       <div className="w-full px-2 sm:px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <Link to={isSignedIn ? "/dashboard" : "/signin"} className="flex items-center space-x-2">
             <div className="relative group">
               <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
                 <span className="text-white font-bold text-lg">IT</span>
@@ -22,25 +22,25 @@ function Header() {
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
             </div>
             <div>
-              <span className="text-xl font-bold text-black hover:text-gray-700 transition-colors cursor-pointer">
+              <span className="text-xl font-bold text-black hover:text-gray-700 transition-colors">
                 InterviewTrainer
               </span>
               <div className="text-xs text-gray-500 font-medium tracking-wider hidden sm:block">
                 AI-POWERED PLATFORM
               </div>
             </div>
-          </div>
+          </Link>
           
           {/* Auth Buttons / User Menu */}
           <div className="flex items-center space-x-2">
             {isSignedIn ? (
               <div className="flex items-center space-x-3">
-                <Link to="/dashboard" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                {/* <Link to="/dashboard" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Dashboard
-                </Link>
-                <Link to="/speech" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                </Link> */}
+                {/* <Link to="/speech" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Speech
-                </Link>
+                </Link> */}
                 <Link to="/practice-page" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Practice
                 </Link>
@@ -54,14 +54,14 @@ function Header() {
                   Recordings
                 </Link>
                 <Link to="/resume-analyzer" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Resume
+                  Analyse Resume
                 </Link>
-                <Link to="/pricing" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                {/* <Link to="/pricing" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Pricing
-                </Link>
-                <Link to="/profile" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                </Link> */}
+                {/* <Link to="/profile" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Profile
-                </Link>
+                </Link> */}
                 <div className="w-8 h-8">
                   <UserButton
                         appearance={{
