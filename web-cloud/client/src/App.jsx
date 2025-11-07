@@ -14,6 +14,7 @@ import Session from './components/Session';
 import ProfileRedirect from './components/ProfileRedirect';
 import ResumeAnalyzer from './components/ResumeAnalyzer';
 import StartInterview from './components/StartInterview.jsx';
+import InterviewSession from './components/InterviewSession.jsx';
 import InterviewReport from './components/InterviewReport.jsx';
 import RecordingsDashboard from './components/RecordingsDashboard.jsx';
 import ContactUs from './components/ContactUs.jsx';
@@ -58,6 +59,7 @@ function App() {
               <Route path="profile-redirect" element={<ProtectedRoute><ProfileRedirect /></ProtectedRoute>} />
               <Route path="resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
               <Route path="/start-interview" element={<ProtectedRoute><StartInterview /></ProtectedRoute>} />
+              <Route path="/interview-session" element={<ProtectedRoute><InterviewSession /></ProtectedRoute>} />
             </Route>
           </Routes>
         </div>
