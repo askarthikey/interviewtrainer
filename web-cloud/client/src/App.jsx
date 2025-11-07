@@ -21,6 +21,7 @@ import ContactUs from './components/ContactUs.jsx';
 import AboutUs from './components/AboutUs.jsx';
 import OAuthCallback from './components/OAuthCallback.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import Practice from './components/Practice.jsx';
 
 // Component to handle conditional redirect based on auth state
 const HomeRedirect = () => {
@@ -51,6 +52,7 @@ function App() {
               <Route path="dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
               <Route path="speech" element={<ProtectedRoute><SpeechToTextDis /></ProtectedRoute>} />
               <Route path="code" element={<ProtectedRoute><CodeEditor/></ProtectedRoute>} />
+              <Route path="practice-page" element={<ProtectedRoute><Practice /></ProtectedRoute>} />
               <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="practice" element={<ProtectedRoute><PracticeSection /></ProtectedRoute>} />
               <Route path="session" element={<ProtectedRoute><Session /></ProtectedRoute>} />

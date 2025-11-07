@@ -300,6 +300,84 @@ app.get("/api/interview/responses", authenticateToken, async (req, res) => {
   }
 });
 
+
+// Get Latest Interview Report
+app.get("/api/interview-report/latest", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id.toString();
+
+    // Fetch the latest analysis
+    const analyses = await db
+      .collection("interview_analyses")
+      .find({ userId: userId })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .toArray();
+    
+    const analysis = analyses[0];
+
+    if (!analysis) {
+      return res.status(404).json({
+        success: false,
+        message: "No interview analysis found"
+      });
+    }
+
+    console.log(`📊 Fetched latest interview report for user: ${req.user.email}`);
+    
+    res.json({
+      success: true,
+      ...analysis
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching interview report:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch interview report",
+      error: error.message,
+    });
+  }
+});
+
+// Get Interview Report by ID
+app.get("/api/interview-report/:id", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id.toString();
+    const { id } = req.params;
+
+    // Fetch specific analysis by ID
+    const analysis = await db
+      .collection("interview_analyses")
+      .findOne({ 
+        _id: new ObjectId(id),
+        userId: userId 
+      });
+
+    if (!analysis) {
+      return res.status(404).json({
+        success: false,
+        message: "Interview analysis not found"
+      });
+    }
+
+    console.log(`📊 Fetched interview report ${id} for user: ${req.user.email}`);
+    
+    res.json({
+      success: true,
+      ...analysis
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching interview report:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch interview report",
+      error: error.message,
+    });
+  }
+});
+
 // About Us API endpoints
 app.get('/api/about/team', async (req, res) => {
   try {
