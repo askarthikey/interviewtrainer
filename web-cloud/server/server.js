@@ -30,7 +30,6 @@ const app = express();
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
 }
-
 // ===== Middleware =====
 app.use(cors({}));
 app.use(express.json());
