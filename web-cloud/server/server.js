@@ -735,19 +735,41 @@ app.get("/api/recordings", authenticateToken, async (req, res) => {
       .sort({ createdAt: -1 })
       .toArray();
 
-    // For each recording, check if analysis exists
+    // For each recording, check if analysis exists and get question from interview_responses
     const recordingsWithAnalysis = await Promise.all(
       recordings.map(async (recording) => {
         try {
+          // Get analysis
           const analysis = await db
             .collection("interview_analyses")
             .findOne({ recordingId: recording._id.toString() });
+          
+          // Get question from interview_responses collection
+          const interviewResponse = await db
+            .collection("interview_responses")
+            .findOne({ 
+              userId: userId,
+              "metadata.recordingId": recording._id.toString() 
+            });
+          
+          // Extract question text
+          let questionText = null;
+          if (interviewResponse?.question) {
+            questionText = typeof interviewResponse.question === 'object' 
+              ? interviewResponse.question.text 
+              : interviewResponse.question;
+          } else if (analysis?.question) {
+            questionText = analysis.question;
+          } else if (recording.question) {
+            questionText = recording.question;
+          }
           
           return {
             ...recording,
             hasAnalysis: !!analysis,
             analysisId: analysis?._id || null,
-            analysisDate: analysis?.createdAt || null
+            analysisDate: analysis?.createdAt || null,
+            question: questionText
           };
         } catch (err) {
           console.warn(`Failed to check analysis for recording ${recording._id}:`, err.message);
@@ -755,7 +777,8 @@ app.get("/api/recordings", authenticateToken, async (req, res) => {
             ...recording,
             hasAnalysis: false,
             analysisId: null,
-            analysisDate: null
+            analysisDate: null,
+            question: null
           };
         }
       })

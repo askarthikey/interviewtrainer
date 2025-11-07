@@ -206,6 +206,54 @@ export default function Practice() {
                 </div>
               ))}
             </div>
+
+            {/* Practice Interviews Section */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Practice Interviews</h2>
+              <div
+                onClick={() => navigate('/start-interview')}
+                className="group border-2 border-dashed border-gray-300 rounded-lg p-8 cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:border-purple-400 transition-all"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center text-3xl">
+                      🎤
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900 group-hover:text-purple-700">
+                        Start Mock Interview
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Practice real interview scenarios with AI-powered feedback
+                      </p>
+                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Video Recording
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          AI Analysis
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Instant Feedback
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <svg className="w-8 h-8 text-gray-400 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           // Questions Table - LeetCode style

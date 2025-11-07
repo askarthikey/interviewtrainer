@@ -193,6 +193,7 @@ export default function RecordingsDashboard() {
     console.log('Opening recording:', recording);
     console.log('Video URL:', recording.url);
     console.log('Video path:', recording.path);
+    console.log('Question:', recording.question);
     setSelectedRecording(recording);
     setIsModalOpen(true);
   };
@@ -514,6 +515,21 @@ export default function RecordingsDashboard() {
                   </span>
                 )}
               </div>
+
+              {/* Interview Question */}
+              {selectedRecording.question && (
+                <div className="mt-4 p-4 bg-indigo-500/10 backdrop-blur-md rounded-lg border border-indigo-400/30">
+                  <div className="flex items-start gap-2">
+                    <span className="text-indigo-300 mt-1">❓</span>
+                    <div>
+                      <h4 className="text-sm font-semibold text-indigo-200 mb-1">Interview Question</h4>
+                      <p className="text-indigo-100 text-sm leading-relaxed">
+                        {selectedRecording.question}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Video Player Container */}
