@@ -41,8 +41,8 @@ function Header() {
                 <Link to="/speech" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Speech
                 </Link>
-                <Link to="/code" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Code
+                <Link to="/practice-page" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                  Practice
                 </Link>
                 <Link to="/start-interview" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   StartInterview
