@@ -312,7 +312,7 @@ function Pricing() {
       )}
 
       {/* Gift Modal */}
-      {showGiftModal && (
+      {/* {showGiftModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white text-center">
             <h3 className="text-2xl leading-6 font-medium text-gray-900 mb-4">Gift a Subscription</h3>
@@ -345,7 +345,7 @@ function Pricing() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Pricing Section */}
       <section className="hero-section text-center mb-16">
@@ -443,7 +443,7 @@ function Pricing() {
         </div>
       </section>
 
-      <section className="gift-section text-center mb-16 p-10 bg-white rounded-xl shadow-lg">
+      {/* <section className="gift-section text-center mb-16 p-10 bg-white rounded-xl shadow-lg">
         <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
           Gift a Subscription
         </h2>
@@ -453,7 +453,7 @@ function Pricing() {
         <button onClick={handleGiftClick} className="get-now-btn py-3 px-8 rounded-md text-white font-semibold text-lg bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors duration-300">
           Get Now
         </button>
-      </section>
+      </section> */}
     </div>
   );
 }
