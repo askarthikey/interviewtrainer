@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth.jsx';
 import UserButton from './UserButton';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isSignedIn, user } = useAuth();
+  const location = useLocation();
 
   const avatarUrl = user?.imageUrl || '/default-avatar.png'; // fallback for email/password users
 
@@ -32,36 +33,66 @@ function Header() {
           </Link>
           
           {/* Auth Buttons / User Menu */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center flex-1">
             {isSignedIn ? (
-              <div className="flex items-center space-x-3">
-                {/* <Link to="/dashboard" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Dashboard
-                </Link> */}
-                {/* <Link to="/speech" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Speech
-                </Link> */}
-                <Link to="/practice-page" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Practice
-                </Link>
-                <Link to="/start-interview" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  StartInterview
-                </Link>
-                <Link to="/interview-report" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  InterviewReport
-                </Link>
-                <Link to="/recordings" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Recordings
-                </Link>
-                <Link to="/resume-analyzer" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Analyse Resume
-                </Link>
-                {/* <Link to="/pricing" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Pricing
-                </Link> */}
-                {/* <Link to="/profile" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
-                  Profile
-                </Link> */}
+              <>
+                <div className="flex items-center space-x-3 mx-auto">
+                  {/* <Link to="/dashboard" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                    Dashboard
+                  </Link> */}
+                  {/* <Link to="/speech" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                    Speech
+                  </Link> */}
+                  <Link 
+                    to="/practice-page" 
+                    className={`text-gray-600 hover:text-black transition-all font-medium hidden sm:block pb-1 border-b-2 ${
+                      location.pathname === '/practice-page' 
+                        ? 'border-black' 
+                        : 'border-transparent hover:border-gray-300'
+                    }`}
+                  >
+                    Practice
+                  </Link>
+                  {/* <Link to="/start-interview" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                    StartInterview
+                  </Link> */}
+                  <Link 
+                    to="/interview-report" 
+                    className={`text-gray-600 hover:text-black transition-all font-medium hidden sm:block pb-1 border-b-2 ${
+                      location.pathname === '/interview-report' 
+                        ? 'border-black' 
+                        : 'border-transparent hover:border-gray-300'
+                    }`}
+                  >
+                    InterviewReport
+                  </Link>
+                  <Link 
+                    to="/recordings" 
+                    className={`text-gray-600 hover:text-black transition-all font-medium hidden sm:block pb-1 border-b-2 ${
+                      location.pathname === '/recordings' 
+                        ? 'border-black' 
+                        : 'border-transparent hover:border-gray-300'
+                    }`}
+                  >
+                    Recordings
+                  </Link>
+                  <Link 
+                    to="/resume-analyzer" 
+                    className={`text-gray-600 hover:text-black transition-all font-medium hidden sm:block pb-1 border-b-2 ${
+                      location.pathname === '/resume-analyzer' 
+                        ? 'border-black' 
+                        : 'border-transparent hover:border-gray-300'
+                    }`}
+                  >
+                    Analyse Resume
+                  </Link>
+                  {/* <Link to="/pricing" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                    Pricing
+                  </Link> */}
+                  {/* <Link to="/profile" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                    Profile
+                  </Link> */}
+                </div>
                 <div className="w-8 h-8">
                   <UserButton
                         appearance={{
@@ -78,7 +109,7 @@ function Header() {
                         }}
                       />
                 </div>
-              </div>
+              </>
             ) : (
               <>
                 <Link to="/signin" className="text-gray-600 hover:text-black transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-50">
