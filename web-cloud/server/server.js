@@ -340,6 +340,139 @@ app.get("/api/interview-report/latest", authenticateToken, async (req, res) => {
   }
 });
 
+// Get Comprehensive Interview Report (All Interviews Analysis)
+// MUST be before /:id route to avoid matching "comprehensive" as an id
+app.get("/api/interview-report/comprehensive", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id.toString();
+
+    console.log(`📊 Fetching all interviews for user: ${userId}`);
+
+    // Fetch all analyses for the user (userId is stored as string in DB)
+    const allAnalyses = await db
+      .collection("interview_analyses")
+      .find({ userId: userId })
+      .sort({ createdAt: 1 })
+      .toArray();
+
+    console.log(`📊 Found ${allAnalyses.length} interviews`);
+
+    if (!allAnalyses || allAnalyses.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No interview analyses found. Please complete at least one interview first."
+      });
+    }
+
+    console.log(`📊 Generating comprehensive report for ${allAnalyses.length} interviews`);
+
+    // Use Gemini to analyze all interviews together
+    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    // Prepare data for Gemini
+    const interviewSummaries = allAnalyses.map((analysis, index) => {
+      const result = analysis.analysisResult || {};
+      return `
+Interview ${index + 1} (${new Date(analysis.createdAt).toLocaleDateString()}):
+- Role: ${analysis.role || 'N/A'}
+- Difficulty: ${analysis.difficulty || 'N/A'}
+- Overall Score: ${result.overallScore || 0}/10
+- Clarity Score: ${result.clarityScore || 0}/10
+- Technical Score: ${result.technicalScore ? Math.round(result.technicalScore / 10) : 0}/10
+- Strengths: ${Array.isArray(result.strengths) ? result.strengths.join(', ') : 'N/A'}
+- Improvements: ${Array.isArray(result.improvements) ? result.improvements.join(', ') : 'N/A'}
+- Mistakes: ${Array.isArray(result.mistakes) ? result.mistakes.join(', ') : 'N/A'}
+`;
+    }).join('\n---\n');
+
+    const prompt = `You are an expert career coach and interview analyzer. Analyze the following ${allAnalyses.length} interview attempts by a candidate and create a comprehensive performance report.
+
+${interviewSummaries}
+
+Based on ALL these interviews, provide a comprehensive analysis in the following JSON format:
+{
+  "overallScore": <average overall score 0-10>,
+  "clarityScore": <average clarity score 0-10>,
+  "technicalScore": <average technical score 0-10>,
+  "totalInterviews": ${allAnalyses.length},
+  "progressTrend": "<improving/declining/stable>",
+  "feedback": "<comprehensive feedback about their overall performance across all interviews>",
+  "strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
+  "improvements": ["<improvement area 1>", "<improvement area 2>", "<improvement area 3>"],
+  "recommendations": ["<recommendation 1>", "<recommendation 2>", "<recommendation 3>"],
+  "nextSteps": ["<specific next step 1>", "<specific next step 2>", "<specific next step 3>"],
+  "scoreProgression": [
+    {"overall": <score 0-10>, "clarity": <score 0-10>, "technical": <score 0-10>},
+    ... for each of the ${allAnalyses.length} interviews in chronological order
+  ],
+  "keyInsights": ["<insight 1>", "<insight 2>", "<insight 3>"]
+}
+
+Provide actionable, specific recommendations based on their performance trends. Focus on what they're doing well and what specific areas need improvement.`;
+
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
+    
+    // Extract JSON from response
+    let comprehensiveAnalysis;
+    try {
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        comprehensiveAnalysis = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('No JSON found in response');
+      }
+    } catch (parseError) {
+      console.error('Failed to parse Gemini response:', parseError);
+      comprehensiveAnalysis = {
+        overallScore: 0,
+        clarityScore: 0,
+        technicalScore: 0,
+        totalInterviews: allAnalyses.length,
+        progressTrend: 'stable',
+        feedback: responseText,
+        strengths: [],
+        improvements: [],
+        recommendations: [],
+        nextSteps: [],
+        scoreProgression: [],
+        keyInsights: []
+      };
+    }
+
+    // Add interview history
+    comprehensiveAnalysis.interviewHistory = allAnalyses.map(analysis => ({
+      id: analysis._id,
+      date: analysis.createdAt,
+      role: analysis.role,
+      difficulty: analysis.difficulty,
+      scores: {
+        overall: analysis.analysisResult?.overallScore || 0,
+        clarity: analysis.analysisResult?.clarityScore || 0,
+        technical: analysis.analysisResult?.technicalScore ? Math.round(analysis.analysisResult.technicalScore / 10) : 0
+      }
+    }));
+
+    console.log(`✅ Comprehensive report generated for user: ${req.user.email}`);
+    
+    res.json({
+      success: true,
+      comprehensiveAnalysis,
+      generatedAt: new Date()
+    });
+
+  } catch (error) {
+    console.error("❌ Error generating comprehensive report:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate comprehensive report",
+      error: error.message,
+    });
+  }
+});
+
 // Get Interview Report by ID
 app.get("/api/interview-report/:id", authenticateToken, async (req, res) => {
   try {
