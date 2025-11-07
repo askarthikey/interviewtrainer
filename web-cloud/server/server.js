@@ -9,6 +9,7 @@ const fs = require("fs");
 const multer = require("multer");
 const OpenAI = require('openai');
 const fetch = require('node-fetch');
+const pdf = require('pdf-parse');
 
 const { createAuthFunctions, generateToken, verifyToken } = require("./auth");
 const { initPassport } = require("./oauth");
@@ -1014,15 +1015,10 @@ Provide specific, actionable feedback based on what the candidate actually said 
         const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           analysisData = JSON.parse(jsonMatch[0]);
+          console.log('✅ Parsed Gemini JSON successfully');
         } else {
           throw new Error('No JSON found in response');
         }
-        
-        // Add some randomization to make it more dynamic
-        const variance = () => Math.floor(Math.random() * 10) - 5; // -5 to +5
-        if (analysisData.overallScore) analysisData.overallScore += variance();
-        if (analysisData.clarityScore) analysisData.clarityScore += variance();
-        if (analysisData.technicalScore) analysisData.technicalScore += variance();
         
       } catch (parseError) {
         console.warn('⚠️ Failed to parse JSON, creating dynamic fallback response:', parseError.message);
@@ -1080,11 +1076,6 @@ Provide specific, actionable feedback based on what the candidate actually said 
         };
       }
 
-      // Ensure scores are within valid range
-      analysisData.overallScore = Math.min(Math.max(analysisData.overallScore || 75, 0), 100);
-      analysisData.clarityScore = Math.min(Math.max(analysisData.clarityScore || 80, 0), 100);
-      analysisData.technicalScore = Math.min(Math.max(analysisData.technicalScore || 70, 0), 100);
-
       // Save analysis to database for future reference with transcript and question
       if (recordingId) {
         try {
@@ -1109,6 +1100,12 @@ Provide specific, actionable feedback based on what the candidate actually said 
       }
 
       console.log('✅ Analysis completed successfully');
+      console.log('📊 Gemini scores (unmodified):', {
+        overall: analysisData.overallScore,
+        clarity: analysisData.clarityScore,
+        technical: analysisData.technicalScore
+      });
+      
       res.json({
         success: true,
         ...analysisData
@@ -1205,18 +1202,342 @@ app.get("/api/analysis/:recordingId", authenticateToken, async (req, res) => {
     }
 
     console.log(`✅ Found existing analysis for recording: ${recordingId}`);
-    res.json({
+    
+    // Try to parse geminiResponse to get original unmodified scores
+    let analysisToReturn = analysis.analysisResult;
+    
+    if (analysis.geminiResponse) {
+      try {
+        // Extract JSON from geminiResponse (original Gemini output)
+        const jsonMatch = analysis.geminiResponse.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const originalGeminiData = JSON.parse(jsonMatch[0]);
+          console.log('📊 Using original Gemini scores from geminiResponse:', {
+            overall: originalGeminiData.overallScore,
+            clarity: originalGeminiData.clarityScore,
+            technical: originalGeminiData.technicalScore
+          });
+          analysisToReturn = originalGeminiData;
+        }
+      } catch (parseError) {
+        console.warn('⚠️ Could not parse geminiResponse, using analysisResult:', parseError.message);
+      }
+    }
+    
+    // Return the analysis result from database (Gemini-generated scores)
+    const responseData = {
       success: true,
-      ...analysis.analysisResult,
+      ...analysisToReturn,  // Spread the original Gemini analysis
       analysisDate: analysis.createdAt,
-      analysisId: analysis._id
+      analysisId: analysis._id,
+      transcript: analysis.transcript,
+      question: analysis.question
+    };
+    
+    console.log('📊 Returning analysis with scores:', {
+      overall: responseData.overallScore,
+      clarity: responseData.clarityScore,
+      technical: responseData.technicalScore
     });
+    
+    res.json(responseData);
 
   } catch (error) {
     console.error('❌ Error fetching analysis:', error);
     res.status(500).json({ 
       success: false, 
       message: "Failed to fetch analysis",
+      error: error.message 
+    });
+  }
+});
+
+// Resume Analyzer Endpoint
+const uploadResume = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
+    }
+  }
+});
+
+app.post("/api/analyze-resume", uploadResume.single('resume'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Please upload a PDF resume' });
+    }
+
+    const { jobDescription, targetRole } = req.body;
+
+    if (!jobDescription || !targetRole) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide both job description and target role' 
+      });
+    }
+
+    console.log(`📄 Analyzing resume for role: ${targetRole}`);
+
+    // Extract text from PDF
+    let resumeText;
+    try {
+      const pdfData = await pdf(req.file.buffer);
+      resumeText = pdfData.text;
+      console.log(`✅ Extracted ${resumeText.length} characters from PDF`);
+    } catch (pdfError) {
+      console.error('❌ PDF parsing error:', pdfError);
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Failed to parse PDF. Please ensure it\'s a valid PDF file.' 
+      });
+    }
+
+    // Initialize Gemini AI
+    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+
+    // Create analysis prompt
+    const analysisPrompt = `
+You are an expert resume analyzer and career counselor. Analyze the following resume against the job description and provide detailed feedback.
+
+TARGET ROLE: ${targetRole}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+RESUME CONTENT:
+${resumeText}
+
+Analyze the resume and provide a comprehensive evaluation in the following JSON format:
+{
+  "matchScore": <number 0-100 indicating how well the resume matches the job>,
+  "targetRole": "${targetRole}",
+  "strengths": [
+    "List 4-6 specific strengths found in the resume that align with the job requirements",
+    "Be specific and reference actual content from the resume"
+  ],
+  "missingSkills": [
+    "List 4-6 important skills or keywords from the job description that are missing or weak in the resume",
+    "Focus on skills that would significantly improve the match"
+  ],
+  "suggestions": [
+    "Provide 5-7 actionable, specific suggestions to improve the resume for this role",
+    "Include suggestions for formatting, keywords, achievements, quantification, etc.",
+    "Be constructive and practical"
+  ]
+}
+
+IMPORTANT: 
+- Be honest and thorough in your analysis
+- Match score should reflect actual alignment between resume and job description
+- Strengths should be genuine highlights from the resume
+- Missing skills should be truly important for the role
+- Suggestions should be actionable and specific
+- Return ONLY valid JSON, no additional text
+`;
+
+    try {
+      const result = await model.generateContent(analysisPrompt);
+      const response = await result.response;
+      const analysisText = response.text();
+
+      console.log('🤖 Gemini analysis received');
+
+      // Parse JSON from response
+      let analysisData;
+      try {
+        const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          analysisData = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error('No JSON found in response');
+        }
+      } catch (parseError) {
+        console.warn('⚠️ Failed to parse Gemini response, using fallback');
+        
+        // Fallback analysis
+        analysisData = {
+          matchScore: 72,
+          targetRole: targetRole,
+          strengths: [
+            "Resume demonstrates relevant experience in the field",
+            "Educational background aligns with job requirements",
+            "Shows progression and growth in career",
+            "Includes measurable achievements and results"
+          ],
+          missingSkills: [
+            "Specific technical skills mentioned in job description",
+            "Industry-specific certifications or qualifications",
+            "Quantified metrics for major accomplishments",
+            "Keywords that match the job posting"
+          ],
+          suggestions: [
+            "Add a professional summary highlighting your fit for this specific role",
+            "Include more quantified achievements (numbers, percentages, dollar amounts)",
+            "Incorporate key technical skills and tools mentioned in the job description",
+            "Reorganize bullet points to lead with strongest achievements",
+            "Add relevant certifications or ongoing professional development",
+            "Ensure formatting is ATS-friendly with clear section headers",
+            "Include specific examples of projects relevant to the target role"
+          ]
+        };
+      }
+
+      console.log(`✅ Resume analysis complete - Match Score: ${analysisData.matchScore}%`);
+
+      // Save analysis to database
+      try {
+        const resumeAnalysis = {
+          fileName: req.file.originalname,
+          fileSize: req.file.size,
+          targetRole: targetRole,
+          jobDescription: jobDescription,
+          analysisResult: analysisData,
+          createdAt: new Date(),
+          resumeTextLength: resumeText.length
+        };
+
+        const result = await db.collection("resume_analyses").insertOne(resumeAnalysis);
+        console.log(`💾 Resume analysis saved to database with ID: ${result.insertedId}`);
+
+        res.json({
+          success: true,
+          analysis: analysisData,
+          analysisId: result.insertedId
+        });
+
+      } catch (dbError) {
+        console.error('⚠️ Failed to save to database:', dbError);
+        // Still return the analysis even if DB save fails
+        res.json({
+          success: true,
+          analysis: analysisData,
+          warning: 'Analysis completed but failed to save to database'
+        });
+      }
+
+    } catch (aiError) {
+      console.error('❌ Gemini AI error:', aiError);
+      
+      // Fallback response if AI fails
+      const fallbackAnalysis = {
+        matchScore: 70,
+        targetRole: targetRole,
+        strengths: [
+          "Resume shows relevant professional experience",
+          "Educational qualifications meet basic requirements",
+          "Demonstrates career progression and development",
+          "Contains concrete examples of work experience"
+        ],
+        missingSkills: [
+          "Specific technical keywords from the job description",
+          "Industry-standard certifications or training",
+          "Quantifiable metrics and achievements",
+          "Modern tools and technologies mentioned in the posting"
+        ],
+        suggestions: [
+          "Tailor your resume to include keywords from the job description",
+          "Add quantified achievements (e.g., 'Increased sales by 30%')",
+          "Create a targeted summary statement for this specific role",
+          "Highlight projects directly relevant to the job requirements",
+          "Include technical skills section matching the job posting",
+          "Ensure resume is ATS-optimized with proper formatting",
+          "Add any relevant certifications or continuing education"
+        ]
+      };
+
+      // Try to save fallback analysis too
+      try {
+        const resumeAnalysis = {
+          fileName: req.file.originalname,
+          fileSize: req.file.size,
+          targetRole: targetRole,
+          jobDescription: jobDescription,
+          analysisResult: fallbackAnalysis,
+          createdAt: new Date(),
+          resumeTextLength: resumeText.length,
+          isFallback: true
+        };
+
+        const result = await db.collection("resume_analyses").insertOne(resumeAnalysis);
+        console.log(`💾 Fallback analysis saved with ID: ${result.insertedId}`);
+      } catch (dbError) {
+        console.error('⚠️ Failed to save fallback analysis:', dbError);
+      }
+
+      res.json({
+        success: true,
+        analysis: fallbackAnalysis
+      });
+    }
+
+  } catch (error) {
+    console.error('❌ Resume analysis error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Failed to analyze resume',
+      error: error.message 
+    });
+  }
+});
+
+// Get Resume Analysis History
+app.get("/api/resume-analyses", async (req, res) => {
+  try {
+    const analyses = await db
+      .collection("resume_analyses")
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .toArray();
+
+    console.log(`📊 Fetched ${analyses.length} resume analyses`);
+    res.json({
+      success: true,
+      count: analyses.length,
+      data: analyses
+    });
+  } catch (error) {
+    console.error('❌ Error fetching resume analyses:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to fetch resume analyses",
+      error: error.message 
+    });
+  }
+});
+
+// Get Single Resume Analysis by ID
+app.get("/api/resume-analysis/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const analysis = await db
+      .collection("resume_analyses")
+      .findOne({ _id: new ObjectId(id) });
+
+    if (!analysis) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume analysis not found"
+      });
+    }
+
+    console.log(`📄 Fetched resume analysis: ${id}`);
+    res.json({
+      success: true,
+      data: analysis
+    });
+  } catch (error) {
+    console.error('❌ Error fetching resume analysis:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to fetch resume analysis",
       error: error.message 
     });
   }

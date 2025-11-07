@@ -53,6 +53,9 @@ function Header() {
                 <Link to="/recordings" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Recordings
                 </Link>
+                <Link to="/resume-analyzer" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
+                  Resume
+                </Link>
                 <Link to="/pricing" className="text-gray-600 hover:text-black transition-colors font-medium hidden sm:block">
                   Pricing
                 </Link>
