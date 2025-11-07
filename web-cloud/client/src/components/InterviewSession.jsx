@@ -216,8 +216,15 @@ export default function InterviewSession() {
           }
           setStream(null);
           setIsRecording(false);
-          alert("Recording uploaded successfully!");
-          navigate('/dashboard');
+          
+          // Clear cached report data to force refresh
+          localStorage.removeItem('cached_interview_report');
+          localStorage.removeItem('report_cache_timestamp');
+          
+          alert("Recording uploaded successfully! Redirecting to your interview report...");
+          
+          // Navigate to interview report with refresh flag
+          navigate('/interview-report', { state: { refreshReport: true } });
         }
       };
 

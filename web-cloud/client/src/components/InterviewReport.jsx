@@ -37,10 +37,19 @@ function InterviewReport() {
   const location = useLocation();
 
   useEffect(() => {
-    fetchReportData();
+    // Check if we're coming from a new interview completion
+    const forceRefresh = location.state?.refreshReport;
+    
+    if (forceRefresh) {
+      // Clear the state to prevent re-fetching on subsequent visits
+      window.history.replaceState({}, document.title);
+      fetchReportData(true);
+    } else {
+      fetchReportData(false);
+    }
   }, []);
 
-  const fetchReportData = async () => {
+  const fetchReportData = async (forceRefresh = false) => {
     try {
       const token = localStorage.getItem('auth_token');
       
@@ -49,8 +58,21 @@ function InterviewReport() {
         setLoading(false);
         return;
       }
+
+      // Check for cached data first
+      const cachedReport = localStorage.getItem('cached_interview_report');
+      const cacheTimestamp = localStorage.getItem('report_cache_timestamp');
+      const cacheAge = cacheTimestamp ? Date.now() - parseInt(cacheTimestamp) : Infinity;
       
-      // Fetch comprehensive report (all interviews)
+      // Use cached data if available and not forcing refresh
+      if (!forceRefresh && cachedReport && cacheAge < 24 * 60 * 60 * 1000) { // Cache for 24 hours
+        console.log('Using cached interview report');
+        setReportData(JSON.parse(cachedReport));
+        setLoading(false);
+        return;
+      }
+      
+      // Fetch fresh data
       const endpoint = `${API_BASE_URL}/api/interview-report/comprehensive`;
       
       console.log('Fetching comprehensive report from:', endpoint);
@@ -70,6 +92,11 @@ function InterviewReport() {
 
       const data = await response.json();
       console.log('Comprehensive report data:', data);
+      
+      // Cache the report data
+      localStorage.setItem('cached_interview_report', JSON.stringify(data.comprehensiveAnalysis));
+      localStorage.setItem('report_cache_timestamp', Date.now().toString());
+      
       setReportData(data.comprehensiveAnalysis);
       setLoading(false);
     } catch (err) {
