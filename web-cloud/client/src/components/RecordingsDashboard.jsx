@@ -488,10 +488,10 @@ export default function RecordingsDashboard() {
 
             {/* Modal Header - Glassmorphism */}
             <div className="bg-gradient-to-r from-slate-800/40 via-gray-800/40 to-zinc-800/40 backdrop-blur-xl px-8 py-5 border-b border-white/10">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+              {/* <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
                 {selectedRecording.filename}
-              </h2>
-              <div className="flex flex-wrap gap-4 mt-3 text-sm">
+              </h2> */}
+              {/* <div className="flex flex-wrap gap-4 mt-3 text-sm">
                 <span className="px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 text-gray-200 flex items-center gap-2">
                   <span className="text-blue-400">📅</span>
                   {new Date(selectedRecording.createdAt).toLocaleString()}
@@ -514,19 +514,19 @@ export default function RecordingsDashboard() {
                     {(selectedRecording.size / (1024 * 1024)).toFixed(2)} MB
                   </span>
                 )}
-              </div>
+              </div> */}
 
               {/* Interview Question */}
               {selectedRecording.question && (
                 <div className="mt-4 p-4 bg-indigo-500/10 backdrop-blur-md rounded-lg border border-indigo-400/30">
                   <div className="flex items-start gap-2">
-                    <span className="text-indigo-300 mt-1">❓</span>
-                    <div>
-                      <h4 className="text-sm font-semibold text-indigo-200 mb-1">Interview Question</h4>
+                    {/* <span className="text-indigo-300 mt-1">❓</span> */}
+                    {/* <div> */}
+                      {/* <h4 className="text-sm font-semibold text-indigo-200 mb-1">Interview Question</h4> */}
                       <p className="text-indigo-100 text-sm leading-relaxed">
                         {selectedRecording.question}
                       </p>
-                    </div>
+                    {/* </div> */}
                   </div>
                 </div>
               )}
@@ -557,12 +557,24 @@ export default function RecordingsDashboard() {
             {/* Modal Footer - Glassmorphism */}
             <div className="bg-gradient-to-r from-slate-800/40 via-gray-800/40 to-zinc-800/40 backdrop-blur-xl px-8 py-5 border-t border-white/10">
               <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   {selectedRecording.bucket && (
                     <span className="px-4 py-2 bg-blue-500/20 backdrop-blur-md rounded-lg border border-blue-400/30 text-blue-300 text-sm font-medium">
                       🗄️ {selectedRecording.bucket}
                     </span>
                   )}
+                  <span className="px-3 py-1.5 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/30 text-emerald-300 flex items-center gap-2">
+                    <span>👔</span>
+                    {selectedRecording.role}
+                  </span>
+                  <span className={`px-3 py-1.5 backdrop-blur-md rounded-lg border flex items-center gap-2 ${
+                    selectedRecording.difficulty === 'easy' ? 'bg-green-500/20 border-green-400/30 text-green-300' :
+                    selectedRecording.difficulty === 'medium' ? 'bg-yellow-500/20 border-yellow-400/30 text-yellow-300' :
+                    'bg-red-500/20 border-red-400/30 text-red-300'
+                  }`}>
+                    <span>⚡</span>
+                    {selectedRecording.difficulty}
+                  </span>
                 </div>
                 <div className="flex items-center gap-4">
                   <button
