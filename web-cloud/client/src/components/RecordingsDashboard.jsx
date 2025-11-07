@@ -617,7 +617,7 @@ export default function RecordingsDashboard() {
                 <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-md p-6 rounded-2xl border border-green-400/30">
                   <div className="text-center">
                     <div className="text-4xl font-bold text-green-300 mb-2">
-                      {analysisResult.overallScore || 85}%
+                      {analysisResult.overallScore}%
                     </div>
                     <div className="text-green-200 font-medium">Overall Performance</div>
                     <div className="text-sm text-green-400 mt-1">Comprehensive Rating</div>
@@ -628,7 +628,7 @@ export default function RecordingsDashboard() {
                 <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-md p-6 rounded-2xl border border-blue-400/30">
                   <div className="text-center">
                     <div className="text-4xl font-bold text-blue-300 mb-2">
-                      {analysisResult.clarityScore || 90}%
+                      {analysisResult.clarityScore}%
                     </div>
                     <div className="text-blue-200 font-medium">Speaking Clarity</div>
                     <div className="text-sm text-blue-400 mt-1">Communication Skills</div>
@@ -639,7 +639,7 @@ export default function RecordingsDashboard() {
                 <div className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 backdrop-blur-md p-6 rounded-2xl border border-purple-400/30">
                   <div className="text-center">
                     <div className="text-4xl font-bold text-purple-300 mb-2">
-                      {analysisResult.technicalScore || 80}%
+                      {analysisResult.technicalScore}%
                     </div>
                     <div className="text-purple-200 font-medium">Technical Knowledge</div>
                     <div className="text-sm text-purple-400 mt-1">Subject Expertise</div>
