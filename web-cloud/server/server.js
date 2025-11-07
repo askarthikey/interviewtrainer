@@ -54,6 +54,9 @@ let db;
 let authFunctions;
 let profileRoutes;
 
+// ===== OAuth Routes (must be defined after passport setup) =====
+// These will be initialized after database connection and passport configuration
+
 MongoClient.connect(process.env.DB_URL)
   .then((client) => {
     db = client.db("interviewtrainer");
@@ -61,9 +64,57 @@ MongoClient.connect(process.env.DB_URL)
     initPassport(db);
     profileRoutes = initProfileRoutes(db);
     
-    // Initialize profile routes after DB connection
+    // Initialize OAuth routes FIRST (before any protected middleware)
+    app.get("/api/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+    app.get("/api/auth/callback/google",
+      passport.authenticate("google", { 
+        failureRedirect: `${process.env.CLIENT_URL || "http://localhost:5173"}/auth/callback?error=google_auth_failed`
+      }),
+      (req, res) => {
+        try {
+          if (!req.user) {
+            const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+            return res.redirect(`${clientUrl}/auth/callback?error=no_user_data`);
+          }
+          
+          const token = generateToken(req.user._id);
+          const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+          res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+        } catch (error) {
+          console.error('Google OAuth callback error:', error);
+          const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+          res.redirect(`${clientUrl}/auth/callback?error=server_error`);
+        }
+      }
+    );
+
+    app.get("/api/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
+    app.get("/api/auth/callback/github",
+      passport.authenticate("github", { 
+        failureRedirect: `${process.env.CLIENT_URL || "http://localhost:5173"}/auth/callback?error=github_auth_failed`
+      }),
+      (req, res) => {
+        try {
+          if (!req.user) {
+            const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+            return res.redirect(`${clientUrl}/auth/callback?error=no_user_data`);
+          }
+          
+          const token = generateToken(req.user._id);
+          const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+          res.redirect(`${clientUrl}/auth/callback?token=${token}`);
+        } catch (error) {
+          console.error('GitHub OAuth callback error:', error);
+          const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+          res.redirect(`${clientUrl}/auth/callback?error=server_error`);
+        }
+      }
+    );
+    
+    // Initialize protected routes after OAuth routes
     app.use("/api", authenticateToken, profileRoutes);
     
+    console.log("✅ OAuth routes initialized");
     console.log("DB connection successful!! ✅");
   })
   .catch((err) =>
@@ -110,57 +161,10 @@ app.use(paymentRoutes);
 // Code Executor
 app.use("/api", codeExecutorRoutes);
 
-// Auth
-app.post("/api/auth/signup", (req, res) => authFunctions.signUp(req, res));
-app.post("/api/auth/signin", (req, res) => authFunctions.signIn(req, res));
-app.get("/api/auth/validate", (req, res) => authFunctions.validateToken(req, res));
-
-// OAuth (Google / GitHub)
-app.get("/api/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-app.get("/api/auth/callback/google",
-  passport.authenticate("google", { 
-    failureRedirect: `${process.env.CLIENT_URL || "http://localhost:5173"}/auth/callback?error=google_auth_failed`
-  }),
-  (req, res) => {
-    try {
-      if (!req.user) {
-        const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-        return res.redirect(`${clientUrl}/auth/callback?error=no_user_data`);
-      }
-      
-      const token = generateToken(req.user._id);
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-      res.redirect(`${clientUrl}/auth/callback?token=${token}`);
-    } catch (error) {
-      console.error('Google OAuth callback error:', error);
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-      res.redirect(`${clientUrl}/auth/callback?error=server_error`);
-    }
-  }
-);
-
-app.get("/api/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
-app.get("/api/auth/callback/github",
-  passport.authenticate("github", { 
-    failureRedirect: `${process.env.CLIENT_URL || "http://localhost:5173"}/auth/callback?error=github_auth_failed`
-  }),
-  (req, res) => {
-    try {
-      if (!req.user) {
-        const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-        return res.redirect(`${clientUrl}/auth/callback?error=no_user_data`);
-      }
-      
-      const token = generateToken(req.user._id);
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-      res.redirect(`${clientUrl}/auth/callback?token=${token}`);
-    } catch (error) {
-      console.error('GitHub OAuth callback error:', error);
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
-      res.redirect(`${clientUrl}/auth/callback?error=server_error`);
-    }
-  }
-);
+// Auth routes (non-OAuth)
+app.post("/api/auth/signup", (req, res) => authFunctions ? authFunctions.signUp(req, res) : res.status(500).json({message: "Auth not initialized"}));
+app.post("/api/auth/signin", (req, res) => authFunctions ? authFunctions.signIn(req, res) : res.status(500).json({message: "Auth not initialized"}));
+app.get("/api/auth/validate", (req, res) => authFunctions ? authFunctions.validateToken(req, res) : res.status(500).json({message: "Auth not initialized"}));
 
 // Interview Response Storage
 app.post("/api/interview/response", authenticateToken, async (req, res) => {

@@ -12,7 +12,7 @@ const initPassport = (database) => {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/auth/callback/google"
+    callbackURL: `${process.env.SERVER_URL || 'http://localhost:5000'}/api/auth/callback/google`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -66,7 +66,7 @@ const initPassport = (database) => {
   passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "/api/auth/callback/github"
+    callbackURL: `${process.env.SERVER_URL || 'http://localhost:5000'}/api/auth/callback/github`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {

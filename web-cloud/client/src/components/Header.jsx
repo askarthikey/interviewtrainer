@@ -111,14 +111,14 @@ function Header() {
                 </div>
               </>
             ) : (
-              <>
+              <div className="flex items-center space-x-3 ml-auto">
                 <Link to="/signin" className="text-gray-600 hover:text-black transition-all duration-200 font-medium px-3 py-2 rounded-lg hover:bg-gray-50">
                   Sign in
                 </Link>
                 <Link to="/signup" className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                   Get Started
                 </Link>
-              </>
+              </div>
             )}
             
             {/* Mobile Menu Button */}
