@@ -21,7 +21,6 @@ const uploadProfileImage = multer({
     }
   }
 });
-
 // Profile routes need authentication middleware passed from server.js
 let db;
 

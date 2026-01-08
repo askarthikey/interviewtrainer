@@ -183,7 +183,6 @@ const Dashboard = () => {
       },
     },
   };
-
   const QuickStatCard = ({ icon: Icon, label, value, trend, onClick, gradient, subtitle, badge }) => (
     <div
       onClick={onClick}
