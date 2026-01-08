@@ -276,13 +276,13 @@ export default function InterviewSession() {
   };
 
   return (
-    <div ref={containerRef} className="h-screen bg-black flex">
+    <div ref={containerRef} className="h-screen bg-black flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
       {/* Main Content */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex flex-col md:flex-row">
         {/* Left Panel - Questions */}
         <div 
-          className="bg-white/90 backdrop-blur-sm border-r border-gray-200/50 flex flex-col transition-all duration-200 shadow-lg"
-          style={{ width: `${leftPanelWidth}%` }}
+          className="bg-white/90 backdrop-blur-sm md:border-r border-gray-200/50 flex flex-col transition-all duration-200 md:shadow-lg min-h-screen md:min-h-0"
+          style={{ width: window.innerWidth >= 768 ? `${leftPanelWidth}%` : '100%' }}
         >
           {/* Question Header */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
@@ -378,9 +378,9 @@ export default function InterviewSession() {
           </div>
         </div>
 
-        {/* Horizontal Resizer */}
+        {/* Horizontal Resizer - Desktop Only */}
         <div
-          className={`w-2 bg-gradient-to-b from-gray-200 to-gray-300 hover:from-blue-400 hover:to-indigo-400 cursor-ew-resize flex-shrink-0 transition-all duration-200 relative group ${
+          className={`hidden md:block w-2 bg-gradient-to-b from-gray-200 to-gray-300 hover:from-blue-400 hover:to-indigo-400 cursor-ew-resize flex-shrink-0 transition-all duration-200 relative group ${
             isDragging ? 'from-blue-500 to-indigo-500 shadow-lg' : ''
           }`}
           onMouseDown={handleMouseDown}
@@ -399,8 +399,8 @@ export default function InterviewSession() {
 
         {/* Right Panel - Video Recording */}
         <div 
-          className="flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-black relative"
-          style={{ width: `${100 - leftPanelWidth}%` }}
+          className="flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-black relative min-h-screen md:min-h-0"
+          style={{ width: window.innerWidth >= 768 ? `${100 - leftPanelWidth}%` : '100%' }}
         >
           <div className="flex-1 relative overflow-hidden">
             {/* Top overlay with session info and controls */}

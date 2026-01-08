@@ -263,48 +263,49 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header with Streak */}
       <div className="border-b border-gray-200 bg-white text-gray-900 shadow-lg">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="bg-gray-100 rounded-full p-4">
-                <Brain className="w-12 h-12" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-6">
+              <div className="bg-gray-100 rounded-full p-3 sm:p-4">
+                <Brain className="w-8 h-8 sm:w-12 sm:h-12" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
                   Welcome back, {user?.firstName || user?.name || "User"}! 👋
                 </h1>
-                <p className="text-gray-600 mt-1 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
+                <p className="text-gray-600 mt-1 flex items-center gap-2 text-sm sm:text-base">
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
                   Let's continue your interview preparation journey
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
               {/* Streak Badge */}
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/30">
-                <div className="flex items-center gap-3">
-                  <Flame className="w-6 h-6 text-orange-300" />
+              <div className="bg-gray-100 rounded-xl px-3 sm:px-6 py-2 sm:py-3 border border-gray-200">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                   <div>
-                    <p className="text-2xl font-bold">{streak}</p>
-                    <p className="text-xs text-black-100">Day Streak 🔥</p>
+                    <p className="text-xl sm:text-2xl font-bold">{streak}</p>
+                    <p className="text-xs text-gray-600">Day Streak 🔥</p>
                   </div>
                 </div>
               </div>
               <button
                 onClick={() => navigate("/pricing")}
-                className="flex items-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+                className="flex items-center gap-2 bg-white text-blue-600 px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all shadow-lg border border-gray-200 text-sm sm:text-base"
               >
-                <Crown className="w-5 h-5" />
-                Upgrade to Pro
+                <Crown className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Upgrade to Pro</span>
+                <span className="sm:hidden">Pro</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Enhanced Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <QuickStatCard
             icon={Target}
             label="Interviews Completed"
@@ -346,14 +347,14 @@ const Dashboard = () => {
 
         {/* Progress Overview Banner */}
         {dashboardData && dashboardData.totalInterviews > 0 && (
-          <div className="bg-white rounded-2xl p-8 mb-8 border border-gray-200 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="bg-gray-100 rounded-2xl p-6">
-                  <Trophy className="w-16 h-16 text-gray-700" />
+          <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 border border-gray-200 shadow-lg">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+              <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
+                <div className="bg-gray-100 rounded-2xl p-3 sm:p-4 md:p-6">
+                  <Trophy className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-gray-700" />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold mb-2 text-gray-900">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 text-gray-900">
                     You're making great progress! 🚀
                   </h3>
                   <p className="text-lg text-gray-600 mb-4">
@@ -378,7 +379,7 @@ const Dashboard = () => {
               </div>
               <button
                 onClick={() => navigate("/start-interview")}
-                className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-all shadow-lg"
+                className="bg-gray-900 text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base md:text-lg hover:bg-gray-800 transition-all shadow-lg w-full sm:w-auto"
               >
                 Start New Interview →
               </button>

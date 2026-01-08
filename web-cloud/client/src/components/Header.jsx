@@ -143,18 +143,60 @@ function Header() {
         </div>
         
         {/* Mobile Navigation Menu */}
-        <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
-          <div className="py-4 space-y-4 border-t border-gray-200/60 bg-white/90 backdrop-blur-sm rounded-b-xl">
+        <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+          <div className="py-4 space-y-2 border-t border-gray-200/60 bg-white/90 backdrop-blur-sm rounded-b-xl">
             {isSignedIn ? (
-              <Link to="/dashboard" className="block px-4 py-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium">
-                Dashboard
-              </Link>
+              <>
+                <Link 
+                  to="/dashboard" 
+                  className="block px-4 py-3 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <Link 
+                  to="/practice-page" 
+                  className="block px-4 py-3 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Practice
+                </Link>
+                <Link 
+                  to="/interview-report" 
+                  className="block px-4 py-3 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Interview Report
+                </Link>
+                <Link 
+                  to="/recordings" 
+                  className="block px-4 py-3 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Recordings
+                </Link>
+                <Link 
+                  to="/resume-analyzer" 
+                  className="block px-4 py-3 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Analyse Resume
+                </Link>
+              </>
             ) : (
-              <div className="px-4 pt-4 space-y-3 border-t border-gray-200">
-                <Link to="/signin" className="block w-full text-center py-2 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium">
+              <div className="px-4 pt-2 space-y-3">
+                <Link 
+                  to="/signin" 
+                  className="block w-full text-center py-3 text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-all font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Sign in
                 </Link>
-                <Link to="/signup" className="block w-full text-center py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all font-semibold">
+                <Link 
+                  to="/signup" 
+                  className="block w-full text-center py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-all font-semibold"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Get Started
                 </Link>
               </div>
