@@ -828,14 +828,14 @@ app.post("/api/recordings", authenticateToken, uploadRecordingMemory.single("fil
       });
     }
 
-    // Save metadata to MongoDB with userId
+    // Save recording metadata to MongoDB
     const recording = {
-      userId: req.user._id.toString(),  // Store user ID
-      userEmail: req.user.email,        // Store user email for reference
+      userId: req.user._id.toString(),
+      userEmail: req.user.email,
       filename: req.file.originalname,
-      path: uploadResult.path,        // Supabase path
-      url: uploadResult.url,           // Public URL
-      bucket: uploadResult.bucket,     // Bucket name
+      path: uploadResult.path,
+      url: uploadResult.url,
+      bucket: uploadResult.bucket,
       role: req.body.role || "unknown",
       difficulty: req.body.difficulty || "unknown",
       size: req.file.size,
@@ -843,10 +843,37 @@ app.post("/api/recordings", authenticateToken, uploadRecordingMemory.single("fil
       createdAt: new Date(),
     };
 
-    const result = await db.collection("recordings").insertOne(recording);
-    recording._id = result.insertedId;
+    const recordingResult = await db.collection("recordings").insertOne(recording);
+    recording._id = recordingResult.insertedId;
 
-    console.log(`✅ Recording saved successfully with ID: ${result.insertedId} for user: ${req.user.email}`);
+    // Create a corresponding interview_response entry
+    const interviewResponse = {
+      userId: req.user._id.toString(),
+      question: {
+        text: `${req.body.role || 'General'} Interview - ${req.body.difficulty || 'Medium'} Level`,
+        category: req.body.role || 'general',
+        difficulty: req.body.difficulty || 'medium'
+      },
+      response: {
+        text: "Response recorded via video interview",
+        wordCount: 0,
+        timeSpent: 0,
+        confidence: 0,
+        timestamp: new Date(),
+        recordingId: recordingResult.insertedId.toString()
+      },
+      metadata: {
+        createdAt: new Date(),
+        recordingId: recordingResult.insertedId.toString(),
+        sessionId: req.headers["x-session-id"] || null,
+        userAgent: req.headers["user-agent"] || null,
+        type: 'video-interview'
+      }
+    };
+
+    await db.collection("interview_responses").insertOne(interviewResponse);
+
+    console.log(`✅ Recording saved successfully with ID: ${recordingResult.insertedId} for user: ${req.user.email}`);
 
     res.json({ success: true, recording });
   } catch (err) {
@@ -927,6 +954,238 @@ app.get("/api/recordings", authenticateToken, async (req, res) => {
     res.status(500).json({ 
       success: false, 
       message: "Error fetching recordings",
+      error: err.message 
+    });
+  }
+});
+
+// Dashboard Stats API
+app.get("/api/dashboard/stats", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id.toString();
+    
+    // Get recordings count
+    const recordingsCount = await db.collection("recordings").countDocuments({ userId });
+    
+    // Get interview responses and calculate stats
+    const responses = await db.collection("interview_responses")
+      .find({ userId })
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    // Get analyses
+    const analyses = await db.collection("interview_analyses")
+      .find({ userId })
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    // If no responses exist but recordings do, use recordings as fallback for interview count
+    const totalInterviews = responses.length > 0 ? responses.length : recordingsCount;
+    
+    // Calculate average scores (normalize from 0-100 to 0-10)
+    const scoresWithValues = analyses
+      .map(a => {
+        // Handle both new format (scores.overall) and old format (analysisResult.overallScore)
+        const score = a.scores?.overall || 
+               a.overallScore || 
+               a.analysisResult?.overallScore;
+        // Normalize to 0-10 scale if it's in 0-100 range
+        return score > 10 ? score / 10 : score;
+      })
+      .filter(score => score !== undefined && score !== null);
+    
+    const avgScore = scoresWithValues.length > 0
+      ? scoresWithValues.reduce((sum, score) => sum + score, 0) / scoresWithValues.length
+      : 0;
+    
+    // Get performance trend (last 4 weeks)
+    const fourWeeksAgo = new Date();
+    fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+    
+    const recentAnalyses = analyses.filter(a => 
+      a.createdAt && new Date(a.createdAt) >= fourWeeksAgo
+    );
+    
+    // Group by week
+    const weeklyScores = [[], [], [], []];
+    recentAnalyses.forEach(analysis => {
+      const createdDate = new Date(analysis.createdAt);
+      if (isNaN(createdDate.getTime())) return;
+      
+      const daysAgo = Math.floor((Date.now() - createdDate) / (1000 * 60 * 60 * 24));
+      const weekIndex = Math.min(Math.floor(daysAgo / 7), 3);
+      // Handle both new and old score formats and normalize to 0-10
+      let score = analysis.scores?.overall || 
+                    analysis.overallScore || 
+                    analysis.analysisResult?.overallScore;
+      if (score) {
+        // Normalize to 0-10 scale if it's in 0-100 range
+        score = score > 10 ? score / 10 : score;
+        weeklyScores[3 - weekIndex].push(score);
+      }
+    });
+    
+    const performanceTrend = weeklyScores.map(scores => 
+      scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0
+    );
+    
+    console.log('📊 Dashboard Stats Debug:');
+    console.log('  Total Analyses:', analyses.length);
+    console.log('  Recent Analyses (4 weeks):', recentAnalyses.length);
+    console.log('  Weekly Scores:', weeklyScores);
+    console.log('  Performance Trend:', performanceTrend);
+    
+    // Calculate skills breakdown from latest analyses
+    const latestAnalyses = analyses.slice(0, 10);
+    const skillsData = {
+      technical: [],
+      communication: [],
+      problemSolving: [],
+      confidence: []
+    };
+    
+    latestAnalyses.forEach(analysis => {
+      if (analysis.scores) {
+        // Normalize scores from 0-100 to 0-10
+        const normalizeScore = (score) => score > 10 ? score / 10 : score;
+        
+        if (analysis.scores.technical !== undefined) {
+          skillsData.technical.push(normalizeScore(analysis.scores.technical));
+        }
+        if (analysis.scores.communication !== undefined) {
+          skillsData.communication.push(normalizeScore(analysis.scores.communication));
+        }
+        if (analysis.scores.problemSolving !== undefined) {
+          skillsData.problemSolving.push(normalizeScore(analysis.scores.problemSolving));
+        }
+        if (analysis.scores.clarity !== undefined) {
+          skillsData.confidence.push(normalizeScore(analysis.scores.clarity));
+        }
+      } else if (analysis.analysisResult) {
+        // Fallback to old format
+        const normalizeScore = (score) => score > 10 ? score / 10 : score;
+        
+        if (analysis.analysisResult.technicalScore !== undefined) {
+          skillsData.technical.push(normalizeScore(analysis.analysisResult.technicalScore));
+        }
+        if (analysis.analysisResult.clarityScore !== undefined) {
+          skillsData.communication.push(normalizeScore(analysis.analysisResult.clarityScore));
+          skillsData.confidence.push(normalizeScore(analysis.analysisResult.clarityScore));
+        }
+        if (analysis.analysisResult.technicalScore !== undefined) {
+          skillsData.problemSolving.push(normalizeScore(analysis.analysisResult.technicalScore));
+        }
+      }
+    });
+    
+    const avgSkills = {
+      technical: skillsData.technical.length > 0 
+        ? skillsData.technical.reduce((a, b) => a + b, 0) / skillsData.technical.length : 0,
+      communication: skillsData.communication.length > 0
+        ? skillsData.communication.reduce((a, b) => a + b, 0) / skillsData.communication.length : 0,
+      problemSolving: skillsData.problemSolving.length > 0
+        ? skillsData.problemSolving.reduce((a, b) => a + b, 0) / skillsData.problemSolving.length : 0,
+      confidence: skillsData.confidence.length > 0
+        ? skillsData.confidence.reduce((a, b) => a + b, 0) / skillsData.confidence.length : 0,
+    };
+    
+    // Get topic practice counts from responses OR recordings
+    const topicCounts = {};
+    
+    if (responses.length > 0) {
+      responses.forEach(response => {
+        const topic = response.question?.category || response.topic || response.category || 'General';
+        topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+      });
+    } else {
+      // Fallback to recordings if no responses
+      const recordings = await db.collection("recordings")
+        .find({ userId })
+        .toArray();
+      
+      recordings.forEach(recording => {
+        const topic = recording.role || 'General';
+        const formattedTopic = topic.charAt(0).toUpperCase() + topic.slice(1);
+        topicCounts[formattedTopic] = (topicCounts[formattedTopic] || 0) + 1;
+      });
+    }
+    
+    const topTopics = Object.entries(topicCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([topic, count]) => ({ topic, count }));
+    
+    // Get recent activity
+    const recentActivity = [];
+    
+    // Add recent analyses
+    analyses.slice(0, 3).forEach(a => {
+      if (a.createdAt) {
+        const rawScore = a.scores?.overall || a.overallScore;
+        const normalizedScore = rawScore && rawScore > 10 ? rawScore / 10 : rawScore;
+        recentActivity.push({
+          type: 'analysis',
+          title: 'Interview Analyzed',
+          date: a.createdAt,
+          score: normalizedScore
+        });
+      }
+    });
+    
+    // Add recent responses or recordings
+    if (responses.length > 0) {
+      responses.slice(0, 2).forEach(r => {
+        if (r.metadata?.createdAt || r.createdAt) {
+          recentActivity.push({
+            type: 'response',
+            title: 'Interview Completed',
+            date: r.metadata?.createdAt || r.createdAt,
+            question: r.question?.text || 'Interview Question'
+          });
+        }
+      });
+    } else {
+      // Fallback to recordings
+      const recentRecordings = await db.collection("recordings")
+        .find({ userId })
+        .sort({ createdAt: -1 })
+        .limit(2)
+        .toArray();
+      
+      recentRecordings.forEach(r => {
+        if (r.createdAt) {
+          recentActivity.push({
+            type: 'recording',
+            title: 'Interview Recorded',
+            date: r.createdAt,
+            role: r.role,
+            difficulty: r.difficulty
+          });
+        }
+      });
+    }
+    
+    // Sort by date and limit
+    recentActivity.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const limitedActivity = recentActivity.slice(0, 5);
+    
+    res.json({
+      totalInterviews,
+      totalRecordings: recordingsCount,
+      totalAnalyses: analyses.length,
+      averageScore: avgScore,
+      performanceTrend,
+      skillsBreakdown: avgSkills,
+      topTopics: topTopics.length > 0 ? topTopics : [{ topic: 'No Data Yet', count: 0 }],
+      recentActivity: limitedActivity,
+      practiceSessionsCount: totalInterviews
+    });
+    
+  } catch (err) {
+    console.error('❌ Error fetching dashboard stats:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error fetching dashboard stats",
       error: err.message 
     });
   }
@@ -1027,12 +1286,28 @@ async function extractAndTranscribeVideo(videoBuffer, filename, role, difficulty
             fs.unlinkSync(audioPath);
 
             if (transcript.status === 'error') {
-              reject(new Error(`Transcription failed: ${transcript.error}`));
+              console.warn('⚠️ AssemblyAI transcription error:', transcript.error);
+              // Return a fallback response instead of rejecting
+              resolve({
+                transcript: '[Audio could not be transcribed - Please ensure your microphone is working and you spoke clearly during the interview]',
+                duration: estimatedDuration,
+                language: 'en',
+                confidence: 0.0,
+                fallback: true
+              });
               return;
             }
 
             if (!transcript.text || transcript.text.trim().length === 0) {
-              reject(new Error('No speech detected in the video'));
+              console.warn('⚠️ No speech detected - using fallback');
+              // Return a fallback response for silent audio
+              resolve({
+                transcript: '[No speech was detected in the recording - Please check your microphone settings and ensure you speak during the interview]',
+                duration: estimatedDuration,
+                language: 'en',
+                confidence: 0.0,
+                fallback: true
+              });
               return;
             }
 
@@ -1041,7 +1316,8 @@ async function extractAndTranscribeVideo(videoBuffer, filename, role, difficulty
               transcript: transcript.text.trim(),
               duration: estimatedDuration,
               language: 'en',
-              confidence: transcript.confidence || 0.9
+              confidence: transcript.confidence || 0.9,
+              fallback: false
             });
 
           } catch (assemblyError) {
@@ -1049,8 +1325,16 @@ async function extractAndTranscribeVideo(videoBuffer, filename, role, difficulty
             if (fs.existsSync(videoPath)) fs.unlinkSync(videoPath);
             if (fs.existsSync(audioPath)) fs.unlinkSync(audioPath);
             
-            console.error('AssemblyAI error:', assemblyError);
-            reject(new Error(`Speech recognition failed: ${assemblyError.message}`));
+            console.error('❌ AssemblyAI error:', assemblyError);
+            // Provide fallback instead of failing completely
+            resolve({
+              transcript: '[Speech recognition service error - The interview was recorded but could not be transcribed automatically]',
+              duration: 60,
+              language: 'en',
+              confidence: 0.0,
+              fallback: true,
+              error: assemblyError.message
+            });
           }
         })
         .on('error', (err) => {
@@ -1137,6 +1421,7 @@ app.post("/api/analyze-recording", authenticateToken, uploadRecordingMemory.sing
     // Step 2: Extract audio and transcribe the video using AssemblyAI
     let transcript;
     let transcriptionDuration;
+    let isFallback = false;
     
     try {
       console.log('🎙️ Extracting audio and performing REAL speech-to-text with AssemblyAI...');
@@ -1144,16 +1429,21 @@ app.post("/api/analyze-recording", authenticateToken, uploadRecordingMemory.sing
       const transcriptionResult = await extractAndTranscribeVideo(videoBuffer, filename, role, difficulty);
       transcript = transcriptionResult.transcript;
       transcriptionDuration = transcriptionResult.duration;
+      isFallback = transcriptionResult.fallback || false;
       
-      console.log(`✅ Real transcription complete (${transcriptionDuration}s): ${transcript.substring(0, 150)}...`);
+      if (isFallback) {
+        console.warn('⚠️ Using fallback transcript due to transcription issue');
+      } else {
+        console.log(`✅ Real transcription complete (${transcriptionDuration}s): ${transcript.substring(0, 150)}...`);
+      }
       
     } catch (transcriptionError) {
       console.error('❌ Transcription failed:', transcriptionError);
-      return res.status(500).json({ 
-        success: false, 
-        message: "Failed to transcribe your speech",
-        error: transcriptionError.message 
-      });
+      // Use fallback instead of failing
+      transcript = '[Speech could not be transcribed - Technical issue with audio processing]';
+      transcriptionDuration = 60;
+      isFallback = true;
+      console.warn('⚠️ Using fallback transcript after error');
     }
 
     // Step 3: Get interview questions based on role and difficulty
@@ -1184,6 +1474,82 @@ app.post("/api/analyze-recording", authenticateToken, uploadRecordingMemory.sing
 
     // Step 4: Get the model and create analysis prompt with actual transcript
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+    // If using fallback transcript, provide a helpful analysis instead of AI analysis
+    if (isFallback) {
+      console.log('📊 Providing fallback analysis due to transcription issue');
+      
+      const fallbackAnalysis = {
+        overallScore: 0,
+        clarityScore: 0,
+        technicalScore: 0,
+        strengths: ["Recording was successfully captured"],
+        improvements: [
+          "Ensure your microphone is working properly before recording",
+          "Speak clearly and at a moderate pace during the interview",
+          "Check that your browser has microphone permissions enabled"
+        ],
+        mistakes: ["No audio was detected in the recording"],
+        feedback: `Unfortunately, we could not transcribe any speech from your interview recording. This usually happens when: 
+        
+1. The microphone was not working or not selected properly
+2. Audio permissions were not granted to the browser
+3. The microphone volume was too low
+4. There was no speech during the recording
+
+Please check your audio setup and try recording again. Make sure to:
+- Test your microphone before starting the interview
+- Grant microphone permissions to the website
+- Speak clearly during your response
+- Check that the correct microphone is selected in your system settings
+
+Your video was saved, but we need clear audio to provide meaningful feedback.`,
+        recommendations: [
+          "Test your microphone using your browser's settings or a test call",
+          "Grant microphone permissions when prompted",
+          "Ensure your microphone is not muted",
+          "Try recording a new interview with proper audio setup"
+        ],
+        transcriptionNote: "Audio transcription failed - please check your microphone settings"
+      };
+
+      // Save the fallback analysis
+      if (recordingId) {
+        await db.collection("interview_analyses").insertOne({
+          recordingId: recordingId,
+          userId: req.user._id.toString(),
+          userEmail: req.user.email,
+          role: role,
+          difficulty: difficulty,
+          question: question,
+          transcript: transcript,
+          transcriptionDuration: transcriptionDuration,
+          overallScore: 0,
+          scores: {
+            overall: 0,
+            clarity: 0,
+            technical: 0,
+            communication: 0,
+            problemSolving: 0,
+          },
+          strengths: fallbackAnalysis.strengths,
+          improvements: fallbackAnalysis.improvements,
+          mistakes: fallbackAnalysis.mistakes,
+          feedback: fallbackAnalysis.feedback,
+          recommendations: fallbackAnalysis.recommendations,
+          analysisResult: fallbackAnalysis,
+          createdAt: new Date(),
+          analysisMethod: 'fallback-no-audio',
+          isFallback: true
+        });
+      }
+
+      return res.json({
+        success: true,
+        ...fallbackAnalysis,
+        warning: "Audio could not be transcribed. Please check your microphone settings and try again."
+      });
+    }
 
     // Create a comprehensive prompt with the actual transcript and question
     const analysisPrompt = `
@@ -1325,12 +1691,27 @@ Provide specific, actionable feedback based on what the candidate actually said 
             question: question,
             transcript: transcript,
             transcriptionDuration: transcriptionDuration,
+            // Store scores at root level for dashboard queries
+            overallScore: analysisData.overallScore,
+            scores: {
+              overall: analysisData.overallScore,
+              clarity: analysisData.clarityScore,
+              technical: analysisData.technicalScore,
+              communication: analysisData.clarityScore, // Use clarity as communication
+              problemSolving: analysisData.technicalScore, // Use technical as problem solving
+            },
+            strengths: analysisData.strengths,
+            improvements: analysisData.improvements,
+            mistakes: analysisData.mistakes,
+            feedback: analysisData.feedback,
+            recommendations: analysisData.recommendations,
+            // Keep full analysis result for backward compatibility
             analysisResult: analysisData,
             createdAt: new Date(),
             geminiResponse: analysisText,
             analysisMethod: 'google-speech-to-text + gemini-analysis'
           });
-          console.log('💾 Analysis saved with REAL speech transcription');
+          console.log('💾 Analysis saved with REAL speech transcription and scores');
         } catch (dbError) {
           console.warn('⚠️ Failed to save analysis to database:', dbError.message);
         }
