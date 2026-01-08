@@ -166,6 +166,171 @@ app.post("/api/auth/signup", (req, res) => authFunctions ? authFunctions.signUp(
 app.post("/api/auth/signin", (req, res) => authFunctions ? authFunctions.signIn(req, res) : res.status(500).json({message: "Auth not initialized"}));
 app.get("/api/auth/validate", (req, res) => authFunctions ? authFunctions.validateToken(req, res) : res.status(500).json({message: "Auth not initialized"}));
 
+// Mobile Auth Routes - Email/Password Authentication
+const bcrypt = require('bcryptjs');
+
+app.post("/api/mobileregister", async (req, res) => {
+  try {
+    const { email, password, firstName, lastName } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email and password are required" 
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Password must be at least 6 characters long" 
+      });
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid email format" 
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await db.collection("users").findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(409).json({ 
+        success: false, 
+        message: "User with this email already exists" 
+      });
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create new user
+    const newUser = {
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      firstName: firstName || '',
+      lastName: lastName || '',
+      name: firstName ? `${firstName} ${lastName || ''}`.trim() : email.split('@')[0],
+      authProvider: 'email',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isEmailVerified: false,
+      profile: {
+        bio: '',
+        avatar: '',
+        phone: ''
+      }
+    };
+
+    const result = await db.collection("users").insertOne(newUser);
+    
+    // Generate JWT token
+    const token = generateToken({ userId: result.insertedId.toString() });
+
+    // Return user data without password
+    const { password: _, ...userWithoutPassword } = newUser;
+    
+    console.log(`✅ Mobile user registered: ${email}`);
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      token,
+      user: {
+        ...userWithoutPassword,
+        _id: result.insertedId
+      }
+    });
+
+  } catch (error) {
+    console.error("Mobile registration error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error registering user",
+      error: error.message 
+    });
+  }
+});
+
+app.post("/api/mobilelogin", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email and password are required" 
+      });
+    }
+
+    // Find user by email
+    const user = await db.collection("users").findOne({ 
+      email: email.toLowerCase() 
+    });
+
+    if (!user) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Invalid email or password" 
+      });
+    }
+
+    // Check if user registered with email/password
+    if (!user.password) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "This account uses social login. Please sign in with Google or GitHub." 
+      });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Invalid email or password" 
+      });
+    }
+
+    // Generate JWT token
+    const token = generateToken({ userId: user._id.toString() });
+
+    // Update last login
+    await db.collection("users").updateOne(
+      { _id: user._id },
+      { $set: { lastLogin: new Date() } }
+    );
+
+    // Return user data without password
+    const { password: _, ...userWithoutPassword } = user;
+    
+    console.log(`✅ Mobile user logged in: ${email}`);
+
+    res.json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: userWithoutPassword
+    });
+
+  } catch (error) {
+    console.error("Mobile login error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error logging in",
+      error: error.message 
+    });
+  }
+});
+
 // Interview Response Storage
 app.post("/api/interview/response", authenticateToken, async (req, res) => {
   try {

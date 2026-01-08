@@ -119,17 +119,29 @@ function InterviewReport() {
 
   if (error || !reportData) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="text-center">
-          <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Failed to Load Report</h2>
-          <p className="text-gray-600 mb-6">{error || 'No interview data found'}</p>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
-          >
-            Back to Dashboard
-          </button>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center max-w-md p-8">
+          <div className="bg-blue-100 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+            <FileText className="w-12 h-12 text-blue-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">No Analyses Yet</h2>
+          <p className="text-gray-600 mb-6">
+            You haven't analyzed any interviews yet. Complete an interview and analyze it to see your comprehensive performance report.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => navigate('/start-interview')}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            >
+              Start Interview
+            </button>
+            <button
+              onClick={() => navigate('/recordings')}
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium"
+            >
+              Analyze Recordings
+            </button>
+          </div>
         </div>
       </div>
     );
